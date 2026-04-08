@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: light --default, dark;
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  color-scheme: "light";
+  --color-primary: #0A66C2;
+  --color-primary-content: #f5f5f5;
+  --color-secondary: #666666;
+  --color-base-100: #F3F2EF;
+  --color-base-200: #FFFFFF;
+  --color-base-content: #191919;
+  --color-info: #0A66C2;
+  --color-success: #057642;
+  --color-warning: #F5871E;
+  --color-error: #CC1016;
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  color-scheme: "dark";
+  --color-primary: #70B5F9;
+  --color-primary-content: #191919;
+  --color-secondary: #999999;
+  --color-base-100: #000000;
+  --color-base-200: #1D2226;
+  --color-base-content: #E9E9E9;
+  --color-info: #70B5F9;
+  --color-success: #449C68;
+  --color-warning: #F5871E;
+  --color-error: #FC9894;
+}
+
+@theme inline {
+  --color-teal-50: #F0FDFA;
+  --color-teal-100: #CCFBF1;
+  --color-teal-500: #14B8A6;
+  --color-teal-600: #0D9488;
+  --color-sky-50: #F0F9FF;
+  --color-sky-100: #E0F2FE;
+  --color-sky-500: #0EA5E9;
+  --color-sky-600: #0284C7;
+}
+
+@layer base {
+
+  /* السماح بالتمرير الأفقي للعناصر التي تحتاجه فقط */
+  html,
+  body {
+    @apply w-full max-w-full h-full;
+    /* تم إزالة overflow-x-hidden */
+  }
+
+  body {
+    @apply bg-base-100 text-base-content min-h-screen overscroll-x-none overflow-y-auto;
+  }
+
+  #root {
+    @apply w-full max-w-full min-h-screen flex flex-col;
+    /* تم إزالة overflow-x-hidden */
+  }
+}
+
+@layer components {
+  .border-base {
+    border-color: #E0DFDC;
+  }
+
+  [data-theme="dark"] .border-base,
+  .dark .border-base {
+    border-color: #38434F;
+  }
+
+  .border-neutral-light {
+    @apply border-[#E0DFDC] dark:border-[#38434F];
+  }
+
+  .divide-neutral-light {
+    @apply divide-[#E0DFDC] dark:divide-[#38434F];
+  }
+
+  .text-neutral-light {
+    @apply text-[#E0DFDC] dark:text-[#38434F];
+  }
+
+  .card-flat {
+    @apply bg-base-200 border shadow-none rounded-lg;
+    border-color: #E0DFDC;
+  }
+
+  [data-theme="dark"] .card-flat,
+  .dark .card-flat {
+    border-color: #38434F;
+  }
+
+  .fab-button {
+    @apply btn btn-circle btn-lg shadow-sm font-medium fixed z-50;
+    @apply bg-primary text-white border-0;
+    @apply hover:bg-primary/90;
+    @apply transition-all duration-300 hover:scale-105;
+  }
+
+  /* إخفاء السكرول بار مع الحفاظ على إمكانية السحب */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari */
+  }
+}
