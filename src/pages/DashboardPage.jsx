@@ -20,7 +20,7 @@ import { useTasks } from '../hooks/useTasks';
 import DashboardSkeleton from '../components/skeletons/DashboardSkeleton';
 import ErrorState from '../components/common/ErrorState';
 import Card from '../components/Card';
-import AddPatientModal from '../components/AddPatientModal';
+import PatientModal from '../components/PatientModal';
 import LogSessionModal from '../components/LogSessionModal';
 
 const timeframeOptions = [
@@ -373,7 +373,7 @@ export default function DashboardPage() {
           <UserPlus size={20} className="sm:text-[24px]" />
         </motion.button>
       </div>
-      <AddPatientModal open={showAddPatient} onClose={() => setShowAddPatient(false)} />
+      <PatientModal open={showAddPatient} onClose={() => setShowAddPatient(false)} patientToEdit={null} />
       <LogSessionModal open={showLogSession} onClose={() => setShowLogSession(false)} />
 
     </div>
