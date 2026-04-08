@@ -163,7 +163,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#191919] mb-4">
-              Everything we built for the freelance dentist.
+              Everything we built for our dentists.
             </h2>
             <p className="text-lg text-[#666666]">
               Powerful features designed to streamline your practice and maximize your income.

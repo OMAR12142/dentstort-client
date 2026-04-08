@@ -222,7 +222,7 @@ export default function LandingPage() {
             <span className="text-[#0A66C2]">In One App.</span>
           </h1>
           <p className="text-lg md:text-xl text-[#666666] dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
-            DentStory is the all-in-one clinical platform for freelance dentists. Manage patients, log sessions with X-rays, track commissions across multiple clinics, analyze your career growth, and message patients on WhatsApp — completely free.
+            DentStory is the all-in-one clinical platform for dentists. Manage patients, log sessions with X-rays, track commissions across multiple clinics, analyze your career growth, and message patients on WhatsApp — completely free.
           </p>
 
           {/* CTA Buttons */}

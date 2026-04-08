@@ -13,7 +13,7 @@ export default defineConfig({
       manifest: {
         name: 'DentStory',
         short_name: 'DentStory',
-        description: 'Manage your dental clinic, patients and financials — built for freelance practitioners.',
+        description: 'Manage your dental clinic, patients and financials — built for practitioners.',
         theme_color: '#0A66C2',
         background_color: '#1d2226',
         display: 'standalone',
@@ -75,9 +75,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Cache all static assets
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        // Don't cache API calls — always go to network
         navigateFallback: '/index.html',
         runtimeCaching: [
           {
@@ -101,7 +99,7 @@ export default defineConfig({
         ],
       },
       devOptions: {
-        enabled: false, // keep dev clean, PWA only active in production build
+        enabled: false,
       },
     }),
   ],
