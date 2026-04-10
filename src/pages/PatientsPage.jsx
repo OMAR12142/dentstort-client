@@ -14,6 +14,8 @@ import {
   MessageCircle,
   Pencil,
   Building2,
+  Info,
+  X,
 } from 'lucide-react';
 import { usePatients } from '../hooks/usePatients';
 import { useClinics } from '../hooks/useClinics';
@@ -22,6 +24,8 @@ import ErrorState from '../components/common/ErrorState';
 import Badge from '../components/Badge';
 import Card from '../components/Card';
 import PatientModal from '../components/PatientModal';
+import PatientDetailsModal from '../components/PatientDetailsModal';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -38,6 +42,7 @@ export default function PatientsPage() {
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
+  const [viewingPatient, setViewingPatient] = useState(null);
   const [viewMode, setViewMode] = useState('card');
   const [sortBy, setSortBy] = useState('name');
   const [ageFilter, setAgeFilter] = useState('all');
@@ -80,10 +85,32 @@ export default function PatientsPage() {
   const totalPatients = data?.totalPatients || 0;
 
   let filtered = search
-    ? patients.filter((p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.phone?.includes(search)
-    )
+    ? patients.filter((p) => {
+      const term = search.toLowerCase();
+
+      // Text fields
+      if (p.name?.toLowerCase().includes(term)) return true;
+      if (p.phone?.toLowerCase().includes(term)) return true;
+      if (p.address?.toLowerCase().includes(term)) return true;
+      if (p.job?.toLowerCase().includes(term)) return true;
+      if (p.insuranceCompany?.toLowerCase().includes(term)) return true;
+
+      // Array fields
+      if (p.medical_history?.some((h) => h.toLowerCase().includes(term))) return true;
+      if (p.drugs?.some((d) => d.toLowerCase().includes(term))) return true;
+
+      // Date matches (e.g. "April", "2024", "15/04", etc.)
+      if (p.createdAt) {
+        const date = new Date(p.createdAt);
+        if (date.toLocaleDateString('en-GB').includes(term)) return true; // DD/MM/YYYY
+        if (date.toLocaleDateString('en-US').toLowerCase().includes(term)) return true; // MM/DD/YYYY
+        if (date.toLocaleString('default', { month: 'long' }).toLowerCase().includes(term)) return true;
+        if (date.toLocaleString('default', { month: 'short' }).toLowerCase().includes(term)) return true;
+        if (date.getFullYear().toString().includes(term)) return true;
+      }
+
+      return false;
+    })
     : patients;
 
   filtered = filtered.filter((p) => {
@@ -161,14 +188,14 @@ export default function PatientsPage() {
         <label className="input input-bordered rounded-lg flex items-center gap-2 bg-base-200 w-full border-neutral-light">
           <Search size={16} className="text-base-content/50 shrink-0" />
           <input
-            placeholder="Search by name or phone…"
+            placeholder="Search by anything (Name, Phone, Date: Month name(April, Apr, Jan) or Year (2024, 2026) or 10/04/2026 this format, Job, Missing fields)..."
             className="grow w-full min-w-0"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           {search && (
             <button onClick={() => setSearch('')} className="text-base-content/50 hover:text-base-content transition-colors shrink-0">
-              ✕
+              <X size={16} />
             </button>
           )}
         </label>
@@ -190,9 +217,8 @@ export default function PatientsPage() {
               <select
                 value={clinicFilter}
                 onChange={(e) => setClinicFilter(e.target.value)}
-                className={`select select-sm select-bordered rounded-lg bg-base-200 border-neutral-light pl-8 w-full sm:w-auto focus:border-primary transition-all ${
-                  clinicFilter ? 'border-primary text-primary' : ''
-                }`}
+                className={`select select-sm select-bordered rounded-lg bg-base-200 border-neutral-light pl-8 w-full sm:w-auto focus:border-primary transition-all ${clinicFilter ? 'border-primary text-primary' : ''
+                  }`}
               >
                 <option value="">All Clinics</option>
                 {clinics.map((c) => (
@@ -338,8 +364,11 @@ export default function PatientsPage() {
                       </td>
                       <td className="px-4 py-3 text-base-content/70">{p.age ? `${p.age} yrs` : '—'}</td>
                       <td className="px-4 py-3 text-base-content/70 text-sm">
-                        {p.phone ? (
-                          <code className="bg-base-100 px-2 py-1 rounded text-xs break-all">{p.phone}</code>
+                        {p.phone || p.phone2 ? (
+                          <div className="flex flex-col gap-1 items-start">
+                            {p.phone && <code className="bg-base-100 px-2 py-0.5 rounded text-xs break-all text-base-content">{p.phone}</code>}
+                            {p.phone2 && <code className="bg-base-100 px-2 py-0.5 rounded text-[10px] break-all text-secondary">{p.phone2}</code>}
+                          </div>
                         ) : '—'}
                       </td>
                       <td className="px-4 py-3">
@@ -366,7 +395,7 @@ export default function PatientsPage() {
                               className="p-1.5 text-base-content/40 hover:text-[#25D366] hover:bg-[#25D366]/10 rounded-lg transition-all duration-200"
                               title="Chat on WhatsApp"
                             >
-                              <MessageCircle size={18} />
+                              <WhatsAppIcon size={18} />
                             </a>
                           )}
                           <button
@@ -376,7 +405,14 @@ export default function PatientsPage() {
                           >
                             <Pencil size={16} />
                           </button>
-                          <Link to={`/patients/${p._id}`} className="btn btn-xs btn-ghost rounded-lg">View</Link>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setViewingPatient(p); }}
+                            className="p-1.5 text-base-content/40 hover:text-sky-500 hover:bg-sky-500/10 rounded-lg transition-all duration-200"
+                            title="Quick Info"
+                          >
+                            <Info size={16} />
+                          </button>
+                          <Link to={`/patients/${p._id}`} className="btn btn-xs btn-ghost rounded-lg">Profile</Link>
                         </div>
                       </td>
                     </motion.tr>
@@ -407,7 +443,10 @@ export default function PatientsPage() {
                         </span>
                       </div>
                     </Link>
-                    <p className="text-xs text-base-content/50 break-words">{p.phone || 'No phone'}</p>
+                    <div className="text-xs text-base-content/50 break-words flex flex-col gap-0.5">
+                      <span>{p.phone || 'No primary phone'}</span>
+                      {p.phone2 && <span className="text-secondary/80 text-[10px]">{p.phone2}</span>}
+                    </div>
                   </div>
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                     <span className="text-sm font-bold text-primary">{p.name?.[0]?.toUpperCase()}</span>
@@ -445,7 +484,7 @@ export default function PatientsPage() {
                       rel="noopener noreferrer"
                       className="btn btn-sm btn-outline rounded-lg justify-center gap-2 text-base-content/60 hover:text-[#25D366] border-neutral-light hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all"
                     >
-                      <MessageCircle size={16} />
+                      <WhatsAppIcon size={16} />
                     </a>
                   )}
                   <button
@@ -455,11 +494,19 @@ export default function PatientsPage() {
                   >
                     <Pencil size={15} /> <span className="hidden min-[380px]:inline">Edit</span>
                   </button>
+                  <button
+                    onClick={() => setViewingPatient(p)}
+                    className="flex-1 btn btn-sm btn-ghost rounded-lg justify-center gap-2 text-sky-500 hover:bg-sky-500/10 hover:text-sky-600 transition-all"
+                    title="Quick Info"
+                  >
+                    <Info size={16} /> <span className="hidden min-[380px]:inline ml-1">Info</span>
+                  </button>
                   <Link
                     to={`/patients/${p._id}`}
-                    className="flex-1 btn btn-sm btn-ghost rounded-lg justify-center gap-2 text-primary hover:bg-primary/10"
+                    className="flex-1 btn btn-sm border-neutral-light bg-base-100 hover:bg-base-200 rounded-lg justify-center gap-2 text-base-content/70 transition-all"
+                    title="Open Profile"
                   >
-                    <FileText size={16} /> <span className="hidden min-[380px]:inline ml-1">View</span>
+                    <FileText size={16} /> <span className="hidden min-[380px]:inline ml-1">Profile</span>
                   </Link>
                 </div>
               </Card>
@@ -519,6 +566,12 @@ export default function PatientsPage() {
         open={!!editingPatient}
         onClose={() => setEditingPatient(null)}
         patientToEdit={editingPatient}
+      />
+      {/* Quick Info Modal */}
+      <PatientDetailsModal
+        open={!!viewingPatient}
+        onClose={() => setViewingPatient(null)}
+        patient={viewingPatient}
       />
     </div>
   );
