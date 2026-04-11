@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
-import { User, Phone, Calendar, AlertCircle } from 'lucide-react';
+import { User, Phone, Calendar, AlertCircle, MapPin, Pill, Briefcase, Info } from 'lucide-react';
 import Modal from './Modal';
 import { useCreatePatient } from '../hooks/usePatients';
 
@@ -9,7 +9,11 @@ const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   age: z.coerce.number().int().min(0).optional(),
   phone: z.string().optional(),
+  phone2: z.string().optional(),
+  address: z.string().optional(),
+  job: z.string().optional(),
   medical_history: z.string().optional(),
+  drugs: z.string().optional(),
   status: z.enum(['Active', 'On-Hold', 'Completed', 'Dropped']).optional().default('Active'),
 });
 
@@ -40,8 +44,12 @@ export default function AddPatientModal({ open, onClose }) {
       ? raw.medical_history.split(',').map((s) => s.trim()).filter(Boolean)
       : [];
 
+    const drugs = raw.drugs
+      ? raw.drugs.split(',').map((s) => s.trim()).filter(Boolean)
+      : [];
+
     mutate(
-      { ...result.data, medical_history },
+      { ...result.data, medical_history, drugs },
       {
         onSuccess: () => {
           setErrors({});
@@ -116,6 +124,23 @@ export default function AddPatientModal({ open, onClose }) {
           </div>
         </motion.div>
 
+        {/* Alternative Phone */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 }}
+        >
+          <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+            <Phone size={14} className="text-emerald-500" />
+            Alternative Phone <span className="text-xs text-base-content/50 pr-1 truncate font-normal">(Optional)</span>
+          </label>
+          <input
+            name="phone2"
+            className="input input-bordered w-full rounded-lg focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+            placeholder="+20 1xx xxx xxxx"
+          />
+        </motion.div>
+
         {/* Medical History */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -130,18 +155,73 @@ export default function AddPatientModal({ open, onClose }) {
             name="medical_history"
             className="textarea textarea-bordered w-full rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-400 transition-all resize-none"
             placeholder="e.g., Diabetic, Penicillin Allergy, Hypertension"
-            rows="3"
+            rows="2"
           />
-          <p className="text-xs text-base-content/50 mt-1.5">
-            💡 Tip: Separate multiple conditions with commas
+          <p className="text-xs text-base-content/50 mt-1.5 flex items-center">
+            <Info size={12} className="mr-1 shrink-0" /> Tip: Separate multiple conditions with commas
           </p>
+        </motion.div>
+
+        {/* Drugs / Medications */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12 }}
+        >
+          <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+            <Pill size={14} className="text-pink-500" />
+            Current Medications
+          </label>
+          <textarea
+            name="drugs"
+            className="textarea textarea-bordered w-full rounded-lg focus:border-pink-400 focus:ring-1 focus:ring-pink-400 transition-all resize-none"
+            placeholder="e.g., Aspirin, Metformin, Lisinopril"
+            rows="2"
+          />
+          <p className="text-xs text-base-content/50 mt-1.5 flex items-center">
+            <Pill size={12} className="mr-1 shrink-0" /> Tip: Separate multiple medications with commas
+          </p>
+        </motion.div>
+
+        {/* Address & Job */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.14 }}
+          className="grid grid-cols-2 gap-3"
+        >
+          {/* Address */}
+          <div>
+            <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+              <MapPin size={14} className="text-indigo-500" />
+              Address
+            </label>
+            <input
+              name="address"
+              className="input input-bordered w-full rounded-lg focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all"
+              placeholder="e.g., Cairo, Egypt"
+            />
+          </div>
+
+          {/* Job */}
+          <div>
+            <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+              <Briefcase size={14} className="text-cyan-500" />
+              Job
+            </label>
+            <input
+              name="job"
+              className="input input-bordered w-full rounded-lg focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
+              placeholder="e.g., Engineer"
+            />
+          </div>
         </motion.div>
 
         {/* Status */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12 }}
+          transition={{ delay: 0.16 }}
         >
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
             <User size={14} className="text-secondary" />

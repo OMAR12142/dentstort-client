@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CalendarDays,
@@ -11,6 +11,14 @@ import {
   Pencil,
   Trash2,
   CheckCircle,
+  MapPin,
+  Briefcase,
+  Pill,
+  ListChecks,
+  Check,
+  X,
+  ArrowLeft,
+  Phone,
 } from 'lucide-react';
 import { usePatient, useUpdatePatient } from '../hooks/usePatients';
 import { useSessions, useDeleteSession } from '../hooks/useSessions';
@@ -20,6 +28,7 @@ import Badge from '../components/Badge';
 import Card from '../components/Card';
 import LogSessionModal from '../components/LogSessionModal';
 import ImageLightboxModal from '../components/ImageLightboxModal';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -33,6 +42,7 @@ const getStatusColor = (status) => {
 
 export default function PatientProfilePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data: patient, isLoading: loadP, isError: isErrorP, error: errorP, refetch: refetchP } = usePatient(id);
   const { mutate: updatePatient, isPending: isUpdating } = useUpdatePatient();
   const { data: sessionsData, isLoading: loadS, isError: isErrorS, error: errorS, refetch: refetchS } = useSessions(id);
@@ -42,6 +52,9 @@ export default function PatientProfilePage() {
   const [sessionToEdit, setSessionToEdit] = useState(null);
   const [lightbox, setLightbox] = useState({ isOpen: false, images: [], index: 0 });
   const [showToast, setShowToast] = useState(false);
+  const [newPlanItem, setNewPlanItem] = useState('');
+  const [editingPlanIndex, setEditingPlanIndex] = useState(null);
+  const [editPlanText, setEditPlanText] = useState('');
 
   const sessions = Array.isArray(sessionsData)
     ? sessionsData
@@ -65,6 +78,45 @@ export default function PatientProfilePage() {
   const handleCloseModal = () => {
     setShowLogSession(false);
     setSessionToEdit(null);
+  };
+
+  const handleStatusChange = () => {
+    const newStatus = patient.status === 'Completed' ? 'Active' : 'Completed';
+    updatePatient({ id: patient._id, data: { status: newStatus } });
+  };
+
+  const handleTogglePlanItem = (idx) => {
+    const newPlan = [...(patient.treatment_plan || [])];
+    newPlan[idx].isCompleted = !newPlan[idx].isCompleted;
+    updatePatient({ id: patient._id, data: { treatment_plan: newPlan } });
+  };
+
+  const handleDeletePlanItem = (idx) => {
+    if (!window.confirm("Remove this item from the treatment plan?")) return;
+    const newPlan = [...(patient.treatment_plan || [])];
+    newPlan.splice(idx, 1);
+    updatePatient({ id: patient._id, data: { treatment_plan: newPlan } });
+  };
+
+  const handleAddPlanItem = (e) => {
+    e.preventDefault();
+    if (!newPlanItem.trim()) return;
+    const newPlan = [...(patient.treatment_plan || []), { text: newPlanItem.trim(), isCompleted: false }];
+    updatePatient({ id: patient._id, data: { treatment_plan: newPlan } });
+    setNewPlanItem('');
+  };
+
+  const handleStartEditPlanItem = (idx, text) => {
+    setEditingPlanIndex(idx);
+    setEditPlanText(text);
+  };
+
+  const handleSaveEditPlanItem = (idx) => {
+    if (!editPlanText.trim()) return;
+    const newPlan = [...(patient.treatment_plan || [])];
+    newPlan[idx].text = editPlanText.trim();
+    updatePatient({ id: patient._id, data: { treatment_plan: newPlan } });
+    setEditingPlanIndex(null);
   };
 
   const handleMarkCompleted = () => {
@@ -107,6 +159,18 @@ export default function PatientProfilePage() {
         </div>
       )}
 
+      {/* Back Button */}
+      <div className="mb-2">
+        <button 
+          onClick={() => navigate('/patients')} 
+          className="flex items-center gap-1.5 text-sm font-medium text-base-content/70 hover:text-primary transition-colors cursor-pointer"
+          title="Back to Patients"
+        >
+          <ArrowLeft size={18} />
+          <span>Back to Patients</span>
+        </button>
+      </div>
+
       {/* Patient Header */}
       <Card>
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -121,9 +185,28 @@ export default function PatientProfilePage() {
                   {patient.status || 'Active'}
                 </span>
               </div>
-              <div className="flex flex-wrap gap-3 text-sm text-base-content/70 mt-1">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-base-content/70 mt-1">
                 {patient.age && <span>Age {patient.age}</span>}
-                {patient.phone && <span>📞 {patient.phone}</span>}
+                {patient.phone && (
+                  <span className="flex items-center gap-1 font-medium">
+                    <WhatsAppIcon size={14} className="text-emerald-500 opacity-90" /> {patient.phone}
+                  </span>
+                )}
+                {patient.phone2 && (
+                  <span className="flex items-center gap-1 font-medium">
+                    <Phone size={13} className="text-secondary opacity-80" /> {patient.phone2}
+                  </span>
+                )}
+                {patient.address && (
+                  <span className="flex items-center gap-1">
+                    <MapPin size={13} className="text-indigo-500" /> {patient.address}
+                  </span>
+                )}
+                {patient.job && (
+                  <span className="flex items-center gap-1">
+                    <Briefcase size={13} className="text-cyan-500" /> {patient.job}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -145,7 +228,7 @@ export default function PatientProfilePage() {
               className="btn btn-lg sm:text-sm rounded-lg text-white border-0 gap-1 bg-primary flex-1 sm:flex-none"
             >
               <Plus size={16} />
-              Log Session
+              Add Session
             </button>
           </div>
         </div>
@@ -159,6 +242,25 @@ export default function PatientProfilePage() {
           </div>
         )}
 
+        {/* Drugs / Medications */}
+        {patient.drugs?.length > 0 && (
+          <div className="mt-3">
+            <p className="text-xs font-semibold text-base-content/60 mb-1.5 flex items-center gap-1">
+              <Pill size={13} className="text-pink-500" /> Current Medications
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {patient.drugs.map((d) => (
+                <span
+                  key={d}
+                  className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-pink-50 text-pink-700 dark:bg-pink-900/20 dark:text-pink-300 border border-pink-200 dark:border-pink-700"
+                >
+                  {d}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Warnings */}
         {warnings.length > 0 && (
           <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-3 flex items-start gap-2">
@@ -168,6 +270,116 @@ export default function PatientProfilePage() {
             </p>
           </div>
         )}
+      </Card>
+
+      {/* Treatment Plan Section */}
+      <Card className="p-4 sm:p-6 mb-2">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center shrink-0">
+            <ListChecks size={18} className="text-indigo-600 dark:text-indigo-400" />
+          </div>
+          <h2 className="text-lg font-bold text-base-content">Treatment Plan</h2>
+          {patient.treatment_plan?.length > 0 && (
+            <div className="ml-auto flex items-center gap-2 text-xs font-medium">
+              <span className="text-success bg-success/10 px-2 py-0.5 rounded-full">
+                {patient.treatment_plan.filter(i => i.isCompleted).length} done
+              </span>
+              <span className="text-base-content/50">of {patient.treatment_plan.length}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-2 mb-4">
+          {(!patient.treatment_plan || patient.treatment_plan.length === 0) ? (
+            <p className="text-sm text-base-content/50 italic py-2">No treatment plan added yet. Add items below.</p>
+          ) : (
+            patient.treatment_plan.map((item, idx) => (
+              <div
+                key={idx}
+                className={`flex justify-between items-start gap-3 p-3 rounded-xl border transition-all ${item.isCompleted
+                  ? 'bg-base-200/50 border-transparent opacity-60'
+                  : 'bg-base-100 border-neutral-light hover:border-indigo-200'
+                  }`}
+              >
+                {editingPlanIndex === idx ? (
+                  <div className="flex-1 flex items-center gap-2">
+                    <input
+                      autoFocus
+                      className="input input-sm border-indigo-400 focus:border-indigo-500 flex-1 rounded-lg"
+                      value={editPlanText}
+                      onChange={(e) => setEditPlanText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleSaveEditPlanItem(idx);
+                        else if (e.key === 'Escape') setEditingPlanIndex(null);
+                      }}
+                    />
+                    <button onClick={() => handleSaveEditPlanItem(idx)} className="btn btn-sm btn-ghost text-success rounded-lg" title="Save">
+                      <Check size={16} />
+                    </button>
+                    <button onClick={() => setEditingPlanIndex(null)} className="btn btn-sm btn-ghost text-base-content/50 hover:text-error rounded-lg" title="Cancel">
+                      <X size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div
+                      className="flex-1 min-w-0 flex items-start gap-3 cursor-pointer"
+                      onClick={() => handleTogglePlanItem(idx)}
+                    >
+                      <button
+                        className={`mt-0.5 shrink-0 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${item.isCompleted
+                          ? 'bg-success border-success text-white'
+                          : 'border-base-content/30 hover:border-indigo-400'
+                          }`}
+                      >
+                        {item.isCompleted && <Check size={14} strokeWidth={3} />}
+                      </button>
+                      <p className={`text-sm md:text-base font-medium break-words leading-tight transition-all ${item.isCompleted ? 'text-base-content/60 line-through decoration-2' : 'text-base-content'
+                        }`}>
+                        {item.text}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleStartEditPlanItem(idx, item.text); }}
+                        className="text-base-content/30 hover:text-primary transition-colors p-1"
+                        title="Edit item"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDeletePlanItem(idx); }}
+                        className="text-base-content/30 hover:text-error transition-colors p-1"
+                        title="Remove item"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+
+        <form onSubmit={handleAddPlanItem} className="flex gap-2">
+          <input
+            type="text"
+            className="input input-sm md:input-md input-bordered flex-1 rounded-xl focus:border-indigo-400"
+            placeholder="Add new step (e.g. Scaling, Upper Right Molar Fill...)"
+            value={newPlanItem}
+            onChange={(e) => setNewPlanItem(e.target.value)}
+            disabled={isUpdating}
+          />
+          <button
+            type="submit"
+            disabled={!newPlanItem.trim() || isUpdating}
+            className="btn btn-sm md:btn-md bg-primary   cursor-pointer text-white border-0 rounded-xl px-4"
+          >
+            <Plus size={18} />
+            <span className="hidden sm:inline">Add Step</span>
+          </button>
+        </form>
       </Card>
 
       {/* Sessions Timeline */}
