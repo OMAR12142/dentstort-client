@@ -148,7 +148,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
     }
   };
 
-  const modalTitle = isEditMode ? 'Edit Session' : 'Log Session';
+  const modalTitle = isEditMode ? 'Edit Session' : 'Add Session';
   const errCls = 'border-error focus:border-error focus:ring-error';
 
   return (
@@ -225,15 +225,17 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
             onChange={(e) => handleFormChange('treatment_category', e.target.value)}
           >
             <option value="" disabled>Choose treatment type</option>
-            <option value="Endodontics">Endodontics</option>
             <option value="Surgery">Surgery</option>
+            <option value="Implant">Implant</option>
+            <option value="Endo">Endo</option>
+            <option value="Perio">Perio</option>
+            <option value="Fixed">Fixed</option>
+            <option value="Removable">Removable</option>
             <option value="Restorative">Restorative</option>
-            <option value="Prosthodontics">Prosthodontics</option>
-            <option value="Orthodontics">Orthodontics</option>
-            <option value="Pedodontics">Pedodontics</option>
-            <option value="Cosmetic">Cosmetic</option>
             <option value="General">General</option>
-            <option value="Other">Other</option>
+            {formData.treatment_category && !['Surgery', 'Implant', 'Endo', 'Perio', 'Fixed', 'Removable', 'Restorative', 'General'].includes(formData.treatment_category) && (
+              <option value={formData.treatment_category}>{formData.treatment_category}</option>
+            )}
           </select>
           {errors.treatment_category && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
