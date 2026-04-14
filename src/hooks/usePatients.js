@@ -45,5 +45,9 @@ export const useDeletePatient = () => {
   return useMutation({
     mutationFn: deletePatientApi,
     onSuccess: () => qc.invalidateQueries({ queryKey: ['patients'] }),
+    onError: (error) => {
+      alert(error.response?.data?.message || error.message || 'Failed to delete patient');
+      console.error('Delete Patient Error:', error);
+    }
   });
 };

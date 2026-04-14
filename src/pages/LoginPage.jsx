@@ -86,7 +86,7 @@ export default function LoginPage() {
                   <input
                     name="email"
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder="omar@gmail.com"
                     onChange={() => vErrors.email && setVErrors((p) => ({ ...p, email: undefined }))}
                     className={`input input-bordered w-full pl-10 rounded-lg bg-base-200 border-neutral-light focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-xs h-10 ${vErrors.email ? 'border-error focus:border-error focus:ring-error' : ''}`}
                   />

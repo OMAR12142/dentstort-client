@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { z } from 'zod';
 import { Trash2, Plus, AlertCircle, Building2, MapPin, Percent } from 'lucide-react';
 import Modal from './Modal';
-import { useCreateClinic } from '../hooks/useClinics';
+import { useCreateClinic, useUpdateClinic } from '../hooks/useClinics';
 
 const daysOfWeek = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -16,8 +16,12 @@ const schema = z.object({
     .max(100, 'Must be 0-100'),
 });
 
-export default function AddClinicModal({ open, onClose }) {
-  const { mutate, isPending } = useCreateClinic();
+export default function AddClinicModal({ open, onClose, clinic = null }) {
+  const { mutate: createClinic, isPending: isCreating } = useCreateClinic();
+  const { mutate: updateClinic, isPending: isUpdating } = useUpdateClinic();
+  
+  const isPending = isCreating || isUpdating;
+
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '',
@@ -29,10 +33,20 @@ export default function AddClinicModal({ open, onClose }) {
   useEffect(() => {
     if (open) {
       setErrors({});
-      setFormData({ name: '', address: '', default_commission_percentage: '' });
-      setWorkingDays([]);
+      if (clinic) {
+        setFormData({
+          name: clinic.name || '',
+          address: clinic.address || '',
+          default_commission_percentage: clinic.default_commission_percentage ?? '',
+        });
+        // clone workingDays array so edits don't directly mutate state props
+        setWorkingDays(clinic.working_days ? JSON.parse(JSON.stringify(clinic.working_days)) : []);
+      } else {
+        setFormData({ name: '', address: '', default_commission_percentage: '' });
+        setWorkingDays([]);
+      }
     }
-  }, [open]);
+  }, [open, clinic]);
 
   const clearError = (field) => {
     if (errors[field]) setErrors((p) => ({ ...p, [field]: undefined }));
@@ -75,18 +89,22 @@ export default function AddClinicModal({ open, onClose }) {
       working_days: workingDays,
     };
 
-    mutate(payload, {
-      onSuccess: () => {
-        setErrors({});
-        setFormData({ name: '', address: '', default_commission_percentage: '' });
-        setWorkingDays([]);
-        onClose();
-      },
-    });
+    const handleSuccess = () => {
+      setErrors({});
+      setFormData({ name: '', address: '', default_commission_percentage: '' });
+      setWorkingDays([]);
+      onClose();
+    };
+
+    if (clinic) {
+      updateClinic({ id: clinic._id, ...payload }, { onSuccess: handleSuccess });
+    } else {
+      createClinic(payload, { onSuccess: handleSuccess });
+    }
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="Add Clinic" size="lg">
+    <Modal open={open} onClose={onClose} title={clinic ? "Edit Clinic" : "Add Clinic"} size="lg">
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {/* Clinic Name */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
@@ -239,7 +257,7 @@ export default function AddClinicModal({ open, onClose }) {
             disabled={isPending}
             className="btn rounded-lg text-white border-0 bg-primary flex-1"
           >
-            {isPending ? <span className="loading loading-spinner loading-sm" /> : 'Save Clinic'}
+            {isPending ? <span className="loading loading-spinner loading-sm" /> : (clinic ? 'Save Changes' : 'Save Clinic')}
           </button>
         </motion.div>
       </form>
