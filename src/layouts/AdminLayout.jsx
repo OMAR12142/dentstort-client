@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Menu,
   X,
+  ArrowLeft,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useLogout } from '../hooks/useAuth';
@@ -31,10 +32,9 @@ function SidebarLink({ to, icon: Icon, label, end, onClick }) {
       end={end}
       onClick={onClick}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm md:text-base font-medium ${
-          isActive
-            ? 'bg-primary/10 text-primary shadow-none'
-            : 'text-base-content/70 hover:text-base-content hover:bg-base-100'
+        `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm md:text-base font-medium ${isActive
+          ? 'bg-primary/10 text-primary shadow-none'
+          : 'text-base-content/70 hover:text-base-content hover:bg-base-100'
         }`
       }
     >
@@ -51,6 +51,12 @@ export default function AdminLayout() {
   const isDark = useThemeStore((s) => s.isDark);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Handle potential trailing slashes for robust route checking
+  const basePath = location.pathname.replace(/\/$/, '') || '/';
+  const rootPaths = ['/admin', '/admin/revenue', '/admin/dentists'];
+  const showBackButton = !rootPaths.includes(basePath);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-base-200 text-base-content transition-colors duration-200">
@@ -58,7 +64,6 @@ export default function AdminLayout() {
       <header className="md:hidden flex items-center justify-between p-4 border-b border-neutral-light bg-base-200 sticky top-0 z-50">
         <div className="flex items-center gap-2">
           <AppLogo size="sm" />
-          <span className="text-xs font-semibold text-primary">Super Admin</span>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -113,7 +118,7 @@ export default function AdminLayout() {
         {/* Branding */}
         <div className="flex items-center gap-3 px-2 mb-6 lg:mb-8">
           <AppLogo size="md" />
-          <span className="text-xs font-semibold text-primary">Super Admin</span>
+          {/* <span className="text-xs font-semibold text-primary">Super Admin</span> */}
         </div>
 
         {/* Nav links */}

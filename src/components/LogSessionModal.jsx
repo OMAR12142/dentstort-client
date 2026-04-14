@@ -232,7 +232,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
     }
   };
 
-  const modalTitle = isEditMode ? 'Edit Session' : 'Log Session';
+  const modalTitle = isEditMode ? 'Edit Session' : 'Add Session';
   const errCls = 'border-error focus:border-error focus:ring-error';
 
   return (
@@ -302,25 +302,6 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
           <label className="label text-sm font-semibold text-base-content/80">
             Treatment Type <span className="text-error">*</span>
           </label>
-<<<<<<< Updated upstream
-          <select
-            name="treatment_category"
-            className={`select select-bordered w-full rounded-lg ${errors.treatment_category ? errCls : ''}`}
-            value={formData.treatment_category}
-            onChange={(e) => handleFormChange('treatment_category', e.target.value)}
-          >
-            <option value="" disabled>Choose treatment type</option>
-            <option value="Endodontics">Endodontics</option>
-            <option value="Surgery">Surgery</option>
-            <option value="Restorative">Restorative</option>
-            <option value="Prosthodontics">Prosthodontics</option>
-            <option value="Orthodontics">Orthodontics</option>
-            <option value="Pedodontics">Pedodontics</option>
-            <option value="Cosmetic">Cosmetic</option>
-            <option value="General">General</option>
-            <option value="Other">Other</option>
-          </select>
-=======
 
           {/* Selected tags */}
           {formData.treatment_categories.length > 0 && (
@@ -409,7 +390,6 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
             </div>
           )}
 
->>>>>>> Stashed changes
           {errors.treatment_category && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
               <AlertCircle size={14} />
