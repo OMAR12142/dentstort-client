@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+=======
+import { useState, useMemo } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+>>>>>>> Stashed changes
 import { motion } from 'framer-motion';
 import {
   CalendarDays,
@@ -11,6 +16,21 @@ import {
   Pencil,
   Trash2,
   CheckCircle,
+<<<<<<< Updated upstream
+=======
+  MapPin,
+  Briefcase,
+  Pill,
+  ListChecks,
+  Check,
+  X,
+  ArrowLeft,
+  Phone,
+  CreditCard,
+  Wallet,
+  Percent,
+  Receipt,
+>>>>>>> Stashed changes
 } from 'lucide-react';
 import { usePatient, useUpdatePatient } from '../hooks/usePatients';
 import { useSessions, useDeleteSession } from '../hooks/useSessions';
@@ -125,9 +145,72 @@ export default function PatientProfilePage() {
                 {patient.age && <span>Age {patient.age}</span>}
                 {patient.phone && <span>📞 {patient.phone}</span>}
               </div>
+
+              <div className="bg-success/10 p-3 rounded-xl border border-success/30 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-success/20 text-success flex items-center justify-center shrink-0">
+                  <CreditCard size={18} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase font-bold text-success/80 tracking-wider">Total Paid</p>
+                  <p className="text-sm font-black text-success">EGP {financialSummary.total_paid.toLocaleString()}</p>
+                </div>
+              </div>
+
+              <div className="bg-error/10 p-3 rounded-xl border border-error/30 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-error/20 text-error flex items-center justify-center shrink-0">
+                  <Wallet size={18} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase font-bold text-error/80 tracking-wider">Remaining</p>
+                  <p className="text-sm font-black text-error">EGP {financialSummary.remaining_balance.toLocaleString()}</p>
+                </div>
+              </div>
+
+              <div className="bg-primary/10 p-3 rounded-xl border border-primary/30 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/20 text-primary flex items-center justify-center shrink-0">
+                  <Percent size={18} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase font-bold text-primary/80 tracking-wider">Your Cut</p>
+                  <p className="text-sm font-black text-primary">EGP {financialSummary.total_cut.toLocaleString()}</p>
+                </div>
+              </div>
             </div>
           </div>
+        </Card>
+      </div>
 
+      {/* Treatment Plan Summary → Links to sub-page */}
+      <Link
+        to={`/patients/${patient._id}/treatment-plan`}
+        className="block group"
+      >
+        <Card className="p-4 sm:p-5 mb-2 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors cursor-pointer">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center shrink-0">
+              <ListChecks size={20} className="text-indigo-600 dark:text-indigo-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-base-content">Treatment Plan</h2>
+                {(patient.treatment_plan?.length || 0) > 0 && (
+                  <span className="px-2 py-0.5 text-xs font-black bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full">
+                    {patient.treatment_plan.filter(i => i.isCompleted).length}/{patient.treatment_plan.length}
+                  </span>
+                )}
+>>>>>>> Stashed changes
+              </div>
+              <p className="text-xs text-base-content/50 mt-0.5">
+                {!patient.treatment_plan?.length
+                  ? 'No steps yet — tap to add'
+                  : `${patient.treatment_plan.filter(i => i.isCompleted).length} of ${patient.treatment_plan.length} steps completed`
+                }
+              </p>
+            </div>
+            <ArrowLeft size={16} className="text-base-content/30 rotate-180 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all shrink-0" />
+          </div>
+
+<<<<<<< Updated upstream
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto mt-2 sm:mt-0">
             {patient.status !== 'Completed' && (
               <button
@@ -169,6 +252,19 @@ export default function PatientProfilePage() {
           </div>
         )}
       </Card>
+=======
+          {/* Mini progress bar */}
+          {(patient.treatment_plan?.length || 0) > 0 && (
+            <div className="mt-3 w-full h-1.5 bg-base-300 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-indigo-500 to-primary rounded-full transition-all duration-500"
+                style={{ width: `${Math.round((patient.treatment_plan.filter(i => i.isCompleted).length / patient.treatment_plan.length) * 100)}%` }}
+              />
+            </div>
+          )}
+        </Card>
+      </Link>
+>>>>>>> Stashed changes
 
       {/* Sessions Timeline */}
       <h2 className="text-lg font-bold text-base-content">Session History</h2>
@@ -235,7 +331,6 @@ export default function PatientProfilePage() {
                   </div>
                 </div>
 
-                {/* Treatment */}
                 {s.treatment_details && (
                   <p className="text-sm text-base-content/70 mb-3 leading-relaxed">
                     {s.treatment_details}

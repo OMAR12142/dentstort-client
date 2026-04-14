@@ -28,5 +28,9 @@ export const useDeleteClinic = () => {
   return useMutation({
     mutationFn: deleteClinicApi,
     onSuccess: () => qc.invalidateQueries({ queryKey: ['clinics'] }),
+    onError: (error) => {
+      alert(error.response?.data?.message || error.message || 'Failed to delete clinic');
+      console.error('Delete Clinic Error:', error);
+    }
   });
 };

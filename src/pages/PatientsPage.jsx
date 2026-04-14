@@ -43,7 +43,6 @@ export default function PatientsPage() {
   const [ageFilter, setAgeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('All Patients');
   const [clinicFilter, setClinicFilter] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const { data: clinicsData } = useClinics();

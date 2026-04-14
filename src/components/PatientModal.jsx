@@ -122,8 +122,16 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         : [],
     };
 
+<<<<<<< Updated upstream
     if (form.age !== '') payload.age = parseInt(form.age, 10);
     if (form.phone.trim()) payload.phone = form.phone.trim();
+=======
+    if (form.dateOfBirth !== '') payload.dateOfBirth = form.dateOfBirth;
+    payload.phone = form.phone.trim();
+    payload.phone2 = form.phone2.trim();
+    if (form.address.trim()) payload.address = form.address.trim();
+    if (form.job.trim()) payload.job = form.job.trim();
+>>>>>>> Stashed changes
     if (form.clinic_id) payload.clinic_id = form.clinic_id;
     if (form.commission_percentage !== '')
       payload.commission_percentage = parseFloat(form.commission_percentage);
@@ -172,7 +180,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             className={`input input-bordered w-full rounded-lg transition-all ${
               errors.name ? 'border-error focus:border-error' : 'focus:border-sky-400'
             }`}
-            placeholder="John Doe"
+            placeholder="Omar Mahmoud"
           />
           {errors.name && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
