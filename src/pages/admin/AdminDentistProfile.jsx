@@ -95,8 +95,8 @@ export default function AdminDentistProfile() {
         <p className="text-sm text-base-content/60 max-w-md">
           {error?.response?.data?.message || error?.message || 'Something went wrong.'}
         </p>
-        <button onClick={() => navigate(-1)} className="mt-4 text-sm text-primary hover:underline">
-          ← Go back
+        <button onClick={() => navigate(-1)} className="mt-4 flex items-center gap-1 text-sm text-primary hover:underline">
+          <ArrowLeft size={16} /> Go back
         </button>
       </div>
     );
