@@ -34,7 +34,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
   // ── Form state ────────────────────────────────
   const [form, setForm] = useState({
     name: '',
-    age: '',
+    dateOfBirth: '',
     phone: '',
     medical_history: '',
     status: 'Active',
@@ -50,7 +50,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
       if (isEdit && patientToEdit) {
         setForm({
           name: patientToEdit.name || '',
-          age: patientToEdit.age ?? '',
+          dateOfBirth: patientToEdit.dateOfBirth ? new Date(patientToEdit.dateOfBirth).toISOString().split('T')[0] : '',
           phone: patientToEdit.phone || '',
           medical_history: (patientToEdit.medical_history || []).join(', '),
           status: patientToEdit.status || 'Active',
@@ -65,7 +65,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
       } else {
         setForm({
           name: '',
-          age: '',
+          dateOfBirth: '',
           phone: '',
           medical_history: '',
           status: 'Active',
@@ -122,8 +122,16 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         : [],
     };
 
+<<<<<<< Updated upstream
     if (form.age !== '') payload.age = parseInt(form.age, 10);
     if (form.phone.trim()) payload.phone = form.phone.trim();
+=======
+    if (form.dateOfBirth !== '') payload.dateOfBirth = form.dateOfBirth;
+    payload.phone = form.phone.trim();
+    payload.phone2 = form.phone2.trim();
+    if (form.address.trim()) payload.address = form.address.trim();
+    if (form.job.trim()) payload.job = form.job.trim();
+>>>>>>> Stashed changes
     if (form.clinic_id) payload.clinic_id = form.clinic_id;
     if (form.commission_percentage !== '')
       payload.commission_percentage = parseFloat(form.commission_percentage);
@@ -172,7 +180,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             className={`input input-bordered w-full rounded-lg transition-all ${
               errors.name ? 'border-error focus:border-error' : 'focus:border-sky-400'
             }`}
-            placeholder="John Doe"
+            placeholder="Omar Mahmoud"
           />
           {errors.name && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
@@ -190,16 +198,14 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         >
           <div>
             <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-              <Calendar size={14} className="text-amber-500" /> Age
+              <Calendar size={14} className="text-amber-500" /> Date of Birth
             </label>
             <input
-              type="number"
-              value={form.age}
-              onChange={(e) => setField('age', e.target.value)}
-              className="input input-bordered w-full rounded-lg focus:border-amber-400"
-              placeholder="28"
-              min="0"
-              max="150"
+              type="date"
+              value={form.dateOfBirth}
+              onChange={(e) => setField('dateOfBirth', e.target.value)}
+              className="input input-bordered w-full rounded-lg focus:border-amber-400 text-sm"
+              max={new Date().toISOString().split('T')[0]}
             />
           </div>
           <div>
@@ -299,19 +305,27 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
           transition={{ delay: 0.11 }}
         >
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <AlertCircle size={14} className="text-orange-500" /> Medical History
+            <AlertCircle size={14} className="text-orange-500" /> Medical History & Drugs
           </label>
           <textarea
             value={form.medical_history}
             onChange={(e) => setField('medical_history', e.target.value)}
             className="textarea textarea-bordered w-full rounded-lg resize-none focus:border-orange-400"
-            placeholder="e.g., Diabetic, Penicillin Allergy"
+            placeholder="e.g., Diabetic, Penicillin Allergy, Aspirin, Metformin"
             rows="2"
           />
+<<<<<<< Updated upstream
           <p className="text-xs text-base-content/50 mt-1">
             💡 Separate multiple conditions with commas
           </p>
         </motion.div>
+=======
+          <p className="text-xs text-base-content/50 mt-1 flex items-center">
+            <Info size={12} className="mr-1 shrink-0" /> Separate multiple conditions or drugs with commas
+          </p>
+        </motion.div>
+
+>>>>>>> Stashed changes
 
         {/* Status */}
         <motion.div
