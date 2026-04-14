@@ -7,7 +7,7 @@ import { useCreatePatient } from '../hooks/usePatients';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
-  age: z.coerce.number().int().min(0).optional(),
+  dateOfBirth: z.string().optional(),
   phone: z.string().optional(),
   medical_history: z.string().optional(),
   status: z.enum(['Active', 'On-Hold', 'Completed', 'Dropped']).optional().default('Active'),
@@ -69,7 +69,7 @@ export default function AddPatientModal({ open, onClose }) {
             className={`input input-bordered w-full rounded-lg focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all ${
               errors.name ? 'border-error focus:border-error focus:ring-error' : ''
             }`}
-            placeholder="John Doe"
+            placeholder="Omar Mahmoud"
           />
           {errors.name && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
@@ -90,15 +90,13 @@ export default function AddPatientModal({ open, onClose }) {
           <div>
             <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
               <Calendar size={14} className="text-amber-500" />
-              Age
+              Date of Birth
             </label>
             <input
-              name="age"
-              type="number"
-              className="input input-bordered w-full rounded-lg focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
-              placeholder="28"
-              min="0"
-              max="150"
+              name="dateOfBirth"
+              type="date"
+              className="input input-bordered w-full rounded-lg focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all text-sm"
+              max={new Date().toISOString().split('T')[0]}
             />
           </div>
 
@@ -124,11 +122,12 @@ export default function AddPatientModal({ open, onClose }) {
         >
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
             <AlertCircle size={14} className="text-orange-500" />
-            Medical History
+            Medical History & Drugs
           </label>
           <textarea
             name="medical_history"
             className="textarea textarea-bordered w-full rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-400 transition-all resize-none"
+<<<<<<< Updated upstream
             placeholder="e.g., Diabetic, Penicillin Allergy, Hypertension"
             rows="3"
           />
@@ -137,6 +136,51 @@ export default function AddPatientModal({ open, onClose }) {
           </p>
         </motion.div>
 
+=======
+            placeholder="e.g., Diabetic, Penicillin Allergy, Aspirin, Metformin"
+            rows="2"
+          />
+          <p className="text-xs text-base-content/50 mt-1.5 flex items-center">
+            <Info size={12} className="mr-1 shrink-0" /> Tip: Separate multiple conditions or drugs with commas
+          </p>
+        </motion.div>
+
+
+        {/* Address & Job */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.14 }}
+          className="grid grid-cols-2 gap-3"
+        >
+          {/* Address */}
+          <div>
+            <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+              <MapPin size={14} className="text-indigo-500" />
+              Address
+            </label>
+            <input
+              name="address"
+              className="input input-bordered w-full rounded-lg focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all"
+              placeholder="e.g., Cairo, Egypt"
+            />
+          </div>
+
+          {/* Job */}
+          <div>
+            <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+              <Briefcase size={14} className="text-cyan-500" />
+              Job
+            </label>
+            <input
+              name="job"
+              className="input input-bordered w-full rounded-lg focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
+              placeholder="e.g., Engineer"
+            />
+          </div>
+        </motion.div>
+
+>>>>>>> Stashed changes
         {/* Status */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
