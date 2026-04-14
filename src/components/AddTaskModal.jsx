@@ -81,7 +81,7 @@ export default function AddTaskModal({ open, onClose }) {
           </label>
           <textarea
             className={`textarea textarea-bordered w-full rounded-lg focus:border-violet-400 focus:ring-1 focus:ring-violet-400 transition-all resize-none ${errors.text ? 'border-error focus:border-error focus:ring-error' : ''}`}
-            placeholder="e.g., Send patient report to lab, Follow up with John..."
+            placeholder="e.g., Send patient report to lab, Follow up with Ahmed..."
             rows="3"
             value={formData.text}
             onChange={(e) => handleChange('text', e.target.value)}

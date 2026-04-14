@@ -10,6 +10,7 @@ import DashboardPage from './pages/DashboardPage';
 import ClinicsPage from './pages/ClinicsPage';
 import PatientsPage from './pages/PatientsPage';
 import PatientProfilePage from './pages/PatientProfilePage';
+import TreatmentPlanPage from './pages/TreatmentPlanPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import CareerAnalyticsPage from './pages/CareerAnalyticsPage';
 import TasksPage from './pages/TasksPage';
@@ -122,6 +123,7 @@ export default function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/patients" element={<PatientsPage />} />
             <Route path="/patients/:id" element={<PatientProfilePage />} />
+            <Route path="/patients/:id/treatment-plan" element={<TreatmentPlanPage />} />
             <Route path="/clinics" element={<ClinicsPage />} />
             <Route path="/tasks" element={<TasksPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />

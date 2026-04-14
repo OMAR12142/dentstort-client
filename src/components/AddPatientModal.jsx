@@ -7,13 +7,12 @@ import { useCreatePatient } from '../hooks/usePatients';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
-  age: z.coerce.number().int().min(0).optional(),
+  dateOfBirth: z.string().optional(),
   phone: z.string().optional(),
   phone2: z.string().optional(),
   address: z.string().optional(),
   job: z.string().optional(),
   medical_history: z.string().optional(),
-  drugs: z.string().optional(),
   status: z.enum(['Active', 'On-Hold', 'Completed', 'Dropped']).optional().default('Active'),
 });
 
@@ -44,12 +43,8 @@ export default function AddPatientModal({ open, onClose }) {
       ? raw.medical_history.split(',').map((s) => s.trim()).filter(Boolean)
       : [];
 
-    const drugs = raw.drugs
-      ? raw.drugs.split(',').map((s) => s.trim()).filter(Boolean)
-      : [];
-
     mutate(
-      { ...result.data, medical_history, drugs },
+      { ...result.data, medical_history },
       {
         onSuccess: () => {
           setErrors({});
@@ -77,7 +72,7 @@ export default function AddPatientModal({ open, onClose }) {
             className={`input input-bordered w-full rounded-lg focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all ${
               errors.name ? 'border-error focus:border-error focus:ring-error' : ''
             }`}
-            placeholder="John Doe"
+            placeholder="Omar Mahmoud"
           />
           {errors.name && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
@@ -98,15 +93,13 @@ export default function AddPatientModal({ open, onClose }) {
           <div>
             <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
               <Calendar size={14} className="text-amber-500" />
-              Age
+              Date of Birth
             </label>
             <input
-              name="age"
-              type="number"
-              className="input input-bordered w-full rounded-lg focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
-              placeholder="28"
-              min="0"
-              max="150"
+              name="dateOfBirth"
+              type="date"
+              className="input input-bordered w-full rounded-lg focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all text-sm"
+              max={new Date().toISOString().split('T')[0]}
             />
           </div>
 
@@ -149,39 +142,19 @@ export default function AddPatientModal({ open, onClose }) {
         >
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
             <AlertCircle size={14} className="text-orange-500" />
-            Medical History
+            Medical History & Drugs
           </label>
           <textarea
             name="medical_history"
             className="textarea textarea-bordered w-full rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-400 transition-all resize-none"
-            placeholder="e.g., Diabetic, Penicillin Allergy, Hypertension"
+            placeholder="e.g., Diabetic, Penicillin Allergy, Aspirin, Metformin"
             rows="2"
           />
           <p className="text-xs text-base-content/50 mt-1.5 flex items-center">
-            <Info size={12} className="mr-1 shrink-0" /> Tip: Separate multiple conditions with commas
+            <Info size={12} className="mr-1 shrink-0" /> Tip: Separate multiple conditions or drugs with commas
           </p>
         </motion.div>
 
-        {/* Drugs / Medications */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12 }}
-        >
-          <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <Pill size={14} className="text-pink-500" />
-            Current Medications
-          </label>
-          <textarea
-            name="drugs"
-            className="textarea textarea-bordered w-full rounded-lg focus:border-pink-400 focus:ring-1 focus:ring-pink-400 transition-all resize-none"
-            placeholder="e.g., Aspirin, Metformin, Lisinopril"
-            rows="2"
-          />
-          <p className="text-xs text-base-content/50 mt-1.5 flex items-center">
-            <Pill size={12} className="mr-1 shrink-0" /> Tip: Separate multiple medications with commas
-          </p>
-        </motion.div>
 
         {/* Address & Job */}
         <motion.div
