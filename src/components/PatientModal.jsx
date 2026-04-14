@@ -316,6 +316,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             placeholder="e.g., Diabetic, Penicillin Allergy"
             rows="2"
           />
+<<<<<<< Updated upstream
           <p className="text-xs text-base-content/50 mt-1">
             💡 Separate multiple conditions with commas
           </p>
