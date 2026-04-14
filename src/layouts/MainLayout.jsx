@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -72,8 +72,10 @@ export default function MainLayout() {
       {/* ─── Desktop Sidebar ─── */}
       <aside className="hidden lg:flex flex-col w-64 bg-base-200 border-r border-neutral-light px-4 py-6 fixed h-full z-40">
         {/* Branding */}
-        <div className="flex items-center px-2 mb-4 md:mb-6 lg:mb-8">
-          <AppLogo size="md" />
+        <div className="flex items-center px-2 mb-4 md:mb-6 lg:mb-8 hover:opacity-80 transition-opacity">
+          <Link to="/dashboard">
+            <AppLogo size="md" />
+          </Link>
         </div>
 
         {/* Nav links */}
@@ -121,8 +123,10 @@ export default function MainLayout() {
       <main className="flex-1 lg:ml-64 pb-20 lg:pb-6 relative">
         {/* Mobile Header with Theme Toggle */}
         <header className="lg:hidden flex items-center justify-between p-4 border-b border-neutral-light bg-base-200">
-          <div className="flex items-center gap-2">
-            <AppLogo size="sm" />
+          <div className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <Link to="/dashboard">
+              <AppLogo size="sm" />
+            </Link>
           </div>
           <div className="flex items-center gap-1">
             <button

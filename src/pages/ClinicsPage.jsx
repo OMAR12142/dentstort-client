@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Building2, MapPin, Percent, Plus, Clock, Zap, Trash2 } from 'lucide-react';
+import { Building2, MapPin, Percent, Plus, Clock, Zap, Trash2, Pencil } from 'lucide-react';
 import { useClinics, useDeleteClinic } from '../hooks/useClinics';
 import { CardSkeleton } from '../components/Skeleton';
 import Card from '../components/Card';
@@ -21,6 +21,7 @@ export default function ClinicsPage() {
   const { data, isLoading } = useClinics();
   const { mutate: deleteClinic, isPending: isDeleting } = useDeleteClinic();
   const [showAdd, setShowAdd] = useState(false);
+  const [clinicToEdit, setClinicToEdit] = useState(null);
 
   const clinics = Array.isArray(data) ? data : data?.clinics || [];
 
@@ -43,7 +44,10 @@ export default function ClinicsPage() {
           </p>
         </div>
         <button
-          onClick={() => setShowAdd(true)}
+          onClick={() => {
+            setClinicToEdit(null);
+            setShowAdd(true);
+          }}
           className="btn btn-sm rounded-lg text-white border-0 gap-1 bg-primary w-full sm:w-auto"
         >
           <Plus size={16} />
@@ -81,9 +85,9 @@ export default function ClinicsPage() {
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-lg font-bold text-base-content">{clinic.name}</h3>
+                        <h3 className="text-lg font-bold text-base-content break-words">{clinic.name}</h3>
                         {clinic.address && (
-                          <p className="text-sm text-base-content/70 flex items-center gap-1.5 mt-1">
+                          <p className="text-sm text-base-content/70 flex items-center gap-1.5 mt-1 break-words">
                             <MapPin size={14} className="shrink-0" />
                             {clinic.address}
                           </p>
@@ -133,6 +137,16 @@ export default function ClinicsPage() {
                     </span>
                     <button
                       onClick={() => {
+                        setClinicToEdit(clinic);
+                        setShowAdd(true);
+                      }}
+                      className="p-1.5 text-base-content/40 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors border-0"
+                      title="Edit Clinic"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                    <button
+                      onClick={() => {
                         if (window.confirm(`Are you sure you want to delete ${clinic.name}?`)) {
                           deleteClinic(clinic._id);
                         }
@@ -146,10 +160,10 @@ export default function ClinicsPage() {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-bold text-base-content mb-1">{clinic.name}</h3>
+                <h3 className="text-lg font-bold text-base-content mb-1 break-words">{clinic.name}</h3>
 
                 {clinic.address && (
-                  <p className="text-sm text-base-content/70 flex items-center gap-1.5 mb-2 mt-2">
+                  <p className="text-sm text-base-content/70 flex items-center gap-1.5 mb-2 mt-2 break-words">
                     <MapPin size={14} className="shrink-0" />
                     {clinic.address}
                   </p>
@@ -182,7 +196,7 @@ export default function ClinicsPage() {
         </div>
       )}
 
-      <AddClinicModal open={showAdd} onClose={() => setShowAdd(false)} />
+      <AddClinicModal open={showAdd} onClose={() => { setShowAdd(false); setClinicToEdit(null); }} clinic={clinicToEdit} />
     </div>
   );
 }

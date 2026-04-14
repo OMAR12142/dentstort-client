@@ -16,9 +16,16 @@ import {
   Building2,
   Info,
   X,
+  CalendarDays,
+  Phone,
+  Calendar,
+  Trash2,
+  Clock,
+  ArrowUpDown,
 } from 'lucide-react';
-import { usePatients } from '../hooks/usePatients';
+import { usePatients, useDeletePatient } from '../hooks/usePatients';
 import { useClinics } from '../hooks/useClinics';
+import { calculateAge } from '../utils/dateUtils';
 import PatientsListSkeleton from '../components/skeletons/PatientsListSkeleton';
 import ErrorState from '../components/common/ErrorState';
 import Badge from '../components/Badge';
@@ -44,27 +51,31 @@ export default function PatientsPage() {
   const [editingPatient, setEditingPatient] = useState(null);
   const [viewingPatient, setViewingPatient] = useState(null);
   const [viewMode, setViewMode] = useState('card');
-  const [sortBy, setSortBy] = useState('name');
-  const [ageFilter, setAgeFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
   const [statusFilter, setStatusFilter] = useState('All Patients');
   const [clinicFilter, setClinicFilter] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [showDateFilter, setShowDateFilter] = useState(false);
 
   const { data: clinicsData } = useClinics();
   const clinics = Array.isArray(clinicsData) ? clinicsData : clinicsData?.clinics || [];
 
   const getWhatsAppLink = (phone) => {
     if (!phone) return null;
-    const cleanPhone = phone.replace(/\D/g, '');
-    return `https://wa.me/${cleanPhone}`;
+    let cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.startsWith('01')) {
+      cleanPhone = '2' + cleanPhone;
+    }
+    return `https://api.whatsapp.com/send/?phone=${cleanPhone}`;
   };
 
   // Reset to page 1 when filters change
-  const hasFilters = Boolean(search || statusFilter !== 'All Patients' || ageFilter !== 'all' || clinicFilter);
+  const hasFilters = Boolean(search || statusFilter !== 'All Patients' || clinicFilter || dateFrom || dateTo);
   useEffect(() => {
     setPage(1);
-  }, [search, statusFilter, ageFilter, clinicFilter]);
+  }, [search, statusFilter, clinicFilter, dateFrom, dateTo]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -80,67 +91,81 @@ export default function PatientsPage() {
 
   const limit = viewMode === 'card' ? (isMobile ? 8 : 12) : 10;
   const { data, isLoading, isError, error, refetch } = usePatients({ page, limit, clinic_id: clinicFilter });
+  const { mutate: deletePatient, isPending: isDeleting } = useDeletePatient();
   const patients = data?.patients || [];
   const totalPages = data?.totalPages || 1;
   const totalPatients = data?.totalPatients || 0;
 
+  const handleDeletePatient = (e, patient) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (window.confirm(`Are you sure you want to delete patient "${patient.name}"? This action cannot be undone.`)) {
+      deletePatient(patient._id);
+    }
+  };
+
+  // Text search — name, phone, address, job, insurance, medical fields only
   let filtered = search
     ? patients.filter((p) => {
       const term = search.toLowerCase();
-
-      // Text fields
       if (p.name?.toLowerCase().includes(term)) return true;
       if (p.phone?.toLowerCase().includes(term)) return true;
+      if (p.phone2?.toLowerCase().includes(term)) return true;
       if (p.address?.toLowerCase().includes(term)) return true;
       if (p.job?.toLowerCase().includes(term)) return true;
       if (p.insuranceCompany?.toLowerCase().includes(term)) return true;
-
-      // Array fields
       if (p.medical_history?.some((h) => h.toLowerCase().includes(term))) return true;
-      if (p.drugs?.some((d) => d.toLowerCase().includes(term))) return true;
-
-      // Date matches (e.g. "April", "2024", "15/04", etc.)
-      if (p.createdAt) {
-        const date = new Date(p.createdAt);
-        if (date.toLocaleDateString('en-GB').includes(term)) return true; // DD/MM/YYYY
-        if (date.toLocaleDateString('en-US').toLowerCase().includes(term)) return true; // MM/DD/YYYY
-        if (date.toLocaleString('default', { month: 'long' }).toLowerCase().includes(term)) return true;
-        if (date.toLocaleString('default', { month: 'short' }).toLowerCase().includes(term)) return true;
-        if (date.getFullYear().toString().includes(term)) return true;
-      }
-
       return false;
     })
     : patients;
+
+  // Date filter — specific date or date range
+  if (dateFrom || dateTo) {
+    filtered = filtered.filter((p) => {
+      if (!p.createdAt) return false;
+      const created = new Date(p.createdAt);
+      // Normalize to start of day for comparison
+      created.setHours(0, 0, 0, 0);
+
+      if (dateFrom && dateTo) {
+        const from = new Date(dateFrom); from.setHours(0, 0, 0, 0);
+        const to = new Date(dateTo); to.setHours(23, 59, 59, 999);
+        return created >= from && created <= to;
+      }
+      if (dateFrom) {
+        const from = new Date(dateFrom); from.setHours(0, 0, 0, 0);
+        // If only "from" is set, match that exact day
+        const endOfDay = new Date(dateFrom); endOfDay.setHours(23, 59, 59, 999);
+        return created >= from && created <= endOfDay;
+      }
+      if (dateTo) {
+        const to = new Date(dateTo); to.setHours(23, 59, 59, 999);
+        return created <= to;
+      }
+      return true;
+    });
+  }
 
   filtered = filtered.filter((p) => {
     if (statusFilter === 'All Patients') return true;
     return (p.status || 'Active') === statusFilter;
   });
 
-  filtered = filtered.filter((p) => {
-    if (ageFilter === 'all') return true;
-    if (ageFilter === 'child') return p.age && p.age < 13;
-    if (ageFilter === 'teen') return p.age && p.age >= 13 && p.age < 18;
-    if (ageFilter === 'adult') return p.age && p.age >= 18 && p.age < 60;
-    if (ageFilter === 'senior') return p.age && p.age >= 60;
-    return true;
-  });
 
   filtered = filtered.sort((a, b) => {
+    if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
     if (sortBy === 'name') return a.name.localeCompare(b.name);
-    if (sortBy === 'age') return (a.age || 0) - (b.age || 0);
+    if (sortBy === 'age') {
+      const ageA = a.dateOfBirth ? calculateAge(a.dateOfBirth) : (a.age || 0);
+      const ageB = b.dateOfBirth ? calculateAge(b.dateOfBirth) : (b.age || 0);
+      return ageA - ageB;
+    }
     return 0;
   });
 
   const stats = useMemo(() => ({
     total: totalPatients,
-    withHistory: patients.filter((p) => p.medical_history?.length > 0).length,
-    withPhone: patients.filter((p) => p.phone).length,
-    avgAge: patients.length > 0
-      ? Math.round(patients.reduce((sum, p) => sum + (p.age || 0), 0) / patients.length)
-      : 0,
-  }), [patients, totalPatients]);
+  }), [totalPatients]);
 
   if (isLoading) return <PatientsListSkeleton />;
   if (isError) return <ErrorState error={error} refetch={refetch} />;
@@ -150,45 +175,25 @@ export default function PatientsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-base-content">Patients</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-base-content">Patients</h1>
+            <span className="px-2.5 py-0.5 bg-primary/10 text-primary rounded-lg text-sm font-semibold">
+              Total Patients: {stats.total}
+            </span>
+          </div>
           <p className="text-base-content/70 text-sm mt-0.5">
             Manage and track all your patient records
           </p>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 w-full">
-        <div className="bg-base-200 rounded-xl p-4 sm:p-5 border border-neutral-light overflow-hidden">
-          <p className="text-[10px] sm:text-xs text-secondary font-semibold uppercase tracking-wider leading-tight whitespace-normal">Total Patients</p>
-          <p className="text-2xl sm:text-3xl font-bold text-primary mt-2">{stats.total}</p>
-        </div>
-
-        <div className="bg-base-200 rounded-xl p-4 sm:p-5 border border-neutral-light overflow-hidden">
-          <p className="text-[10px] sm:text-xs text-secondary font-semibold uppercase tracking-wider leading-tight whitespace-normal">With History</p>
-          <p className="text-2xl sm:text-3xl font-bold text-base-content mt-2">{stats.withHistory}</p>
-        </div>
-
-        <div className="bg-base-200 rounded-xl p-4 sm:p-5 border border-neutral-light overflow-hidden">
-          <p className="text-[10px] sm:text-xs text-secondary font-semibold uppercase tracking-wider leading-tight whitespace-normal">Avg Age</p>
-          <div className="flex items-baseline gap-1 mt-2">
-            <p className="text-2xl sm:text-3xl font-bold text-base-content">{stats.avgAge}</p>
-            <span className="text-xs sm:text-sm text-secondary font-medium">Yrs</span>
-          </div>
-        </div>
-
-        <div className="bg-base-200 rounded-xl p-4 sm:p-5 border border-neutral-light overflow-hidden">
-          <p className="text-[10px] sm:text-xs text-secondary font-semibold uppercase tracking-wider leading-tight whitespace-normal">With Phone</p>
-          <p className="text-2xl sm:text-3xl font-bold text-base-content mt-2">{stats.withPhone}</p>
-        </div>
-      </div>
-
       {/* Toolbar */}
       <div className="flex flex-col gap-3 w-full">
+        {/* Text Search */}
         <label className="input input-bordered rounded-lg flex items-center gap-2 bg-base-200 w-full border-neutral-light">
           <Search size={16} className="text-base-content/50 shrink-0" />
           <input
-            placeholder="Search by anything (Name, Phone, Date: Month name(April, Apr, Jan) or Year (2024, 2026) or 10/04/2026 this format, Job, Missing fields)..."
+            placeholder="Search by name, phone, address, job, insurance…"
             className="grow w-full min-w-0"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -200,24 +205,53 @@ export default function PatientsPage() {
           )}
         </label>
 
-        <div className="flex flex-col sm:flex-row justify-between items-stretch gap-3 w-full">
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+        {/* Date Filter — always visible */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 p-4 bg-base-200 rounded-xl border border-neutral-light">
+          <div className="flex items-center gap-1.5 text-base-content/60 shrink-0 self-center sm:self-end sm:pb-2">
+            <CalendarDays size={16} />
+            <span className="text-xs font-semibold">Date</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <label className="text-xs font-semibold text-base-content/60 mb-1 block">From</label>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="input input-sm input-bordered w-full rounded-lg bg-base-100"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <label className="text-xs font-semibold text-base-content/60 mb-1 block">To</label>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              min={dateFrom || undefined}
+              className="input input-sm input-bordered w-full rounded-lg bg-base-100"
+            />
+          </div>
+          {(dateFrom || dateTo) && (
             <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`btn btn-sm rounded-lg gap-1 transition-all w-full sm:w-auto ${showFilters ? 'bg-primary/10 text-primary border-primary/20' : 'btn-ghost text-secondary'
-                }`}
+              onClick={() => { setDateFrom(''); setDateTo(''); }}
+              className="btn btn-sm btn-ghost text-error rounded-lg gap-1 shrink-0"
             >
-              <Filter size={16} />
-              <span>Filter</span>
+              <X size={14} />
+              Clear
             </button>
+          )}
+        </div>
 
+        <div className="flex flex-col sm:flex-row justify-between items-stretch gap-3 w-full">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             {/* Clinic filter dropdown */}
-            <div className="relative flex items-center w-full sm:w-auto">
-              <Building2 size={14} className="absolute left-3 text-base-content/50 pointer-events-none" />
+            <div className="relative flex items-center w-full sm:w-auto min-w-[160px]">
+              <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors ${clinicFilter ? 'text-primary' : 'text-base-content/40'}`}>
+                <Building2 size={16} />
+              </div>
               <select
                 value={clinicFilter}
                 onChange={(e) => setClinicFilter(e.target.value)}
-                className={`select select-sm select-bordered rounded-lg bg-base-200 border-neutral-light pl-8 w-full sm:w-auto focus:border-primary transition-all ${clinicFilter ? 'border-primary text-primary' : ''
+                className={`select select-sm h-10 select-bordered rounded-xl bg-base-100/50 hover:bg-base-200/50 border-neutral-light/50 pl-10 pr-8 w-full font-semibold focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all shadow-sm appearance-none cursor-pointer ${clinicFilter ? 'border-primary text-primary bg-primary/5' : 'text-base-content/70'
                   }`}
               >
                 <option value="">All Clinics</option>
@@ -227,14 +261,21 @@ export default function PatientsPage() {
               </select>
             </div>
 
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="select select-sm select-bordered rounded-lg bg-base-200 border-neutral-light w-full sm:w-auto focus:border-primary"
-            >
-              <option value="name">Sort: Name (A-Z)</option>
-              <option value="age">Sort: Age (Low to High)</option>
-            </select>
+            {/* Sort filter */}
+            <div className="relative flex items-center w-full sm:w-auto min-w-[190px]">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/40">
+                <ArrowUpDown size={16} />
+              </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="select select-sm h-10 select-bordered rounded-xl bg-base-100/50 hover:bg-base-200/50 border-neutral-light/50 pl-10 pr-8 w-full font-semibold focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all shadow-sm appearance-none cursor-pointer text-base-content/70"
+              >
+                <option value="newest">Sort: Newest First</option>
+                <option value="name">Sort: Name (A-Z)</option>
+                <option value="age">Sort: Age (Low to High)</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
@@ -267,37 +308,6 @@ export default function PatientsPage() {
           </div>
         </div>
       </div>
-
-      <AnimatePresence>
-        {showFilters && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden"
-          >
-            <Card>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                {['all', 'child', 'teen', 'adult', 'senior'].map((filter) => (
-                  <label key={filter} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="ageFilter"
-                      value={filter}
-                      checked={ageFilter === filter}
-                      onChange={(e) => setAgeFilter(e.target.value)}
-                      className="radio radio-sm radio-primary shrink-0"
-                    />
-                    <span className="text-sm capitalize">
-                      {filter === 'all' ? 'All Ages' : filter}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Smart Filtering Tabs - بدون تمرير أفقي، الأزرار تلف للداخل */}
       <div className="flex flex-wrap items-center gap-2 pb-2 mb-2 border-b border-neutral-light">
@@ -339,7 +349,8 @@ export default function PatientsPage() {
                     <th className="font-semibold px-4 py-3">Name</th>
                     <th className="font-semibold px-4 py-3">Age</th>
                     <th className="font-semibold px-4 py-3">Phone</th>
-                    <th className="font-semibold px-4 py-3">Medical History</th>
+                    <th className="font-semibold px-4 py-3">Medical History & Drugs</th>
+                    <th className="font-semibold px-4 py-3">Added On</th>
                     <th className="font-semibold text-center px-4 py-3 w-20">Action</th>
                   </tr>
                 </thead>
@@ -362,7 +373,9 @@ export default function PatientsPage() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-base-content/70">{p.age ? `${p.age} yrs` : '—'}</td>
+                      <td className="px-4 py-3 text-base-content/70">
+                        {p.dateOfBirth || p.age != null ? `${p.dateOfBirth ? calculateAge(p.dateOfBirth) : p.age} yrs` : '—'}
+                      </td>
                       <td className="px-4 py-3 text-base-content/70 text-sm">
                         {p.phone || p.phone2 ? (
                           <div className="flex flex-col gap-1 items-start">
@@ -385,6 +398,9 @@ export default function PatientsPage() {
                           )}
                         </div>
                       </td>
+                      <td className="px-4 py-3 text-base-content/60 text-xs whitespace-nowrap">
+                        {p.createdAt ? new Date(p.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '—'}
+                      </td>
                       <td className="px-4 py-3 text-center">
                         <div className="flex items-center justify-center gap-1.5">
                           {p.phone && (
@@ -404,6 +420,14 @@ export default function PatientsPage() {
                             title="Edit Patient"
                           >
                             <Pencil size={16} />
+                          </button>
+                          <button
+                            onClick={(e) => handleDeletePatient(e, p)}
+                            disabled={isDeleting}
+                            className="p-1.5 text-base-content/40 hover:text-error hover:bg-error/10 rounded-lg transition-all duration-200"
+                            title="Delete Patient"
+                          >
+                            <Trash2 size={16} />
                           </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); setViewingPatient(p); }}
@@ -432,82 +456,129 @@ export default function PatientsPage() {
               transition={{ delay: i * 0.05 }}
               className="w-full"
             >
-              <Card className="hover:border-primary/30 transition-all group h-full flex flex-col">
-                <div className="flex items-start justify-between mb-4 gap-3">
-                  <div className="flex-1 min-w-0">
-                    <Link to={`/patients/${p._id}`} className="block group-hover:text-primary transition-colors">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <h3 className="font-bold text-lg text-base-content break-words">{p.name}</h3>
-                        <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full whitespace-nowrap shrink-0 ${getStatusColor(p.status)}`}>
-                          {p.status || 'Active'}
-                        </span>
+              <Card className="hover:border-primary/50 transition-all duration-300 group h-full flex flex-col p-0 overflow-hidden border-neutral-light/30">
+                <div className="flex flex-1">
+                  {/* Status Vertical Bar */}
+                  <div className={`w-1.5 ${getStatusColor(p.status).split(' ')[0].replace('/10', '')} shrink-0 opacity-80`} />
+
+                  <div className="flex-1 p-5 flex flex-col">
+                    {/* Header Section */}
+                    <div className="flex items-start justify-between mb-4 gap-4">
+                      <div className="flex-1 min-w-0">
+                        <Link to={`/patients/${p._id}`} className="block group-hover:text-primary transition-colors min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1.5 min-w-0">
+                            <h3 className="font-bold text-lg text-base-content tracking-tight leading-tight break-words min-w-0 flex-1">{p.name}</h3>
+                            <span className={`px-2 py-0.5 text-[9px] uppercase font-black rounded-md whitespace-nowrap shrink-0 tracking-wider ring-1 ring-inset ring-current/20 ${getStatusColor(p.status)}`}>
+                              {p.status || 'Active'}
+                            </span>
+                          </div>
+                        </Link>
+                        <div className="flex flex-col gap-1.5 mt-2">
+                          <div className="flex items-center gap-1.5 text-xs text-base-content/50 group-hover:text-base-content/70 transition-colors">
+                            <Phone size={12} className="shrink-0" />
+                            <span className="font-semibold">{p.phone || 'No phone'}</span>
+                            {p.phone2 && <span className="opacity-50 text-[10px]">• {p.phone2}</span>}
+                          </div>
+                          {p.createdAt && (
+                            <div className="flex items-center gap-1.5 text-xs text-base-content/40 transition-colors">
+                              <Clock size={12} className="shrink-0" />
+                              <span>Joined {new Date(p.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </Link>
-                    <div className="text-xs text-base-content/50 break-words flex flex-col gap-0.5">
-                      <span>{p.phone || 'No primary phone'}</span>
-                      {p.phone2 && <span className="text-secondary/80 text-[10px]">{p.phone2}</span>}
                     </div>
-                  </div>
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <span className="text-sm font-bold text-primary">{p.name?.[0]?.toUpperCase()}</span>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-3 mb-4 pt-4 border-t border-neutral-light">
-                  {p.age && (
-                    <div>
-                      <p className="text-xs text-base-content/60">Age</p>
-                      <p className="font-semibold text-base-content">{p.age} yrs</p>
-                    </div>
-                  )}
-                </div>
+                    {/* Meta Grid */}
+                    <div className="grid grid-cols-2 gap-3 mb-5 p-3 rounded-xl bg-base-100/40 border border-neutral-light/20">
+                      <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-success/10 shadow-[0_1px_3px_rgba(0,0,0,0.02)] border border-success/20 transition-all hover:scale-[1.02]">
+                        <Calendar className="text-success mb-1" size={16} />
+                        <p className="text-[9px] text-success/70 uppercase tracking-widest font-black">Age</p>
+                        <p className="font-black text-[15px] sm:text-sm text-success tracking-tight mt-0.5">
+                          {p.dateOfBirth || p.age != null ? `${p.dateOfBirth ? calculateAge(p.dateOfBirth) : p.age}` : '--'} <span className="text-[9px] font-bold opacity-60 uppercase tracking-wide">Yrs</span>
+                        </p>
+                      </div>
 
-                {p.medical_history?.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-xs text-base-content/60 mb-2 font-medium">Medical History</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {p.medical_history.slice(0, 3).map((h) => <Badge key={h} label={h} size="sm" />)}
-                      {p.medical_history.length > 3 && (
-                        <span className="text-xs bg-base-100 px-2 py-1 rounded-full text-base-content/60">
-                          +{p.medical_history.length - 3}
-                        </span>
+                      {p.clinic_id?.name ? (
+                        <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-primary/5 dark:bg-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.02)] border border-primary/10 dark:border-primary/20 transition-all hover:scale-[1.02]">
+                          <Building2 className="text-primary mb-1" size={16} />
+                          <p className="text-[9px] text-primary/70 uppercase tracking-widest font-black">Clinic</p>
+                          <p className="font-black text-[15px] sm:text-sm text-primary text-center truncate w-full px-1 tracking-tight mt-0.5">
+                            {p.clinic_id.name}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-base-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.02)] border border-neutral-light/20 transition-all hover:scale-[1.02]">
+                          <Building2 className="text-base-content/30 mb-1" size={16} />
+                          <p className="text-[9px] text-base-content/40 uppercase tracking-widest font-black">Clinic</p>
+                          <p className="font-black text-[15px] sm:text-sm text-base-content/40 tracking-tight mt-0.5">--</p>
+                        </div>
                       )}
                     </div>
-                  </div>
-                )}
 
-                <div className="flex gap-2 w-full mt-auto pt-2">
-                  {p.phone && (
-                    <a
-                      href={getWhatsAppLink(p.phone)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-outline rounded-lg justify-center gap-2 text-base-content/60 hover:text-[#25D366] border-neutral-light hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all"
-                    >
-                      <WhatsAppIcon size={16} />
-                    </a>
-                  )}
-                  <button
-                    onClick={() => setEditingPatient(p)}
-                    className="btn btn-sm btn-outline rounded-lg justify-center gap-2 border-neutral-light hover:border-primary hover:bg-primary/10 hover:text-primary transition-all"
-                    title="Edit"
-                  >
-                    <Pencil size={15} /> <span className="hidden min-[380px]:inline">Edit</span>
-                  </button>
-                  <button
-                    onClick={() => setViewingPatient(p)}
-                    className="flex-1 btn btn-sm btn-ghost rounded-lg justify-center gap-2 text-sky-500 hover:bg-sky-500/10 hover:text-sky-600 transition-all"
-                    title="Quick Info"
-                  >
-                    <Info size={16} /> <span className="hidden min-[380px]:inline ml-1">Info</span>
-                  </button>
-                  <Link
-                    to={`/patients/${p._id}`}
-                    className="flex-1 btn btn-sm border-neutral-light bg-base-100 hover:bg-base-200 rounded-lg justify-center gap-2 text-base-content/70 transition-all"
-                    title="Open Profile"
-                  >
-                    <FileText size={16} /> <span className="hidden min-[380px]:inline ml-1">Profile</span>
-                  </Link>
+                    {/* Medical History Section */}
+                    {/* {p.medical_history?.length > 0 && (
+                      <div className="mb-6">
+                        <p className="text-[10px] uppercase font-bold text-base-content/40 mb-2 tracking-widest">Medical History</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {p.medical_history.slice(0, 3).map((h) => (
+                            <span key={h} className="px-2 py-0.5 text-[10px] font-bold rounded-lg bg-base-200 text-base-content/70 border border-neutral-light/50">
+                               {h}
+                            </span>
+                          ))}
+                          {p.medical_history.length > 3 && (
+                            <span className="text-[10px] font-bold text-primary/60 bg-primary/5 px-2 py-0.5 rounded-lg border border-primary/10">
+                              +{p.medical_history.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )} */}
+
+                    {/* Actions Row */}
+                    <div className="flex gap-2 w-full mt-auto">
+                      {p.phone && (
+                        <a
+                          href={getWhatsAppLink(p.phone)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-10 flex items-center justify-center rounded-xl bg-base-200/50 hover:bg-[#25D366]/10 text-base-content/40 hover:text-[#25D366] border border-neutral-light/50 hover:border-[#25D366]/30 transition-all active:scale-90"
+                          title="WhatsApp"
+                        >
+                          <WhatsAppIcon size={18} />
+                        </a>
+                      )}
+                      <button
+                        onClick={() => setViewingPatient(p)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-base-200/50 hover:bg-sky-500/10 text-base-content/40 hover:text-sky-500 border border-neutral-light/50 hover:border-sky-500/30 transition-all active:scale-90"
+                        title="Quick View"
+                      >
+                        <Info size={18} />
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setEditingPatient(p); }}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-base-200/50 hover:bg-primary/10 text-base-content/40 hover:text-primary border border-neutral-light/50 hover:border-primary/30 transition-all active:scale-90"
+                        title="Edit Details"
+                      >
+                        <Pencil size={18} />
+                      </button>
+                      <button
+                        onClick={(e) => handleDeletePatient(e, p)}
+                        disabled={isDeleting}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-base-200/50 hover:bg-error/10 text-base-content/40 hover:text-error border border-neutral-light/50 hover:border-error/30 transition-all active:scale-90"
+                        title="Delete Patient"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                      <Link
+                        to={`/patients/${p._id}`}
+                        className="flex-1 h-10 flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-focus text-white font-bold text-xs transition-all active:scale-95 px-3"
+                      >
+                        <FileText size={16} />
+                        <span>Profile</span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </Card>
             </motion.div>

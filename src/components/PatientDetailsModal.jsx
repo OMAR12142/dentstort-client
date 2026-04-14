@@ -73,7 +73,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
               <MapPin size={14} className="text-indigo-500" />
               <span className="text-xs font-semibold">Address</span>
             </div>
-            <p className="font-medium text-base-content truncate" title={patient.address}>{patient.address || 'Not provided'}</p>
+            <p className="font-medium text-base-content break-words" title={patient.address}>{patient.address || 'Not provided'}</p>
           </div>
 
           <div className="bg-base-200/50 p-3 rounded-xl border border-neutral-light">
@@ -81,7 +81,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
               <Briefcase size={14} className="text-cyan-500" />
               <span className="text-xs font-semibold">Job / Title</span>
             </div>
-            <p className="font-medium text-base-content truncate" title={patient.job}>{patient.job || 'Not provided'}</p>
+            <p className="font-medium text-base-content break-words" title={patient.job}>{patient.job || 'Not provided'}</p>
           </div>
         </div>
 
@@ -91,7 +91,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
             <Stethoscope size={16} className="text-rose-500 shrink-0" />
             <div className="min-w-0">
               <p className="text-[10px] uppercase font-bold text-rose-500/80">Insurance Provider</p>
-              <p className="font-medium text-base-content">{patient.insuranceCompany || 'Private'}</p>
+              <p className="font-medium text-base-content break-words">{patient.insuranceCompany || 'Private'}</p>
             </div>
           </div>
 
@@ -99,7 +99,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
             <Building2 size={16} className="text-violet-500 shrink-0" />
             <div className="min-w-0 flex-1">
               <p className="text-[10px] uppercase font-bold text-violet-500/80">Primary Clinic</p>
-              <p className="font-medium text-base-content truncate">{patient.clinic_id?.name || 'Unknown Clinic'}</p>
+              <p className="font-medium text-base-content break-words">{patient.clinic_id?.name || 'Unknown Clinic'}</p>
             </div>
             <div className="text-right flex items-center justify-end gap-1 px-2 py-1 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
               <Percent size={12} className="text-violet-600 dark:text-violet-400" />
@@ -113,7 +113,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Activity size={16} className="text-orange-500" />
-              <h3 className="font-bold text-sm text-base-content">Medical History</h3>
+              <h3 className="font-bold text-sm text-base-content">Medical History & Drugs</h3>
             </div>
             {patient.medical_history?.length > 0 ? (
               <div className="flex flex-wrap gap-2">
@@ -123,27 +123,6 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
               </div>
             ) : (
               <p className="text-sm text-base-content/50 italic px-2">No active medical history</p>
-            )}
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Pill size={16} className="text-pink-500" />
-              <h3 className="font-bold text-sm text-base-content">Current Medications</h3>
-            </div>
-            {patient.drugs?.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {patient.drugs.map((drug, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-pink-50 text-pink-700 dark:bg-pink-900/20 dark:text-pink-300 border border-pink-200 dark:border-pink-800"
-                  >
-                    {drug}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-base-content/50 italic px-2">No active medications</p>
             )}
           </div>
         </div>

@@ -49,13 +49,12 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
   // ── Form state ────────────────────────────────
   const [form, setForm] = useState({
     name: '',
-    age: '',
+    dateOfBirth: '',
     phone: '',
     phone2: '',
     address: '',
     job: '',
     medical_history: '',
-    drugs: '',
     status: 'Active',
     insuranceCompany: 'Private',
     clinic_id: '',
@@ -69,13 +68,12 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
       if (isEdit && patientToEdit) {
         setForm({
           name: patientToEdit.name || '',
-          age: patientToEdit.age ?? '',
+          dateOfBirth: patientToEdit.dateOfBirth ? new Date(patientToEdit.dateOfBirth).toISOString().split('T')[0] : '',
           phone: patientToEdit.phone || '',
           phone2: patientToEdit.phone2 || '',
           address: patientToEdit.address || '',
           job: patientToEdit.job || '',
           medical_history: (patientToEdit.medical_history || []).join(', '),
-          drugs: (patientToEdit.drugs || []).join(', '),
           status: patientToEdit.status || 'Active',
           insuranceCompany: patientToEdit.insuranceCompany || 'Private',
           clinic_id: patientToEdit.clinic_id?._id || patientToEdit.clinic_id || '',
@@ -88,13 +86,12 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
       } else {
         setForm({
           name: '',
-          age: '',
+          dateOfBirth: '',
           phone: '',
           phone2: '',
           address: '',
           job: '',
           medical_history: '',
-          drugs: '',
           status: 'Active',
           insuranceCompany: 'Private',
           clinic_id: '',
@@ -149,12 +146,9 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
       medical_history: form.medical_history
         ? form.medical_history.split(',').map((s) => s.trim()).filter(Boolean)
         : [],
-      drugs: form.drugs
-        ? form.drugs.split(',').map((s) => s.trim()).filter(Boolean)
-        : [],
     };
 
-    if (form.age !== '') payload.age = parseInt(form.age, 10);
+    if (form.dateOfBirth !== '') payload.dateOfBirth = form.dateOfBirth;
     payload.phone = form.phone.trim();
     payload.phone2 = form.phone2.trim();
     if (form.address.trim()) payload.address = form.address.trim();
@@ -221,7 +215,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             className={`input input-bordered w-full rounded-lg transition-all ${
               errors.name ? 'border-error focus:border-error' : 'focus:border-sky-400'
             }`}
-            placeholder="John Doe"
+            placeholder="Omar Mahmoud"
           />
           {errors.name && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
@@ -239,16 +233,14 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         >
           <div>
             <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-              <Calendar size={14} className="text-amber-500" /> Age
+              <Calendar size={14} className="text-amber-500" /> Date of Birth
             </label>
             <input
-              type="number"
-              value={form.age}
-              onChange={(e) => setField('age', e.target.value)}
-              className="input input-bordered w-full rounded-lg focus:border-amber-400"
-              placeholder="28"
-              min="0"
-              max="150"
+              type="date"
+              value={form.dateOfBirth}
+              onChange={(e) => setField('dateOfBirth', e.target.value)}
+              className="input input-bordered w-full rounded-lg focus:border-amber-400 text-sm"
+              max={new Date().toISOString().split('T')[0]}
             />
           </div>
           <div>
@@ -460,40 +452,20 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
           transition={{ delay: 0.13 }}
         >
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <AlertCircle size={14} className="text-orange-500" /> Medical History
+            <AlertCircle size={14} className="text-orange-500" /> Medical History & Drugs
           </label>
           <textarea
             value={form.medical_history}
             onChange={(e) => setField('medical_history', e.target.value)}
             className="textarea textarea-bordered w-full rounded-lg resize-none focus:border-orange-400"
-            placeholder="e.g., Diabetic, Penicillin Allergy"
+            placeholder="e.g., Diabetic, Penicillin Allergy, Aspirin, Metformin"
             rows="2"
           />
           <p className="text-xs text-base-content/50 mt-1 flex items-center">
-            <Info size={12} className="mr-1 shrink-0" /> Separate multiple conditions with commas
+            <Info size={12} className="mr-1 shrink-0" /> Separate multiple conditions or drugs with commas
           </p>
         </motion.div>
 
-        {/* Drugs / Medications */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
-          <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <Pill size={14} className="text-pink-500" /> Current Medications
-          </label>
-          <textarea
-            value={form.drugs}
-            onChange={(e) => setField('drugs', e.target.value)}
-            className="textarea textarea-bordered w-full rounded-lg resize-none focus:border-pink-400"
-            placeholder="e.g., Aspirin, Metformin, Lisinopril"
-            rows="2"
-          />
-          <p className="text-xs text-base-content/50 mt-1 flex items-center">
-            <Pill size={12} className="mr-1 shrink-0" /> Separate multiple medications with commas
-          </p>
-        </motion.div>
 
         {/* Status */}
         <motion.div

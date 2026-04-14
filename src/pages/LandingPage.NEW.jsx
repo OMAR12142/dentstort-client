@@ -121,7 +121,7 @@ export default function LandingPage() {
               <div className="bg-[#F3F2EF] border border-neutral-light rounded-lg p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <h4 className="font-bold text-[#191919] mb-2">Sarah Johnson</h4>
+                    <h4 className="font-bold text-[#191919] mb-2">Farid Ahmed</h4>
                     <div className="flex items-center gap-2 mb-2">
                       <span className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">
                         <AlertTriangle size={12} className="mr-1" /> Diabetic

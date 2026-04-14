@@ -94,7 +94,7 @@ export default function RegisterPage() {
                   <input
                     name="name"
                     type="text"
-                    placeholder="Dr. Jane Smith"
+                    placeholder="Dr. mohamed farid"
                     onChange={() => clearError('name')}
                     className={`${inputBase} ${vErrors.name ? inputError : ''}`}
                   />
