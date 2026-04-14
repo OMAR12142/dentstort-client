@@ -22,7 +22,7 @@ export default function Badge({ label, size = 'md' }) {
 
   return (
     <span
-      className={`inline-block rounded-full font-semibold border ${sizeClasses[size]} ${scheme}`}
+      className={`inline-block rounded-full font-semibold border break-words max-w-full ${sizeClasses[size]} ${scheme}`}
     >
       {label}
     </span>

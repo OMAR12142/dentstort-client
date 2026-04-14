@@ -95,8 +95,8 @@ export default function AdminDentistProfile() {
         <p className="text-sm text-base-content/60 max-w-md">
           {error?.response?.data?.message || error?.message || 'Something went wrong.'}
         </p>
-        <button onClick={() => navigate(-1)} className="mt-4 text-sm text-primary hover:underline">
-          ← Go back
+        <button onClick={() => navigate(-1)} className="mt-4 flex items-center gap-1 text-sm text-primary hover:underline">
+          <ArrowLeft size={16} /> Go back
         </button>
       </div>
     );
@@ -257,9 +257,13 @@ export default function AdminDentistProfile() {
                         {s.clinic_id?.name || '—'}
                       </td>
                       <td className="px-4 py-2.5 hidden md:table-cell">
-                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">
-                          {s.treatment_category}
-                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {(Array.isArray(s.treatment_category) ? s.treatment_category : [s.treatment_category].filter(Boolean)).map((cat) => (
+                            <span key={cat} className="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">
+                              {cat}
+                            </span>
+                          ))}
+                        </div>
                       </td>
                       <td className="px-4 py-2.5 text-sm text-right text-base-content font-medium">{fmt(s.total_cost)} EGP</td>
                       <td className="px-4 py-2.5 text-sm text-right text-success">{fmt(s.amount_paid)} EGP</td>

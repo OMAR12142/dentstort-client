@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
   Phone,
@@ -8,10 +8,18 @@ import {
   Building2,
   Percent,
   Stethoscope,
+  MapPin,
+  Pill,
+  Briefcase,
+  Plus,
+  Trash2,
+  X,
+  Info,
 } from 'lucide-react';
 import Modal from './Modal';
 import { useCreatePatient, useUpdatePatient } from '../hooks/usePatients';
 import { useClinics } from '../hooks/useClinics';
+import { useInsuranceProviders, useAddInsuranceProvider, useDeleteInsuranceProvider } from '../hooks/useInsurance';
 
 /**
  * Unified Add / Edit Patient Modal
@@ -29,13 +37,23 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
   const { data: clinicsData } = useClinics();
   const clinics = Array.isArray(clinicsData) ? clinicsData : clinicsData?.clinics || [];
 
+  // ── Insurance providers ───────────────────────
+  const { data: savedProviders = ['Private'] } = useInsuranceProviders();
+  const { mutate: addProvider } = useAddInsuranceProvider();
+  const { mutate: deleteProvider } = useDeleteInsuranceProvider();
+  const [showAddInsurance, setShowAddInsurance] = useState(false);
+  const [newInsuranceName, setNewInsuranceName] = useState('');
+
   const isPending = createPending || updatePending;
 
   // ── Form state ────────────────────────────────
   const [form, setForm] = useState({
     name: '',
-    age: '',
+    dateOfBirth: '',
     phone: '',
+    phone2: '',
+    address: '',
+    job: '',
     medical_history: '',
     status: 'Active',
     insuranceCompany: 'Private',
@@ -50,8 +68,11 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
       if (isEdit && patientToEdit) {
         setForm({
           name: patientToEdit.name || '',
-          age: patientToEdit.age ?? '',
+          dateOfBirth: patientToEdit.dateOfBirth ? new Date(patientToEdit.dateOfBirth).toISOString().split('T')[0] : '',
           phone: patientToEdit.phone || '',
+          phone2: patientToEdit.phone2 || '',
+          address: patientToEdit.address || '',
+          job: patientToEdit.job || '',
           medical_history: (patientToEdit.medical_history || []).join(', '),
           status: patientToEdit.status || 'Active',
           insuranceCompany: patientToEdit.insuranceCompany || 'Private',
@@ -65,8 +86,11 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
       } else {
         setForm({
           name: '',
-          age: '',
+          dateOfBirth: '',
           phone: '',
+          phone2: '',
+          address: '',
+          job: '',
           medical_history: '',
           status: 'Active',
           insuranceCompany: 'Private',
@@ -75,6 +99,8 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         });
       }
       setErrors({});
+      setShowAddInsurance(false);
+      setNewInsuranceName('');
     }
   }, [open, patientToEdit, isEdit]);
 
@@ -122,8 +148,11 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         : [],
     };
 
-    if (form.age !== '') payload.age = parseInt(form.age, 10);
-    if (form.phone.trim()) payload.phone = form.phone.trim();
+    if (form.dateOfBirth !== '') payload.dateOfBirth = form.dateOfBirth;
+    payload.phone = form.phone.trim();
+    payload.phone2 = form.phone2.trim();
+    if (form.address.trim()) payload.address = form.address.trim();
+    if (form.job.trim()) payload.job = form.job.trim();
     if (form.clinic_id) payload.clinic_id = form.clinic_id;
     if (form.commission_percentage !== '')
       payload.commission_percentage = parseFloat(form.commission_percentage);
@@ -133,6 +162,13 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         { id: patientToEdit._id, data: payload },
         {
           onSuccess: () => {
+            // Auto-save insurance provider if it's new
+            if (payload.insuranceCompany && payload.insuranceCompany !== 'Private') {
+              const isKnown = savedProviders.some(
+                (p) => p.toLowerCase() === payload.insuranceCompany.toLowerCase()
+              );
+              if (!isKnown) addProvider(payload.insuranceCompany);
+            }
             setErrors({});
             onClose();
           },
@@ -141,6 +177,13 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
     } else {
       createMutate(payload, {
         onSuccess: () => {
+          // Auto-save insurance provider if it's new
+          if (payload.insuranceCompany && payload.insuranceCompany !== 'Private') {
+            const isKnown = savedProviders.some(
+              (p) => p.toLowerCase() === payload.insuranceCompany.toLowerCase()
+            );
+            if (!isKnown) addProvider(payload.insuranceCompany);
+          }
           setErrors({});
           onClose();
         },
@@ -172,7 +215,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             className={`input input-bordered w-full rounded-lg transition-all ${
               errors.name ? 'border-error focus:border-error' : 'focus:border-sky-400'
             }`}
-            placeholder="John Doe"
+            placeholder="Omar Mahmoud"
           />
           {errors.name && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
@@ -190,16 +233,14 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         >
           <div>
             <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-              <Calendar size={14} className="text-amber-500" /> Age
+              <Calendar size={14} className="text-amber-500" /> Date of Birth
             </label>
             <input
-              type="number"
-              value={form.age}
-              onChange={(e) => setField('age', e.target.value)}
-              className="input input-bordered w-full rounded-lg focus:border-amber-400"
-              placeholder="28"
-              min="0"
-              max="150"
+              type="date"
+              value={form.dateOfBirth}
+              onChange={(e) => setField('dateOfBirth', e.target.value)}
+              className="input input-bordered w-full rounded-lg focus:border-amber-400 text-sm"
+              max={new Date().toISOString().split('T')[0]}
             />
           </div>
           <div>
@@ -213,6 +254,23 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
               placeholder="+20 1xx xxx xxxx"
             />
           </div>
+        </motion.div>
+
+        {/* Alternative Phone */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.06 }}
+        >
+          <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+            <Phone size={14} className="text-emerald-500" /> Alternative Phone <span className="text-xs text-base-content/50 pr-1 truncate font-normal">(Optional)</span>
+          </label>
+          <input
+            value={form.phone2}
+            onChange={(e) => setField('phone2', e.target.value)}
+            className="input input-bordered w-full rounded-lg focus:border-emerald-400"
+            placeholder="+20 1xx xxx xxxx"
+          />
         </motion.div>
 
         {/* Clinic & Commission */}
@@ -284,40 +342,136 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
             <Stethoscope size={14} className="text-rose-400" /> Insurance
           </label>
-          <input
-            value={form.insuranceCompany}
-            onChange={(e) => setField('insuranceCompany', e.target.value)}
-            className="input input-bordered w-full rounded-lg focus:border-rose-400"
-            placeholder="Private"
-          />
+
+          {!showAddInsurance ? (
+            /* ── Dropdown of saved providers ── */
+            <select
+              value={form.insuranceCompany}
+              onChange={(e) => {
+                if (e.target.value === '__ADD_NEW__') {
+                  setShowAddInsurance(true);
+                  setNewInsuranceName('');
+                } else {
+                  setField('insuranceCompany', e.target.value);
+                }
+              }}
+              className="select select-bordered w-full rounded-lg focus:border-rose-400"
+            >
+              {savedProviders.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+              <option value="__ADD_NEW__">＋ Add New Insurance…</option>
+            </select>
+          ) : (
+            /* ── Add New Insurance inline form ── */
+            <div className="flex gap-2">
+              <input
+                autoFocus
+                value={newInsuranceName}
+                onChange={(e) => setNewInsuranceName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const trimmed = newInsuranceName.trim();
+                    if (trimmed) {
+                      addProvider(trimmed);
+                      setField('insuranceCompany', trimmed);
+                      setShowAddInsurance(false);
+                      setNewInsuranceName('');
+                    }
+                  } else if (e.key === 'Escape') {
+                    setShowAddInsurance(false);
+                  }
+                }}
+                className="input input-bordered flex-1 rounded-lg focus:border-rose-400"
+                placeholder="e.g., MetLife, AXA…"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const trimmed = newInsuranceName.trim();
+                  if (trimmed) {
+                    addProvider(trimmed);
+                    setField('insuranceCompany', trimmed);
+                    setShowAddInsurance(false);
+                    setNewInsuranceName('');
+                  }
+                }}
+                className="btn btn-sm bg-rose-500 text-white border-0 hover:bg-rose-600 rounded-lg px-3"
+              >
+                <Plus size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowAddInsurance(false)}
+                className="btn btn-sm btn-ghost rounded-lg px-3"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Address & Job */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.11 }}
+          className="grid grid-cols-2 gap-3"
+        >
+          <div>
+            <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+              <MapPin size={14} className="text-indigo-500" /> Address
+            </label>
+            <input
+              value={form.address}
+              onChange={(e) => setField('address', e.target.value)}
+              className="input input-bordered w-full rounded-lg focus:border-indigo-400"
+              placeholder="e.g., Cairo, Egypt"
+            />
+          </div>
+          <div>
+            <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+              <Briefcase size={14} className="text-cyan-500" /> Job
+            </label>
+            <input
+              value={form.job}
+              onChange={(e) => setField('job', e.target.value)}
+              className="input input-bordered w-full rounded-lg focus:border-cyan-400"
+              placeholder="e.g., Engineer"
+            />
+          </div>
         </motion.div>
 
         {/* Medical History */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.11 }}
+          transition={{ delay: 0.13 }}
         >
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <AlertCircle size={14} className="text-orange-500" /> Medical History
+            <AlertCircle size={14} className="text-orange-500" /> Medical History & Drugs
           </label>
           <textarea
             value={form.medical_history}
             onChange={(e) => setField('medical_history', e.target.value)}
             className="textarea textarea-bordered w-full rounded-lg resize-none focus:border-orange-400"
-            placeholder="e.g., Diabetic, Penicillin Allergy"
+            placeholder="e.g., Diabetic, Penicillin Allergy, Aspirin, Metformin"
             rows="2"
           />
-          <p className="text-xs text-base-content/50 mt-1">
-            💡 Separate multiple conditions with commas
+          <p className="text-xs text-base-content/50 mt-1 flex items-center">
+            <Info size={12} className="mr-1 shrink-0" /> Separate multiple conditions or drugs with commas
           </p>
         </motion.div>
+
 
         {/* Status */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.13 }}
+          transition={{ delay: 0.17 }}
         >
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
             <User size={14} className="text-secondary" /> Status
@@ -338,7 +492,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
+          transition={{ delay: 0.19 }}
           className="flex gap-3 pt-2"
         >
           <button

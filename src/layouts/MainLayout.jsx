@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -10,6 +10,7 @@ import {
   Moon,
   TrendingUp,
   ListTodo,
+  ArrowLeft,
 } from 'lucide-react';
 import { useLogout } from '../hooks/useAuth';
 import { useAuthStore } from '../store/authStore';
@@ -27,15 +28,18 @@ const navItems = [
 ];
 
 function SidebarLink({ to, icon: Icon, label }) {
+  const location = useLocation();
+  const basePath = location.pathname.replace(/\/$/, '') || '/';
+  const isActive = basePath === to;
+
   return (
     <NavLink
       to={to}
       end={to === '/'}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm md:text-base font-medium ${
-          isActive
-            ? 'bg-primary/10 text-primary shadow-none'
-            : 'text-base-content/70 hover:text-base-content hover:bg-base-100'
+        `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm md:text-base font-medium ${isActive
+          ? 'bg-primary/10 text-primary shadow-none'
+          : 'text-base-content/70 hover:text-base-content hover:bg-base-100'
         }`
       }
     >
@@ -51,6 +55,12 @@ export default function MainLayout() {
   const location = useLocation();
   const isDark = useThemeStore((s) => s.isDark);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const navigate = useNavigate();
+
+  // Handle potential trailing slashes for robust route checking
+  const basePath = location.pathname.replace(/\/$/, '') || '/';
+  const rootPaths = ['/dashboard', '/clinics', '/patients', '/tasks', '/analytics', '/career-analytics', '/'];
+  const showBackButton = !rootPaths.includes(basePath);
 
   // ── Real-time suspension detection ──────────
   const isSuspended = useSuspensionGuard();
@@ -62,8 +72,10 @@ export default function MainLayout() {
       {/* ─── Desktop Sidebar ─── */}
       <aside className="hidden lg:flex flex-col w-64 bg-base-200 border-r border-neutral-light px-4 py-6 fixed h-full z-40">
         {/* Branding */}
-        <div className="flex items-center px-2 mb-4 md:mb-6 lg:mb-8">
-          <AppLogo size="md" />
+        <div className="flex items-center px-2 mb-4 md:mb-6 lg:mb-8 hover:opacity-80 transition-opacity">
+          <Link to="/dashboard">
+            <AppLogo size="md" />
+          </Link>
         </div>
 
         {/* Nav links */}
@@ -111,8 +123,10 @@ export default function MainLayout() {
       <main className="flex-1 lg:ml-64 pb-20 lg:pb-6 relative">
         {/* Mobile Header with Theme Toggle */}
         <header className="lg:hidden flex items-center justify-between p-4 border-b border-neutral-light bg-base-200">
-          <div className="flex items-center gap-2">
-            <AppLogo size="sm" />
+          <div className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <Link to="/dashboard">
+              <AppLogo size="sm" />
+            </Link>
           </div>
           <div className="flex items-center gap-1">
             <button
@@ -155,8 +169,7 @@ export default function MainLayout() {
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                `flex flex-col items-center gap-0.5 text-[11px] font-medium transition-colors duration-200 min-w-[56px] ${
-                  isActive ? 'text-primary' : 'text-base-content/60'
+                `flex flex-col items-center gap-0.5 text-[11px] font-medium transition-colors duration-200 min-w-[56px] ${isActive ? 'text-primary' : 'text-base-content/60'
                 }`
               }
             >
