@@ -123,8 +123,8 @@ export default function LandingPage() {
                   <div className="flex-1">
                     <h4 className="font-bold text-[#191919] mb-2">Farid Ahmed</h4>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">
-                        ⚠️ Diabetic
+                      <span className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">
+                        <AlertTriangle size={12} className="mr-1" /> Diabetic
                       </span>
                     </div>
                     <p className="text-sm text-[#666666]">Root Canal Treatment</p>
@@ -260,7 +260,7 @@ export default function LandingPage() {
               <div className="w-10 h-10 rounded-full bg-[#0A66C2] text-white flex items-center justify-center font-bold mx-auto mb-4">
                 2
               </div>
-              <h3 className="font-bold text-[#191919] mb-2">Log Sessions & Expenses</h3>
+              <h3 className="font-bold text-[#191919] mb-2">Add Sessions & Expenses</h3>
               <p className="text-sm text-[#666666]">Record treatments, payments, and clinic splits.</p>
             </div>
 

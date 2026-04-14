@@ -25,6 +25,7 @@ import ErrorState from '../components/common/ErrorState';
 import Card from '../components/Card';
 import PatientModal from '../components/PatientModal';
 import LogSessionModal from '../components/LogSessionModal';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 
 const timeframeOptions = [
   { value: 'monthly', label: 'This Month' },
@@ -164,9 +165,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Summary Cards - 2x2 on mobile, 3 columns on desktop */}
+      {/* Summary Cards - 2x2 on mobile, 4 columns on desktop */}
       <motion.div
-        className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
         animate={{ opacity: isFetching ? 0.6 : 1 }}
         transition={{ duration: 0.2 }}
       >
@@ -216,6 +217,22 @@ export default function DashboardPage() {
             {totalSessions}
           </p>
           <p className="text-xs sm:text-sm text-base-content/70 mt-1">Sessions {getTimeframeLabel(timeframe).toLowerCase()}</p>
+        </Card>
+
+        {/* Card 4 - Total Lifetime Patients */}
+        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-amber-50 flex items-center justify-center">
+              <Users size={18} className="sm:text-[22px] text-amber-500" />
+            </div>
+            <span className="text-[10px] sm:text-xs font-medium text-amber-500 bg-amber-50 px-2 py-1 rounded-full whitespace-nowrap">
+              All Time
+            </span>
+          </div>
+          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-base-content break-words">
+            {totalPatients}
+          </p>
+          <p className="text-xs sm:text-sm text-base-content/70 mt-1">Total Patients</p>
         </Card>
       </motion.div>
 
@@ -321,7 +338,7 @@ export default function DashboardPage() {
                     title="Chat on WhatsApp"
                     aria-label="Chat on WhatsApp"
                   >
-                    <MessageCircle size={16} className="sm:text-[18px]" />
+                    <WhatsAppIcon size={16} className="sm:text-[18px]" />
                   </a>
                 )}
               </motion.div>
@@ -437,7 +454,7 @@ export default function DashboardPage() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowLogSession(true)}
           className="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-lg bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors"
-          title="Log Session"
+          title="Add Session"
         >
           <ClipboardPlus size={20} className="sm:text-[24px]" />
         </motion.button>

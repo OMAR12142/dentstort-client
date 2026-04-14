@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, Lightbulb } from 'lucide-react';
 import { useTreatmentDistribution } from '../hooks/useAnalytics';
 import { CardSkeleton } from '../components/Skeleton';
 import Card from '../components/Card';
@@ -91,9 +91,10 @@ export default function CareerAnalyticsPage() {
 
             {topTreatment && (
               <div className="mb-4 p-3 rounded-lg bg-primary/10 dark:bg-primary/5 border border-primary/20">
-                <p className="text-sm text-base-content">
-                  💡 <span className="font-semibold">{topTreatment.category}</span> is your specialty ({topPercentage}% of sessions).
-                  Consider furthering your expertise with advanced courses!
+                <p className="text-sm text-base-content inline-flex items-center gap-1.5">
+                  <Lightbulb size={16} className="text-primary shrink-0" /> 
+                  <span><span className="font-semibold">{topTreatment.category}</span> is your specialty ({topPercentage}% of sessions).
+                  Consider furthering your expertise with advanced courses!</span>
                 </p>
               </div>
             )}
