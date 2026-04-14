@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, AlertCircle, ListTodo, Tag, Building2, CalendarDays, User } from 'lucide-react';
+import { Plus, AlertCircle, ListTodo, Tag, Building2, CalendarDays, User, Info } from 'lucide-react';
 import Modal from './Modal';
 import { useCreateTask } from '../hooks/useTasks';
 import { useClinics } from '../hooks/useClinics';
@@ -155,8 +155,8 @@ export default function AddTaskModal({ open, onClose }) {
                 </option>
               ))}
             </select>
-            <p className="text-xs text-base-content/50 mt-1.5">
-              💡 Linking a patient enables the WhatsApp quick-call button on this task.
+            <p className="text-xs text-base-content/50 mt-1.5 flex items-start gap-1">
+              <Info size={12} className="mt-0.5 shrink-0" /> Linking a patient enables the WhatsApp quick-call button on this task.
             </p>
           </motion.div>
         )}

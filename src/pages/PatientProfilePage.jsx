@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-=======
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
->>>>>>> Stashed changes
 import { motion } from 'framer-motion';
 import {
   CalendarDays,
@@ -16,8 +11,6 @@ import {
   Pencil,
   Trash2,
   CheckCircle,
-<<<<<<< Updated upstream
-=======
   MapPin,
   Briefcase,
   Pill,
@@ -30,7 +23,6 @@ import {
   Wallet,
   Percent,
   Receipt,
->>>>>>> Stashed changes
 } from 'lucide-react';
 import { usePatient, useUpdatePatient, useDeletePatient } from '../hooks/usePatients';
 import { useSessions, useDeleteSession } from '../hooks/useSessions';
@@ -40,11 +32,8 @@ import Badge from '../components/Badge';
 import Card from '../components/Card';
 import LogSessionModal from '../components/LogSessionModal';
 import ImageLightboxModal from '../components/ImageLightboxModal';
-<<<<<<< Updated upstream
-=======
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import { calculateAge } from '../utils/dateUtils';
->>>>>>> Stashed changes
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -105,6 +94,7 @@ const InfoBlock = ({ icon: Icon, label, value, colorClass = "text-primary" }) =>
 
 export default function PatientProfilePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data: patient, isLoading: loadP, isError: isErrorP, error: errorP, refetch: refetchP } = usePatient(id);
   const { mutate: updatePatient, isPending: isUpdating } = useUpdatePatient();
   const { mutate: deletePatient, isPending: isDeletingPatient } = useDeletePatient();
@@ -120,26 +110,26 @@ export default function PatientProfilePage() {
     ? sessionsData
     : sessionsData?.sessions || [];
 
-  const sortedSessions = useMemo(() => {
-    return [...sessions].sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [sessions]);
+  const sortedSessions = [...sessions].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 
   const financialSummary = useMemo(() => {
-    let cost = 0;
-    let paid = 0;
-    let cut = 0;
+    let total_cost = 0;
+    let total_paid = 0;
+    let total_cut = 0;
 
     sortedSessions.forEach((s) => {
-      cost += Number(s.total_cost) || 0;
-      paid += Number(s.amount_paid) || 0;
-      cut += Number(s.dentist_cut) || 0;
+      total_cost += s.cost || 0;
+      total_paid += s.paid || 0;
+      total_cut += s.cut || 0;
     });
 
     return {
-      total_cost: cost,
-      total_paid: paid,
-      remaining_balance: cost - paid,
-      total_cut: cut,
+      total_cost,
+      total_paid,
+      remaining_balance: total_cost - total_paid,
+      total_cut,
     };
   }, [sortedSessions]);
 
@@ -159,16 +149,10 @@ export default function PatientProfilePage() {
     setSessionToEdit(null);
   };
 
-<<<<<<< Updated upstream
-  const handleMarkCompleted = () => {
-    if (window.confirm("Are you sure you want to close this patient's file?")) {
-      updatePatient({ id, status: 'Completed' }, {
-=======
   const handleStatusUpdate = (newStatus) => {
     updatePatient(
       { id: patient._id, data: { status: newStatus } },
       {
->>>>>>> Stashed changes
         onSuccess: () => {
           setShowToast(true);
           setTimeout(() => setShowToast(false), 3000);
@@ -218,25 +202,6 @@ export default function PatientProfilePage() {
         </div>
       )}
 
-<<<<<<< Updated upstream
-      {/* Patient Header */}
-      <Card>
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="w-14 h-14 rounded-lg bg-primary text-white flex items-center justify-center text-xl font-bold shrink-0">
-              {patient.name?.[0]?.toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-2xl font-bold text-base-content">{patient.name}</h1>
-                <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(patient.status)}`}>
-                  {patient.status || 'Active'}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-3 text-sm text-base-content/70 mt-1">
-                {patient.age && <span>Age {patient.age}</span>}
-                {patient.phone && <span>📞 {patient.phone}</span>}
-=======
       {/* Back Button */}
       <div className="mb-2">
         <button
@@ -448,7 +413,6 @@ export default function PatientProfilePage() {
                     {patient.treatment_plan.filter(i => i.isCompleted).length}/{patient.treatment_plan.length}
                   </span>
                 )}
->>>>>>> Stashed changes
               </div>
               <p className="text-xs text-base-content/50 mt-0.5">
                 {!patient.treatment_plan?.length
@@ -460,49 +424,6 @@ export default function PatientProfilePage() {
             <ArrowLeft size={16} className="text-base-content/30 rotate-180 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all shrink-0" />
           </div>
 
-<<<<<<< Updated upstream
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-            {patient.status !== 'Completed' && (
-              <button
-                onClick={handleMarkCompleted}
-                disabled={isUpdating}
-                className="btn btn-sm bg-[#057642]/10 text-[#057642] border border-[#057642]/20 hover:bg-[#057642] hover:text-white transition-all rounded-lg flex-1 sm:flex-none gap-1"
-                title="Mark as Completed"
-              >
-                {isUpdating ? <span className="loading loading-spinner loading-sm" /> : <CheckCircle size={16} />}
-                Mark as Completed
-              </button>
-            )}
-            <button
-              onClick={() => setShowLogSession(true)}
-              className="btn btn-lg sm:text-sm rounded-lg text-white border-0 gap-1 bg-primary flex-1 sm:flex-none"
-            >
-              <Plus size={16} />
-              Log Session
-            </button>
-          </div>
-        </div>
-
-        {/* Medical History */}
-        {patient.medical_history?.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {patient.medical_history.map((h) => (
-              <Badge key={h} label={h} />
-            ))}
-          </div>
-        )}
-
-        {/* Warnings */}
-        {warnings.length > 0 && (
-          <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-3 flex items-start gap-2">
-            <AlertTriangle size={18} className="text-amber-500 shrink-0 mt-0.5" />
-            <p className="text-sm text-amber-700 dark:text-amber-300 font-medium">
-              ⚠ Medical Alert: {warnings.join(', ')}
-            </p>
-          </div>
-        )}
-      </Card>
-=======
           {/* Mini progress bar */}
           {(patient.treatment_plan?.length || 0) > 0 && (
             <div className="mt-3 w-full h-1.5 bg-base-300 rounded-full overflow-hidden">
@@ -514,7 +435,6 @@ export default function PatientProfilePage() {
           )}
         </Card>
       </Link>
->>>>>>> Stashed changes
 
       {/* Sessions Timeline */}
       <div className="flex items-center gap-2 mb-1">
