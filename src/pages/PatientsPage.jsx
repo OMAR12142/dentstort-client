@@ -14,8 +14,6 @@ import {
   MessageCircle,
   Pencil,
   Building2,
-<<<<<<< Updated upstream
-=======
   Info,
   X,
   CalendarDays,
@@ -24,7 +22,6 @@ import {
   Trash2,
   Clock,
   ArrowUpDown,
->>>>>>> Stashed changes
 } from 'lucide-react';
 import { usePatients, useDeletePatient } from '../hooks/usePatients';
 import { useClinics } from '../hooks/useClinics';
@@ -34,6 +31,8 @@ import ErrorState from '../components/common/ErrorState';
 import Badge from '../components/Badge';
 import Card from '../components/Card';
 import PatientModal from '../components/PatientModal';
+import PatientDetailsModal from '../components/PatientDetailsModal';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -50,6 +49,7 @@ export default function PatientsPage() {
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
+  const [viewingPatient, setViewingPatient] = useState(null);
   const [viewMode, setViewMode] = useState('card');
   const [sortBy, setSortBy] = useState('newest');
   const [statusFilter, setStatusFilter] = useState('All Patients');
@@ -106,12 +106,6 @@ export default function PatientsPage() {
 
   // Text search — name, phone, address, job, insurance, medical fields only
   let filtered = search
-<<<<<<< Updated upstream
-    ? patients.filter((p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.phone?.includes(search)
-    )
-=======
     ? patients.filter((p) => {
       const term = search.toLowerCase();
       if (p.name?.toLowerCase().includes(term)) return true;
@@ -123,7 +117,6 @@ export default function PatientsPage() {
       if (p.medical_history?.some((h) => h.toLowerCase().includes(term))) return true;
       return false;
     })
->>>>>>> Stashed changes
     : patients;
 
   // Date filter — specific date or date range
@@ -200,18 +193,14 @@ export default function PatientsPage() {
         <label className="input input-bordered rounded-lg flex items-center gap-2 bg-base-200 w-full border-neutral-light">
           <Search size={16} className="text-base-content/50 shrink-0" />
           <input
-<<<<<<< Updated upstream
-            placeholder="Search by name or phone…"
-=======
             placeholder="Search by name, phone, address, job, insurance…"
->>>>>>> Stashed changes
             className="grow w-full min-w-0"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           {search && (
             <button onClick={() => setSearch('')} className="text-base-content/50 hover:text-base-content transition-colors shrink-0">
-              ✕
+              <X size={16} />
             </button>
           )}
         </label>
@@ -262,14 +251,8 @@ export default function PatientsPage() {
               <select
                 value={clinicFilter}
                 onChange={(e) => setClinicFilter(e.target.value)}
-<<<<<<< Updated upstream
-                className={`select select-sm select-bordered rounded-lg bg-base-200 border-neutral-light pl-8 w-full sm:w-auto focus:border-primary transition-all ${
-                  clinicFilter ? 'border-primary text-primary' : ''
-                }`}
-=======
                 className={`select select-sm h-10 select-bordered rounded-xl bg-base-100/50 hover:bg-base-200/50 border-neutral-light/50 pl-10 pr-8 w-full font-semibold focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all shadow-sm appearance-none cursor-pointer ${clinicFilter ? 'border-primary text-primary bg-primary/5' : 'text-base-content/70'
                   }`}
->>>>>>> Stashed changes
               >
                 <option value="">All Clinics</option>
                 {clinics.map((c) => (
@@ -394,8 +377,11 @@ export default function PatientsPage() {
                         {p.dateOfBirth || p.age != null ? `${p.dateOfBirth ? calculateAge(p.dateOfBirth) : p.age} yrs` : '—'}
                       </td>
                       <td className="px-4 py-3 text-base-content/70 text-sm">
-                        {p.phone ? (
-                          <code className="bg-base-100 px-2 py-1 rounded text-xs break-all">{p.phone}</code>
+                        {p.phone || p.phone2 ? (
+                          <div className="flex flex-col gap-1 items-start">
+                            {p.phone && <code className="bg-base-100 px-2 py-0.5 rounded text-xs break-all text-base-content">{p.phone}</code>}
+                            {p.phone2 && <code className="bg-base-100 px-2 py-0.5 rounded text-[10px] break-all text-secondary">{p.phone2}</code>}
+                          </div>
                         ) : '—'}
                       </td>
                       <td className="px-4 py-3">
@@ -425,7 +411,7 @@ export default function PatientsPage() {
                               className="p-1.5 text-base-content/40 hover:text-[#25D366] hover:bg-[#25D366]/10 rounded-lg transition-all duration-200"
                               title="Chat on WhatsApp"
                             >
-                              <MessageCircle size={18} />
+                              <WhatsAppIcon size={18} />
                             </a>
                           )}
                           <button
@@ -435,9 +421,6 @@ export default function PatientsPage() {
                           >
                             <Pencil size={16} />
                           </button>
-<<<<<<< Updated upstream
-                          <Link to={`/patients/${p._id}`} className="btn btn-xs btn-ghost rounded-lg">View</Link>
-=======
                           <button
                             onClick={(e) => handleDeletePatient(e, p)}
                             disabled={isDeleting}
@@ -454,7 +437,6 @@ export default function PatientsPage() {
                             <Info size={16} />
                           </button>
                           <Link to={`/patients/${p._id}`} className="btn btn-xs btn-ghost rounded-lg">Profile</Link>
->>>>>>> Stashed changes
                         </div>
                       </td>
                     </motion.tr>
@@ -505,17 +487,7 @@ export default function PatientsPage() {
                           )}
                         </div>
                       </div>
-<<<<<<< Updated upstream
-                    </Link>
-                    <p className="text-xs text-base-content/50 break-words">{p.phone || 'No phone'}</p>
-                  </div>
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <span className="text-sm font-bold text-primary">{p.name?.[0]?.toUpperCase()}</span>
-                  </div>
-                </div>
-=======
                     </div>
->>>>>>> Stashed changes
 
                     {/* Meta Grid */}
                     <div className="grid grid-cols-2 gap-3 mb-5 p-3 rounded-xl bg-base-100/40 border border-neutral-light/20">
@@ -544,32 +516,6 @@ export default function PatientsPage() {
                       )}
                     </div>
 
-<<<<<<< Updated upstream
-                <div className="flex gap-2 w-full mt-auto pt-2">
-                  {p.phone && (
-                    <a
-                      href={getWhatsAppLink(p.phone)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-outline rounded-lg justify-center gap-2 text-base-content/60 hover:text-[#25D366] border-neutral-light hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all"
-                    >
-                      <MessageCircle size={16} />
-                    </a>
-                  )}
-                  <button
-                    onClick={() => setEditingPatient(p)}
-                    className="btn btn-sm btn-outline rounded-lg justify-center gap-2 border-neutral-light hover:border-primary hover:bg-primary/10 hover:text-primary transition-all"
-                    title="Edit"
-                  >
-                    <Pencil size={15} /> <span className="hidden min-[380px]:inline">Edit</span>
-                  </button>
-                  <Link
-                    to={`/patients/${p._id}`}
-                    className="flex-1 btn btn-sm btn-ghost rounded-lg justify-center gap-2 text-primary hover:bg-primary/10"
-                  >
-                    <FileText size={16} /> <span className="hidden min-[380px]:inline ml-1">View</span>
-                  </Link>
-=======
                     {/* Medical History Section */}
                     {/* {p.medical_history?.length > 0 && (
                       <div className="mb-6">
@@ -633,7 +579,6 @@ export default function PatientsPage() {
                       </Link>
                     </div>
                   </div>
->>>>>>> Stashed changes
                 </div>
               </Card>
             </motion.div>
@@ -692,6 +637,12 @@ export default function PatientsPage() {
         open={!!editingPatient}
         onClose={() => setEditingPatient(null)}
         patientToEdit={editingPatient}
+      />
+      {/* Quick Info Modal */}
+      <PatientDetailsModal
+        open={!!viewingPatient}
+        onClose={() => setViewingPatient(null)}
+        patient={viewingPatient}
       />
     </div>
   );

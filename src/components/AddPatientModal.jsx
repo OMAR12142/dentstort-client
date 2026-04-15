@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
-import { User, Phone, Calendar, AlertCircle } from 'lucide-react';
+import { User, Phone, Calendar, AlertCircle, MapPin, Pill, Briefcase, Info } from 'lucide-react';
 import Modal from './Modal';
 import { useCreatePatient } from '../hooks/usePatients';
 
@@ -9,6 +9,9 @@ const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   dateOfBirth: z.string().optional(),
   phone: z.string().optional(),
+  phone2: z.string().optional(),
+  address: z.string().optional(),
+  job: z.string().optional(),
   medical_history: z.string().optional(),
   status: z.enum(['Active', 'On-Hold', 'Completed', 'Dropped']).optional().default('Active'),
 });
@@ -114,6 +117,23 @@ export default function AddPatientModal({ open, onClose }) {
           </div>
         </motion.div>
 
+        {/* Alternative Phone */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 }}
+        >
+          <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
+            <Phone size={14} className="text-emerald-500" />
+            Alternative Phone <span className="text-xs text-base-content/50 pr-1 truncate font-normal">(Optional)</span>
+          </label>
+          <input
+            name="phone2"
+            className="input input-bordered w-full rounded-lg focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+            placeholder="+20 1xx xxx xxxx"
+          />
+        </motion.div>
+
         {/* Medical History */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -127,16 +147,6 @@ export default function AddPatientModal({ open, onClose }) {
           <textarea
             name="medical_history"
             className="textarea textarea-bordered w-full rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-400 transition-all resize-none"
-<<<<<<< Updated upstream
-            placeholder="e.g., Diabetic, Penicillin Allergy, Hypertension"
-            rows="3"
-          />
-          <p className="text-xs text-base-content/50 mt-1.5">
-            💡 Tip: Separate multiple conditions with commas
-          </p>
-        </motion.div>
-
-=======
             placeholder="e.g., Diabetic, Penicillin Allergy, Aspirin, Metformin"
             rows="2"
           />
@@ -180,12 +190,11 @@ export default function AddPatientModal({ open, onClose }) {
           </div>
         </motion.div>
 
->>>>>>> Stashed changes
         {/* Status */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12 }}
+          transition={{ delay: 0.16 }}
         >
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
             <User size={14} className="text-secondary" />
