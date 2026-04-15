@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Modal from './Modal';
 import Badge from './Badge';
+import { calculateAge } from '../utils/dateUtils';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -57,7 +58,9 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
               <Calendar size={14} className="text-amber-500" />
               <span className="text-xs font-semibold">Age</span>
             </div>
-            <p className="font-medium text-base-content">{patient.age ? `${patient.age} years` : 'Not provided'}</p>
+            <p className="font-medium text-base-content">
+              {patient.dateOfBirth || patient.age != null ? `${patient.dateOfBirth ? calculateAge(patient.dateOfBirth) : patient.age} years` : 'Not provided'}
+            </p>
           </div>
 
           <div className="bg-base-200/50 p-3 rounded-xl border border-neutral-light">
