@@ -13,14 +13,14 @@ export const useMonthlyEarnings = () =>
     queryFn: getMonthlyEarningsApi,
   });
 
-export const useTreatmentDistribution = () =>
+export const useTreatmentDistribution = (filters = {}) =>
   useQuery({
-    queryKey: ['analytics', 'treatment-distribution'],
-    queryFn: getTreatmentDistributionApi,
+    queryKey: ['analytics', 'treatment-distribution', filters],
+    queryFn: () => getTreatmentDistributionApi(filters),
   });
 
-export const useEarningsHistory = (year, month) =>
+export const useEarningsHistory = (filters = {}) =>
   useQuery({
-    queryKey: ['analytics', 'earnings-history', year, month],
-    queryFn: () => getEarningsHistoryApi(year, month),
+    queryKey: ['analytics', 'earnings-history', filters],
+    queryFn: () => getEarningsHistoryApi(filters),
   });
