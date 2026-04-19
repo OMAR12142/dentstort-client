@@ -91,7 +91,6 @@ export default function LandingPage() {
   const pricingFeatures = [
     'Unlimited patients & sessions',
     'Unlimited clinics with custom commissions',
-    'X-ray & media uploads (Cloudinary)',
     'Revenue & career analytics dashboards',
     'WhatsApp integration',
     'Task management',
@@ -99,7 +98,6 @@ export default function LandingPage() {
     'Dark & light mode',
     'Patient filtering by clinic',
     'Session history & treatment tracking',
-    'Export-ready data',
     'Priority support via WhatsApp',
   ];
 
@@ -214,15 +212,15 @@ export default function LandingPage() {
             className="inline-flex items-center gap-2 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-4 py-2 rounded-full text-sm font-bold mb-6 border border-emerald-500/20"
           >
             <Heart size={16} className="fill-current" />
-            100% Free — No Credit Card Required
+            Free — No Credit Card Required
           </motion.div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#191919] dark:text-white mb-6 leading-tight">
-            Your Entire Dental Practice,{' '}
+            Your Entire Dental career,{' '}
             <span className="text-[#0A66C2]">In One App.</span>
           </h1>
           <p className="text-lg md:text-xl text-[#666666] dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
-            DentStory is the all-in-one clinical platform for dentists. Manage patients, log sessions with X-rays, track commissions across multiple clinics, analyze your career growth, and message patients on WhatsApp — completely free.
+            DentStory is the all-in-one clinical platform for dentists. Manage patients, add sessions with X-rays, track commissions across multiple clinics, analyze your career growth, and message patients on WhatsApp — completely free.
           </p>
 
           {/* CTA Buttons */}
@@ -406,7 +404,7 @@ export default function LandingPage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-5xl font-bold text-[#191919] dark:text-white mb-4">
-              Free. Forever. No Catch.
+              Free
             </h2>
             <p className="text-lg text-[#666666] dark:text-gray-300 max-w-2xl mx-auto">
               DentStory is built by a dentist who understands the financial pressure. Every feature is free — no trials, no limits, no credit card.
@@ -494,7 +492,7 @@ export default function LandingPage() {
             {[
               { step: 1, title: 'Create Account', desc: 'Sign up in seconds — just name, email, and password. No payment info needed.' },
               { step: 2, title: 'Add Clinics & Patients', desc: 'Set up your clinics with commission rates, then add patients and assign them.' },
-              { step: 3, title: 'Log & Grow', desc: 'Log sessions, track earnings, analyze your career. Everything auto-calculates.' },
+              { step: 3, title: 'Add & Grow', desc: 'Add sessions, track earnings, analyze your career. Everything auto-calculates.' },
             ].map((s, i) => (
               <motion.div key={i} className="contents">
                 <motion.div

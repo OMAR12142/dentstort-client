@@ -21,3 +21,7 @@ export const getDentistProfileApi = (id) =>
 // ── PATCH /api/admin/dentists/:id/status ──────
 export const toggleDentistStatusApi = (id) =>
   api.patch(`/api/admin/dentists/${id}/status`).then((r) => r.data);
+
+// ── POST /api/admin/dentists/:id/reset-password
+export const resetDentistPasswordApi = (id) =>
+  api.post(`/api/admin/dentists/${id}/reset-password`).then((r) => r.data);

@@ -65,7 +65,7 @@ export default function TasksPage() {
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <p className={`text-sm font-medium ${
+              <p className={`text-sm font-medium break-words flex-1 min-w-0 ${
                 task.isCompleted ? 'text-base-content/40 line-through' : 'text-base-content'
               }`}>
                 {task.text}
@@ -77,12 +77,12 @@ export default function TasksPage() {
 
             <div className="flex items-center gap-2 text-xs text-base-content/60 mt-2 flex-wrap">
               {task.clinic_id?.name && (
-                <span className="px-2 py-0.5 bg-base-300/50 rounded">
+                <span className="px-2 py-0.5 bg-base-300/50 rounded break-words max-w-[150px]">
                   📍 {task.clinic_id.name}
                 </span>
               )}
               {task.patient_id?.name && task.type === 'Follow_Up' && (
-                <span className="px-2 py-0.5 bg-base-300/50 rounded">
+                <span className="px-2 py-0.5 bg-base-300/50 rounded break-words max-w-[150px]">
                   👤 {task.patient_id.name}
                 </span>
               )}

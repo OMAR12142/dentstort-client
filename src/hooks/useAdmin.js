@@ -5,6 +5,7 @@ import {
   getRevenueStatsApi,
   getDentistProfileApi,
   toggleDentistStatusApi,
+  resetDentistPasswordApi,
 } from '../api/admin';
 
 /**
@@ -57,5 +58,14 @@ export const useToggleDentistStatus = () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dentists'] });
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] });
     },
+  });
+};
+
+/**
+ * Force a password reset for a dentist (generates new temporary password).
+ */
+export const useResetDentistPassword = () => {
+  return useMutation({
+    mutationFn: resetDentistPasswordApi,
   });
 };

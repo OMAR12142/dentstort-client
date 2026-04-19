@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   DollarSign,
   TrendingUp,
@@ -61,6 +62,7 @@ const ChartTooltip = ({ active, payload, label }) => {
 
 /* ── Page ─────────────────────────────────────── */
 export default function AdminRevenue() {
+  const navigate = useNavigate();
   const { data, isLoading, isError, error } = useRevenueStats();
 
   if (isLoading) {
@@ -279,19 +281,22 @@ export default function AdminRevenue() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
+                        <button 
+                          onClick={() => navigate(`/admin/dentists/${d.dentistId}`)}
+                          className="flex items-center gap-3 text-left w-full group focus:outline-none"
+                        >
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0 transition-colors group-hover:ring-2 ring-primary/30">
                             {d.name?.[0]?.toUpperCase() || '?'}
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-base-content truncate">
+                            <p className="text-sm font-medium text-base-content truncate group-hover:text-primary transition-colors">
                               {d.name}
                             </p>
                             <p className="text-xs text-base-content/50 truncate">
                               {d.email}
                             </p>
                           </div>
-                        </div>
+                        </button>
                       </td>
                       <td className="px-4 py-3 text-right text-sm font-semibold text-base-content">
                         {fmt(d.totalRevenue)} EGP

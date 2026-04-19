@@ -63,6 +63,15 @@
     @apply w-full max-w-full min-h-screen flex flex-col;
     /* تم إزالة overflow-x-hidden */
   }
+
+  button,
+  [role="button"],
+  select,
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"] {
+    cursor: pointer;
+  }
 }
 
 @layer components {

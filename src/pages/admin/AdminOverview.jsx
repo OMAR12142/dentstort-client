@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Users, CalendarClock, ShieldCheck } from 'lucide-react';
+import { Users, CalendarClock, ShieldCheck, DollarSign, TrendingUp } from 'lucide-react';
 import {
   PieChart,
   Pie,
@@ -8,7 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { useAdminStats } from '../../hooks/useAdmin';
+import { useAdminStats, useRevenueStats } from '../../hooks/useAdmin';
 import Card from '../../components/Card';
 import { CardSkeleton } from '../../components/Skeleton';
 
@@ -61,7 +61,18 @@ function CustomTooltip({ active, payload }) {
 }
 
 export default function AdminOverview() {
-  const { data: stats, isLoading, isError, error } = useAdminStats();
+  const { data: stats, isLoading: isStatsLoading, isError: isStatsError, error: statsError } = useAdminStats();
+  const { data: revenue, isLoading: isRevLoading } = useRevenueStats();
+
+  const isLoading = isStatsLoading || isRevLoading;
+  const isError = isStatsError;
+  const error = statsError;
+
+  const fmt = (n) =>
+    new Intl.NumberFormat('en-EG', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(n || 0);
 
   // ── Loading skeleton ─────────────────────────
   if (isLoading) {
@@ -110,11 +121,35 @@ export default function AdminOverview() {
       bg: 'bg-sky-50 dark:bg-sky-500/10',
     },
     {
+      label: 'Total Patients',
+      value: stats?.totalPatients ?? 0,
+      icon: Users,
+      color: 'text-emerald-500',
+      bg: 'bg-emerald-50 dark:bg-emerald-500/10',
+    },
+    {
       label: 'Total Sessions',
       value: stats?.totalSessions ?? 0,
       icon: CalendarClock,
       color: 'text-violet-500',
       bg: 'bg-violet-50 dark:bg-violet-500/10',
+    },
+  ];
+
+  const financialCards = [
+    {
+      label: 'Total Revenue',
+      value: `${fmt(revenue?.global?.totalRevenue)} EGP`,
+      icon: DollarSign,
+      color: 'text-primary',
+      bg: 'bg-primary/10',
+    },
+    {
+      label: 'Total Collected',
+      value: `${fmt(revenue?.global?.totalPaid)} EGP`,
+      icon: TrendingUp,
+      color: 'text-success',
+      bg: 'bg-success/10',
     },
   ];
 
@@ -131,7 +166,7 @@ export default function AdminOverview() {
       </div>
 
       {/* ── KPI Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         {kpiCards.map((kpi, idx) => {
           const Icon = kpi.icon;
           return (
@@ -141,7 +176,7 @@ export default function AdminOverview() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.08 }}
             >
-              <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5">
+              <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5 h-full">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div
                     className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg ${kpi.bg} flex items-center justify-center`}
@@ -150,11 +185,44 @@ export default function AdminOverview() {
                   </div>
                 </div>
                 <p className="text-2xl sm:text-3xl font-bold text-base-content">
-                  {kpi.value.toLocaleString()}
+                  {typeof kpi.value === 'number' ? kpi.value.toLocaleString() : kpi.value}
                 </p>
                 <p className="text-xs sm:text-sm text-base-content/70 mt-1">
                   {kpi.label}
                 </p>
+              </Card>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* ── Financial Summary Row ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        {financialCards.map((kpi, idx) => {
+          const Icon = kpi.icon;
+          return (
+            <motion.div
+              key={kpi.label}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: (idx + 3) * 0.08 }}
+            >
+              <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5 border-l-4 border-l-primary">
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg ${kpi.bg} flex items-center justify-center shrink-0`}
+                  >
+                    <Icon size={20} className={kpi.color} />
+                  </div>
+                  <div>
+                    <p className="text-xs sm:text-sm text-base-content/60 uppercase font-semibold tracking-wider">
+                      {kpi.label}
+                    </p>
+                    <p className="text-xl sm:text-2xl font-black text-base-content mt-0.5">
+                      {kpi.value}
+                    </p>
+                  </div>
+                </div>
               </Card>
             </motion.div>
           );

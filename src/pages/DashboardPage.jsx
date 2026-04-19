@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -12,7 +12,10 @@ import {
   Clock,
   ListTodo,
   ArrowRight,
+  Zap,
+  MapPin,
 } from 'lucide-react';
+import { useClinics } from '../hooks/useClinics';
 import { useDashboardStats } from '../hooks/useAnalytics';
 import { usePatients } from '../hooks/usePatients';
 import { useUpcomingAppointments } from '../hooks/useSessions';
@@ -22,6 +25,7 @@ import ErrorState from '../components/common/ErrorState';
 import Card from '../components/Card';
 import PatientModal from '../components/PatientModal';
 import LogSessionModal from '../components/LogSessionModal';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 
 const timeframeOptions = [
   { value: 'monthly', label: 'This Month' },
@@ -34,12 +38,24 @@ const getTimeframeLabel = (timeframe) => {
   return option?.label || 'This Month';
 };
 
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+const formatTime = (timeStr) => {
+  if (!timeStr) return '';
+  const [hours, minutes] = timeStr.split(':');
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+  return `${displayHour}:${minutes} ${ampm}`;
+};
+
 export default function DashboardPage() {
   const [timeframe, setTimeframe] = useState('monthly');
   const { data: stats, isLoading: loadStats, isFetching: isFetchingStats, isError: isErrorStats, error: errorStats, refetch: refetchStats } = useDashboardStats(timeframe);
   const { data: patientsData, isLoading: loadP, isError: isErrorP, error: errorP, refetch: refetchP } = usePatients({ page: 1, limit: 5 });
   const { data: appointmentsData, isLoading: loadA, isError: isErrorA, error: errorA, refetch: refetchA } = useUpcomingAppointments();
   const { data: tasksData, isLoading: loadT, isError: isErrorT, error: errorT, refetch: refetchT } = useTasks();
+  const { data: clinicsData, isLoading: loadC, isError: isErrorC, refetch: refetchC } = useClinics();
   const [showAddPatient, setShowAddPatient] = useState(false);
   const [showLogSession, setShowLogSession] = useState(false);
 
@@ -53,14 +69,26 @@ export default function DashboardPage() {
   const appointments = appointmentsData?.appointments || [];
   const tasks = tasksData?.tasks || [];
   const activeTasks = tasks.filter((t) => !t.isCompleted);
+  const clinics = Array.isArray(clinicsData) ? clinicsData : clinicsData?.clinics || [];
   
-  const isLoading = loadStats || loadP || loadA || loadT;
+  const todaysShifts = useMemo(() => {
+    const today = new Date();
+    const todayName = daysOfWeek[today.getDay()];
+    return clinics.filter((clinic) =>
+      clinic.working_days?.some((shift) => shift.day === todayName)
+    );
+  }, [clinics]);
+  
+  const isLoading = loadStats || loadP || loadA || loadT || loadC;
   const isFetching = isFetchingStats;
 
   const getWhatsAppLink = (phone) => {
     if (!phone) return null;
-    const cleanPhone = phone.replace(/\D/g, '');
-    return `https://wa.me/${cleanPhone}`;
+    let cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.startsWith('01')) {
+      cleanPhone = '2' + cleanPhone;
+    }
+    return `https://api.whatsapp.com/send/?phone=${cleanPhone}`;
   };
 
   const formatAppointmentTime = (date) => {
@@ -137,9 +165,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Summary Cards - 2x2 on mobile, 3 columns on desktop */}
+      {/* Summary Cards - 2x2 on mobile, 4 columns on desktop */}
       <motion.div
-        className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
         animate={{ opacity: isFetching ? 0.6 : 1 }}
         transition={{ duration: 0.2 }}
       >
@@ -190,7 +218,74 @@ export default function DashboardPage() {
           </p>
           <p className="text-xs sm:text-sm text-base-content/70 mt-1">Sessions {getTimeframeLabel(timeframe).toLowerCase()}</p>
         </Card>
+
+        {/* Card 4 - Total Lifetime Patients */}
+        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-amber-50 flex items-center justify-center">
+              <Users size={18} className="sm:text-[22px] text-amber-500" />
+            </div>
+            <span className="text-[10px] sm:text-xs font-medium text-amber-500 bg-amber-50 px-2 py-1 rounded-full whitespace-nowrap">
+              All Time
+            </span>
+          </div>
+          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-base-content break-words">
+            {totalPatients}
+          </p>
+          <p className="text-xs sm:text-sm text-base-content/70 mt-1">Total Patients</p>
+        </Card>
       </motion.div>
+
+      {/* Today's Shifts section */}
+      {!isLoading && clinics.length > 0 && (
+        <Card className="p-4 sm:p-5 border border-primary/20 bg-primary/5 dark:bg-primary/5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary flex items-center justify-center shrink-0">
+              <Zap size={18} className="sm:text-[20px] text-white" />
+            </div>
+            <h2 className="text-base sm:text-lg font-bold text-base-content text-primary">Today's Shifts</h2>
+          </div>
+
+          {todaysShifts.length === 0 ? (
+            <div className="text-center py-4 text-primary/70">
+              <p className="text-xs sm:text-sm font-medium">✨ No clinic shifts today. Enjoy your day!</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {todaysShifts.map((clinic, idx) => {
+                const todayShiftsForClinic = clinic.working_days.filter(
+                  (shift) => shift.day === daysOfWeek[new Date().getDay()]
+                );
+                return todayShiftsForClinic.map((shift, shiftIdx) => (
+                  <motion.div
+                    key={`${clinic._id}-${shiftIdx}`}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: (idx + shiftIdx) * 0.05 }}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg bg-base-100/80 border border-primary/20 hover:border-primary/40 transition-all"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-bold text-base-content whitespace-nowrap overflow-hidden text-ellipsis">{clinic.name}</h3>
+                      {clinic.address && (
+                        <p className="text-xs text-base-content/70 flex items-center gap-1 mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+                          <MapPin size={12} className="shrink-0" />
+                          {clinic.address}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-md shrink-0 w-fit">
+                      <Clock size={12} className="text-primary" />
+                      <span className="text-xs font-bold text-primary">
+                        {formatTime(shift.start_time)} - {formatTime(shift.end_time)}
+                      </span>
+                    </div>
+                  </motion.div>
+                ));
+              })}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Upcoming Appointments */}
       <Card className="p-4 sm:p-5">
@@ -224,7 +319,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-sm sm:text-base text-base-content truncate">
+                    <p className="font-semibold text-sm sm:text-base text-base-content break-words">
                       {apt.patient_id?.name || 'Unknown Patient'}
                     </p>
                     <p className="text-[10px] sm:text-xs text-base-content/60 flex items-center gap-1 mt-0.5">
@@ -243,7 +338,7 @@ export default function DashboardPage() {
                     title="Chat on WhatsApp"
                     aria-label="Chat on WhatsApp"
                   >
-                    <MessageCircle size={16} className="sm:text-[18px]" />
+                    <WhatsAppIcon size={16} className="sm:text-[18px]" />
                   </a>
                 )}
               </motion.div>
@@ -333,7 +428,7 @@ export default function DashboardPage() {
                   transition={{ delay: idx * 0.1 }}
                 >
                   <div className="flex justify-between text-xs sm:text-sm mb-1">
-                    <span className="font-medium text-base-content truncate max-w-[60%]">{e.clinicName}</span>
+                    <span className="font-medium text-base-content break-words flex-1 min-w-0 pr-2">{e.clinicName}</span>
                     <span className="text-base-content/70 whitespace-nowrap">{e.totalDentistCut.toLocaleString()} EGP</span>
                   </div>
                   <div className="w-full bg-base-100 rounded-full h-1.5 sm:h-2">
@@ -359,7 +454,7 @@ export default function DashboardPage() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowLogSession(true)}
           className="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-lg bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors"
-          title="Log Session"
+          title="Add Session"
         >
           <ClipboardPlus size={20} className="sm:text-[24px]" />
         </motion.button>

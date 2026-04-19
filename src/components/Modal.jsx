@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
 
 export default function Modal({ open, onClose, title, children, size = 'md' }) {
@@ -8,6 +9,16 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
     lg: 'max-w-2xl',
     xl: 'max-w-4xl',
   };
+
+  // Body scroll lock
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [open]);
 
   return (
     <AnimatePresence>

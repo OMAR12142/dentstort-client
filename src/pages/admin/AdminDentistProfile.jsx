@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -10,6 +11,9 @@ import {
   AlertCircle,
   TrendingUp,
   Stethoscope,
+  Key,
+  Copy,
+  Check,
 } from 'lucide-react';
 import {
   PieChart,
@@ -19,8 +23,10 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { useDentistProfile } from '../../hooks/useAdmin';
+import { useDentistProfile, useResetDentistPassword } from '../../hooks/useAdmin';
 import Card from '../../components/Card';
+import Modal from '../../components/Modal';
+import { calculateAge } from '../../utils/dateUtils';
 
 /* ── Helpers ─────────────────────────────────── */
 const fmt = (n) =>
@@ -68,6 +74,38 @@ export default function AdminDentistProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, error } = useDentistProfile(id);
+  const { mutate: resetPassword, isPending: isResetting } = useResetDentistPassword();
+
+  // Reset Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempPassword, setTempPassword] = useState(null);
+  const [isCopied, setIsCopied] = useState(false);
+  const [resetError, setResetError] = useState('');
+
+  const initiateReset = () => {
+    setTempPassword(null);
+    setResetError('');
+    setIsModalOpen(true);
+  };
+
+  const confirmReset = () => {
+    resetPassword(id, {
+      onSuccess: (res) => {
+        setTempPassword(res.temporaryPassword);
+      },
+      onError: (err) => {
+        setResetError(err?.response?.data?.message || err.message);
+      }
+    });
+  };
+
+  const copyToClipboard = () => {
+    if (tempPassword) {
+      navigator.clipboard.writeText(tempPassword);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -95,8 +133,8 @@ export default function AdminDentistProfile() {
         <p className="text-sm text-base-content/60 max-w-md">
           {error?.response?.data?.message || error?.message || 'Something went wrong.'}
         </p>
-        <button onClick={() => navigate(-1)} className="mt-4 text-sm text-primary hover:underline">
-          ← Go back
+        <button onClick={() => navigate(-1)} className="mt-4 flex items-center gap-1 text-sm text-primary hover:underline">
+          <ArrowLeft size={16} /> Go back
         </button>
       </div>
     );
@@ -122,13 +160,24 @@ export default function AdminDentistProfile() {
             <h1 className="text-xl sm:text-2xl font-bold text-base-content">{dentist.name}</h1>
             <p className="text-xs sm:text-sm text-base-content/60">{dentist.email} · {dentist.phone || 'No phone'}</p>
           </div>
-          <span className={`ml-auto px-3 py-1 rounded-full text-xs font-semibold ${
-            dentist.status === 'suspended'
-              ? 'bg-error/10 text-error'
-              : 'bg-success/10 text-success'
-          }`}>
-            {dentist.status || 'active'}
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <button
+              onClick={initiateReset}
+              disabled={dentist.status === 'suspended'}
+              className="btn btn-sm btn-outline border-neutral-light text-base-content/80 hover:bg-warning/10 hover:text-warning hover:border-warning/30"
+              title="Force password reset and log out from all devices"
+            >
+              <Key size={14} />
+              Reset Password
+            </button>
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+              dentist.status === 'suspended'
+                ? 'bg-error/10 text-error'
+                : 'bg-success/10 text-success'
+            }`}>
+              {dentist.status || 'active'}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -257,9 +306,13 @@ export default function AdminDentistProfile() {
                         {s.clinic_id?.name || '—'}
                       </td>
                       <td className="px-4 py-2.5 hidden md:table-cell">
-                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">
-                          {s.treatment_category}
-                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {(Array.isArray(s.treatment_category) ? s.treatment_category : [s.treatment_category].filter(Boolean)).map((cat) => (
+                            <span key={cat} className="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">
+                              {cat}
+                            </span>
+                          ))}
+                        </div>
                       </td>
                       <td className="px-4 py-2.5 text-sm text-right text-base-content font-medium">{fmt(s.total_cost)} EGP</td>
                       <td className="px-4 py-2.5 text-sm text-right text-success">{fmt(s.amount_paid)} EGP</td>
@@ -285,6 +338,7 @@ export default function AdminDentistProfile() {
               <thead>
                 <tr className="border-b border-neutral-light bg-base-200/60">
                   <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5">Name</th>
+                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5">Age</th>
                   <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5 hidden sm:table-cell">Phone</th>
                   <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5 hidden md:table-cell">Insurance</th>
                   <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5">Added</th>
@@ -297,6 +351,9 @@ export default function AdminDentistProfile() {
                   patients.slice(0, 20).map((p) => (
                     <tr key={p._id} className="hover:bg-base-100/60 transition-colors">
                       <td className="px-4 py-2.5 text-sm font-medium text-base-content">{p.name}</td>
+                      <td className="px-4 py-2.5 text-sm text-base-content/70">
+                        {p.dateOfBirth || p.age != null ? `${p.dateOfBirth ? calculateAge(p.dateOfBirth) : p.age} yrs` : '—'}
+                      </td>
                       <td className="px-4 py-2.5 text-sm text-base-content/70 hidden sm:table-cell">{p.phone || '—'}</td>
                       <td className="px-4 py-2.5 text-sm text-base-content/70 hidden md:table-cell">{p.insuranceCompany || 'Private'}</td>
                       <td className="px-4 py-2.5 text-sm text-base-content/60 whitespace-nowrap">{fmtDate(p.createdAt)}</td>
@@ -313,6 +370,97 @@ export default function AdminDentistProfile() {
           </div>
         </Card>
       </motion.div>
+
+      {/* ── Reset Password Modal ── */}
+      <Modal 
+        open={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        title="Reset Password"
+        size="md"
+      >
+        <div className="space-y-4">
+          {!tempPassword ? (
+            <>
+              {resetError && (
+                <div className="p-3 rounded-lg bg-error/10 border border-error/20 flex flex-col items-center justify-center gap-2 text-center">
+                  <AlertCircle size={24} className="text-error" />
+                  <p className="text-sm font-semibold text-error text-balance">{resetError}</p>
+                </div>
+              )}
+              
+              <div className="bg-warning/10 border border-warning/20 p-4 rounded-lg">
+                <h3 className="font-bold text-warning flex items-center gap-2 mb-2">
+                  <AlertCircle size={18} />
+                  Warning: Action is irreversible
+                </h3>
+                <p className="text-sm text-base-content/80 text-balance leading-relaxed">
+                  Are you sure you want to force a password reset for <strong>Dr. {dentist.name}</strong>?
+                  <br /><br />
+                  This action will <strong>immediately log them out</strong> of all their active devices. A new, highly secure temporary password will be generated for them to use upon next login.
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button 
+                  onClick={() => setIsModalOpen(false)}
+                  className="btn btn-ghost"
+                  disabled={isResetting}
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={confirmReset}
+                  className="btn btn-error"
+                  disabled={isResetting}
+                >
+                  {isResetting ? <span className="loading loading-spinner loading-sm" /> : 'Yes, Reset Password'}
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center space-y-4 py-4">
+              <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
+                <Check className="text-success w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-base-content">Password Reset Successful</h3>
+              <p className="text-sm text-base-content/70 text-balance">
+                The old password has been invalidated. Please provide the doctor with this new temporary password immediately.
+              </p>
+              
+              <div className="mt-6 flex flex-col items-center gap-3">
+                <span className="text-xs uppercase font-bold tracking-widest text-base-content/50">Temporary Password</span>
+                <div className="flex z-10 items-center justify-between w-full max-w-sm bg-base-300 border border-neutral-light rounded-lg overflow-hidden group">
+                  <code className="text-lg flex-1 px-4 py-3 font-mono text-center tracking-wider font-semibold text-primary">
+                    {tempPassword}
+                  </code>
+                  <button 
+                    onClick={copyToClipboard}
+                    className={`flex items-center gap-2 px-4 py-4 h-full border-l border-neutral-light transition-colors ${
+                      isCopied ? 'bg-success/20 text-success' : 'hover:bg-base-200 text-base-content/70 hover:text-base-content'
+                    }`}
+                  >
+                    {isCopied ? <Check size={18} /> : <Copy size={18} />}
+                  </button>
+                </div>
+                {isCopied && (
+                  <p className="text-xs font-semibold text-success animate-fade-in">
+                    Copied to clipboard!
+                  </p>
+                )}
+              </div>
+
+              <div className="mt-8">
+                <button 
+                  onClick={() => setIsModalOpen(false)}
+                  className="btn btn-primary w-full"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 }

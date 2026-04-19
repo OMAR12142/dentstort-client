@@ -8,6 +8,7 @@ import Card from '../../components/Card';
 import { TableRowSkeleton } from '../../components/Skeleton';
 
 export default function AdminUsers() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const { data, isLoading, isError, error } = useAdminDentists(search);
   const { mutate: toggleStatus, isPending: isToggling } =
@@ -144,9 +145,12 @@ export default function AdminUsers() {
                         >
                           {/* Name */}
                           <td className="px-4 py-3">
-                            <div className="flex items-center gap-3">
+                            <button 
+                              onClick={() => navigate(`/admin/dentists/${dentist._id}`)}
+                              className="flex items-center gap-3 w-full text-left group focus:outline-none"
+                            >
                               <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
+                                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 transition-colors group-hover:ring-2 ring-primary/30 ${
                                   isSuspended
                                     ? 'bg-error/10 text-error'
                                     : 'bg-primary/10 text-primary'
@@ -155,7 +159,7 @@ export default function AdminUsers() {
                                 {dentist.name?.[0]?.toUpperCase() || '?'}
                               </div>
                               <span
-                                className={`text-sm font-medium truncate max-w-[140px] sm:max-w-none ${
+                                className={`text-sm font-medium truncate max-w-[140px] sm:max-w-none transition-colors group-hover:text-primary ${
                                   isSuspended
                                     ? 'text-base-content/40 line-through'
                                     : 'text-base-content'
@@ -163,7 +167,7 @@ export default function AdminUsers() {
                               >
                                 {dentist.name}
                               </span>
-                            </div>
+                            </button>
                           </td>
 
                           {/* Email */}
