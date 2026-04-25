@@ -7,10 +7,10 @@ import {
   deletePatientApi,
 } from '../api/patients';
 
-export const usePatients = ({ page = 1, limit = 10, clinic_id = '' } = {}) =>
+export const usePatients = ({ page = 1, limit = 10, clinic_id = '', search = '', status = '', sortBy = '', dateFrom = '', dateTo = '' } = {}) =>
   useQuery({
-    queryKey: ['patients', page, limit, clinic_id],
-    queryFn: () => getPatientsApi({ page, limit, clinic_id }),
+    queryKey: ['patients', page, limit, clinic_id, search, status, sortBy, dateFrom, dateTo],
+    queryFn: () => getPatientsApi({ page, limit, clinic_id, search, status, sortBy, dateFrom, dateTo }),
     placeholderData: (prev) => prev,
   });
 

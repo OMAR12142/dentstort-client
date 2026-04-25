@@ -7,10 +7,10 @@ import {
   deleteSessionApi,
 } from '../api/sessions';
 
-export const useSessions = (patientId) =>
+export const useSessions = (patientId, page = 1, limit = 10) =>
   useQuery({
-    queryKey: ['sessions', patientId],
-    queryFn: () => getSessionsByPatientApi(patientId),
+    queryKey: ['sessions', patientId, page, limit],
+    queryFn: () => getSessionsByPatientApi(patientId, page, limit),
     enabled: !!patientId,
   });
 

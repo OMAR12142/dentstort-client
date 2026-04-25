@@ -143,8 +143,8 @@ export default function TasksPage() {
         <>
           {tasks.length === 0 ? (
             <Card className="text-center py-12">
-              <div className="w-16 h-16 rounded-lg bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center mx-auto mb-4">
-                <ListTodo size={32} className="text-violet-600 dark:text-violet-400" />
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <ListTodo size={32} className="text-primary" />
               </div>
               <h3 className="text-lg font-semibold text-base-content mb-2">No tasks yet</h3>
               <p className="text-base-content/70 text-sm mb-6">
@@ -165,13 +165,13 @@ export default function TasksPage() {
                   <p className="text-xs text-base-content/70 uppercase font-semibold mb-1">Total Tasks</p>
                   <p className="text-2xl font-bold text-base-content">{tasks.length}</p>
                 </Card>
-                <div className="bg-violet-50/50 dark:bg-violet-950/20 rounded-lg p-4 sm:p-5 border border-violet-200 dark:border-violet-800">
-                  <p className="text-xs text-violet-700 dark:text-violet-300 uppercase font-semibold mb-1">Active</p>
-                  <p className="text-2xl font-bold text-violet-600 dark:text-violet-400">{activeTasks.length}</p>
+                <div className="bg-primary/5 dark:bg-primary/10 rounded-2xl p-4 sm:p-5 border border-primary/20 dark:border-primary/30">
+                  <p className="text-xs text-primary/70 uppercase font-bold mb-1 tracking-wider">Active</p>
+                  <p className="text-2xl font-black text-primary">{activeTasks.length}</p>
                 </div>
-                <div className="bg-green-50/50 dark:bg-green-950/20 rounded-lg p-4 sm:p-5 border border-green-200 dark:border-green-800">
-                  <p className="text-xs text-green-700 dark:text-green-300 uppercase font-semibold mb-1">Completed</p>
-                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">{completedTasks.length}</p>
+                <div className="bg-success/5 dark:bg-success/10 rounded-2xl p-4 sm:p-5 border border-success/20 dark:border-success/30">
+                  <p className="text-xs text-success/70 uppercase font-bold mb-1 tracking-wider">Completed</p>
+                  <p className="text-2xl font-black text-success">{completedTasks.length}</p>
                 </div>
               </div>
 
@@ -179,7 +179,7 @@ export default function TasksPage() {
               {activeTasks.length > 0 && (
                 <Card>
                   <h2 className="text-lg font-bold text-base-content mb-4 flex items-center gap-2">
-                    <ListTodo size={20} className="text-violet-600 dark:text-violet-400" />
+                    <ListTodo size={20} className="text-primary/60" />
                     Active Tasks ({activeTasks.length})
                   </h2>
                   <div className="space-y-3">

@@ -1,0 +1,22 @@
+# DentStory Robots Configuration
+# Optimized for SaaS SPA Privacy
+
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+
+# Block Clinical Dashboards (Multi-tenanted content)
+Disallow: /dashboard
+Disallow: /patients
+Disallow: /clinics
+Disallow: /tasks
+Disallow: /analytics
+Disallow: /career-analytics
+
+# Block Admin Interface
+Disallow: /admin
+Disallow: /suspended
+
+# Host & Sitemap
+Sitemap: https://dentstory.com/sitemap.xml

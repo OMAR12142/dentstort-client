@@ -15,6 +15,11 @@ export const useAuthStore = create((set) => ({
     set({ accessToken });
   },
 
+  updateUser: (user) => {
+    localStorage.setItem('gd_user', JSON.stringify(user));
+    set({ user });
+  },
+
   logout: () => {
     localStorage.removeItem('gd_user');
     localStorage.removeItem('gd_token');

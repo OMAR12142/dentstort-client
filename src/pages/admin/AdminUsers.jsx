@@ -1,8 +1,16 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-
-import { motion } from 'framer-motion';
-import { Search, Users, ShieldCheck, Ban, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Search, 
+  Users, 
+  ShieldCheck, 
+  Ban, 
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Filter
+} from 'lucide-react';
 import { useAdminDentists, useToggleDentistStatus } from '../../hooks/useAdmin';
 import Card from '../../components/Card';
 import { TableRowSkeleton } from '../../components/Skeleton';
@@ -10,14 +18,22 @@ import { TableRowSkeleton } from '../../components/Skeleton';
 export default function AdminUsers() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-  const { data, isLoading, isError, error } = useAdminDentists(search);
-  const { mutate: toggleStatus, isPending: isToggling } =
-    useToggleDentistStatus();
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
-  // Track which dentist is currently being toggled (for button loading state)
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
+  const { data, isLoading, isFetching, isError, error } = useAdminDentists({ search, page, limit });
+  const { mutate: toggleStatus, isPending: isToggling } = useToggleDentistStatus();
+
   const [togglingId, setTogglingId] = useState(null);
 
   const dentists = data?.dentists || [];
+  const totalDentists = data?.totalDentists || 0;
+  const totalPages = data?.totalPages || 1;
 
   const handleToggle = (id) => {
     setTogglingId(id);
@@ -26,44 +42,67 @@ export default function AdminUsers() {
     });
   };
 
+  const handlePrevPage = () => setPage((p) => Math.max(1, p - 1));
+  const handleNextPage = () => setPage((p) => Math.min(totalPages, p + 1));
+
   return (
-    <div className="space-y-5 sm:space-y-6 pb-8">
+    <div className="space-y-5 sm:space-y-6">
       {/* ── Header ── */}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-base-content">
-          Dentists Management
-        </h1>
-        <p className="text-xs sm:text-sm text-base-content/70 mt-0.5">
-          Browse, search, and manage all registered dentists on the platform.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-6 bg-primary rounded-full" />
+            <h1 className="text-xl sm:text-2xl font-black text-base-content uppercase tracking-tight italic">
+              Dentist Registry
+            </h1>
+          </div>
+          <p className="text-xs sm:text-sm text-base-content/50 font-medium ml-4 mt-0.5">
+            Platform-wide user management and operational status control.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 border border-primary/20 rounded-full text-[10px] font-black uppercase text-primary tracking-widest self-start">
+          <Users size={12} />
+          {totalDentists} Active Professionals
+        </div>
       </div>
 
-      {/* ── Search Bar ── */}
-      <div className="relative max-w-md">
-        <Search
-          size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 pointer-events-none"
-        />
-        <input
-          type="text"
-          placeholder="Search by name or email…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="input input-bordered w-full pl-10 pr-4 py-2.5 bg-base-200 border-neutral-light text-sm text-base-content placeholder:text-base-content/40 focus:border-primary focus:outline-none rounded-lg"
-        />
+      {/* ── Unified Search & Info Bar ── */}
+      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+        <div className="relative flex-1 max-w-md group">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/30 transition-colors group-focus-within:text-primary pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="Search by name or email…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="input input-sm w-full pl-10 pr-4 py-5 bg-base-200/50 border-neutral-light/50 text-sm font-medium focus:border-primary focus:ring-0 focus:outline-none rounded-xl transition-all"
+          />
+          {isFetching && (
+            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+              <span className="loading loading-spinner loading-xs opacity-20" />
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4 text-[10px] font-black uppercase text-base-content/30 tracking-[0.2em] px-2">
+          <Filter size={12} />
+          {search ? 'Filtered View' : 'Global View'}
+        </div>
       </div>
 
       {/* ── Error state ── */}
       {isError && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <ShieldCheck size={48} className="text-error mb-4" />
-          <h2 className="text-xl font-bold text-base-content mb-2">
-            Failed to load dentists
+        <div className="flex flex-col items-center justify-center py-20 text-center bg-base-200/30 rounded-3xl border border-dashed border-error/20">
+          <ShieldCheck size={48} className="text-error opacity-20 mb-4" />
+          <h2 className="text-lg font-black text-base-content uppercase tracking-widest mb-2">
+            Registry Sync Failed
           </h2>
-          <p className="text-sm text-base-content/60 max-w-md">
-            {error?.response?.data?.message ||
-              error?.message ||
-              'Something went wrong.'}
+          <p className="text-xs font-medium text-base-content/50 max-w-sm">
+            {error?.response?.data?.message || error?.message || 'Technical error during list retrieval.'}
           </p>
         </div>
       )}
@@ -73,56 +112,41 @@ export default function AdminUsers() {
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
         >
-          <Card className="p-0 overflow-hidden">
+          <Card className="p-0 overflow-hidden border-neutral-light/50 bg-base-100/50 backdrop-blur-sm">
             <div className="overflow-x-auto min-w-0">
               <table className="table w-full">
                 {/* ── Table Head ── */}
                 <thead>
-                  <tr className="border-b border-neutral-light bg-base-200/60">
-                    <th className="text-xs font-semibold text-base-content/70 uppercase tracking-wider px-4 py-3">
-                      Name
+                  <tr className="border-b border-neutral-light/50 bg-base-200/40">
+                    <th className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em] px-6 py-4">
+                      Professional
                     </th>
-                    <th className="text-xs font-semibold text-base-content/70 uppercase tracking-wider px-4 py-3">
-                      Email
+                    <th className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em] px-6 py-4 hidden sm:table-cell">
+                      Contact
                     </th>
-                    <th className="text-xs font-semibold text-base-content/70 uppercase tracking-wider px-4 py-3 hidden sm:table-cell">
-                      Phone
+                    <th className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em] px-6 py-4 text-center">
+                      Metrics
                     </th>
-                    <th className="text-xs font-semibold text-base-content/70 uppercase tracking-wider px-4 py-3 text-center">
-                      Patients
-                    </th>
-                    <th className="text-xs font-semibold text-base-content/70 uppercase tracking-wider px-4 py-3 text-center">
-                      Sessions
-                    </th>
-                    <th className="text-xs font-semibold text-base-content/70 uppercase tracking-wider px-4 py-3 hidden md:table-cell">
+                    <th className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em] px-6 py-4 hidden md:table-cell">
                       Status
                     </th>
-                    <th className="text-xs font-semibold text-base-content/70 uppercase tracking-wider px-4 py-3 text-center">
-                      Actions
+                    <th className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em] px-6 py-4 text-center">
+                      Governance
                     </th>
                   </tr>
                 </thead>
 
                 {/* ── Table Body ── */}
-                <tbody className="divide-y divide-neutral-light">
+                <tbody className="divide-y divide-neutral-light/30">
                   {isLoading ? (
-                    <TableRowSkeleton rows={6} cols={7} />
+                    <TableRowSkeleton rows={limit} cols={5} />
                   ) : dentists.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan={7}
-                        className="text-center py-12 text-base-content/60"
-                      >
-                        <Users
-                          size={36}
-                          className="mx-auto mb-3 opacity-30"
-                        />
-                        <p className="text-sm">
-                          {search
-                            ? 'No dentists match your search.'
-                            : 'No dentists registered yet.'}
+                      <td colSpan={5} className="text-center py-24 text-base-content/30">
+                        <Users size={48} className="mx-auto mb-4 opacity-10" />
+                        <p className="text-sm font-black uppercase tracking-widest italic">
+                          {search ? 'Zero matches found' : 'No dentists registered'}
                         </p>
                       </td>
                     </tr>
@@ -134,139 +158,88 @@ export default function AdminUsers() {
                       return (
                         <motion.tr
                           key={dentist._id}
-                          initial={{ opacity: 0, y: 6 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.03 }}
-                          className={`transition-colors ${
-                            isSuspended
-                              ? 'bg-error/5 hover:bg-error/10'
-                              : 'hover:bg-base-100/60'
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className={`group transition-all ${
+                            isSuspended ? 'bg-error/[0.02] grayscale-[0.4]' : 'hover:bg-base-200/30'
                           }`}
                         >
-                          {/* Name */}
-                          <td className="px-4 py-3">
+                          {/* Professional */}
+                          <td className="px-6 py-4">
                             <button 
                               onClick={() => navigate(`/admin/dentists/${dentist._id}`)}
-                              className="flex items-center gap-3 w-full text-left group focus:outline-none"
+                              className="flex items-center gap-4 text-left focus:outline-none"
                             >
-                              <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 transition-colors group-hover:ring-2 ring-primary/30 ${
-                                  isSuspended
-                                    ? 'bg-error/10 text-error'
-                                    : 'bg-primary/10 text-primary'
-                                }`}
-                              >
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black transition-all ${
+                                isSuspended ? 'bg-error/10 text-error' : 'bg-primary/10 text-primary group-hover:scale-110'
+                              }`}>
                                 {dentist.name?.[0]?.toUpperCase() || '?'}
                               </div>
-                              <span
-                                className={`text-sm font-medium truncate max-w-[140px] sm:max-w-none transition-colors group-hover:text-primary ${
-                                  isSuspended
-                                    ? 'text-base-content/40 line-through'
-                                    : 'text-base-content'
-                                }`}
-                              >
-                                {dentist.name}
-                              </span>
+                              <div className="min-w-0">
+                                <p className={`text-sm font-black uppercase tracking-tight transition-colors ${
+                                  isSuspended ? 'text-base-content/40 line-through' : 'text-base-content group-hover:text-primary'
+                                }`}>
+                                  {dentist.name}
+                                </p>
+                                <p className="text-[10px] font-bold text-base-content/30 block sm:hidden">
+                                  {dentist.email}
+                                </p>
+                              </div>
                             </button>
                           </td>
 
-                          {/* Email */}
-                          <td
-                            className={`px-4 py-3 text-sm truncate max-w-[180px] ${
-                              isSuspended
-                                ? 'text-base-content/40'
-                                : 'text-base-content/70'
-                            }`}
-                          >
-                            {dentist.email}
+                          {/* Contact */}
+                          <td className="px-6 py-4 hidden sm:table-cell">
+                            <p className={`text-xs font-medium ${isSuspended ? 'text-base-content/30' : 'text-base-content/60'}`}>
+                              {dentist.email}
+                            </p>
+                            <p className="text-[10px] font-bold text-base-content/30 mt-0.5">
+                              {dentist.phone || 'NO PHONE INDEXED'}
+                            </p>
                           </td>
 
-                          {/* Phone */}
-                          <td
-                            className={`px-4 py-3 text-sm hidden sm:table-cell ${
-                              isSuspended
-                                ? 'text-base-content/40'
-                                : 'text-base-content/70'
-                            }`}
-                          >
-                            {dentist.phone || '—'}
+                          {/* Metrics */}
+                          <td className="px-6 py-4">
+                            <div className="flex items-center justify-center gap-3">
+                              <div className="flex flex-col items-center">
+                                <span className={`text-xs font-black ${isSuspended ? 'text-base-content/30' : 'text-sky-600'}`}>
+                                  {dentist.patientCount ?? 0}
+                                </span>
+                                <span className="text-[8px] font-black uppercase tracking-tighter opacity-30 italic">Patients</span>
+                              </div>
+                              <div className="w-px h-4 bg-neutral-light/50" />
+                              <div className="flex flex-col items-center">
+                                <span className={`text-xs font-black ${isSuspended ? 'text-base-content/30' : 'text-primary'}`}>
+                                  {dentist.sessionCount ?? 0}
+                                </span>
+                                <span className="text-[8px] font-black uppercase tracking-tighter opacity-30 italic">Sessions</span>
+                              </div>
+                            </div>
                           </td>
 
-                          {/* Patient count */}
-                          <td className="px-4 py-3 text-center">
-                            <span
-                              className={`inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                isSuspended
-                                  ? 'bg-base-100 text-base-content/40'
-                                  : 'bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400'
-                              }`}
-                            >
-                              {dentist.patientCount ?? 0}
-                            </span>
+                          {/* Status */}
+                          <td className="px-6 py-4 hidden md:table-cell">
+                            <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                              isSuspended ? 'bg-error/10 text-error' : 'bg-success/10 text-success'
+                            }`}>
+                              {isSuspended ? <Ban size={10} /> : <CheckCircle size={10} />}
+                              {isSuspended ? 'Suspended' : 'Active'}
+                            </div>
                           </td>
 
-                          {/* Session count */}
-                          <td className="px-4 py-3 text-center">
-                            <span
-                              className={`inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                isSuspended
-                                  ? 'bg-base-100 text-base-content/40'
-                                  : 'bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400'
-                              }`}
-                            >
-                              {dentist.sessionCount ?? 0}
-                            </span>
-                          </td>
-
-                          {/* Status badge */}
-                          <td className="px-4 py-3 hidden md:table-cell">
-                            <span
-                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
-                                isSuspended
-                                  ? 'bg-error/10 text-error'
-                                  : 'bg-success/10 text-success'
-                              }`}
-                            >
-                              {isSuspended ? (
-                                <>
-                                  <Ban size={12} />
-                                  Suspended
-                                </>
-                              ) : (
-                                <>
-                                  <CheckCircle size={12} />
-                                  Active
-                                </>
-                              )}
-                            </span>
-                          </td>
-
-                          {/* Actions */}
-                          <td className="px-4 py-3 text-center">
+                          {/* Governance (Actions) */}
+                          <td className="px-6 py-4 text-center">
                             <button
                               onClick={() => handleToggle(dentist._id)}
                               disabled={isToggling}
-                              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border ${
+                              className={`btn btn-xs rounded-lg font-black uppercase tracking-tighter transition-all ${
                                 isSuspended
-                                  ? 'border-success/30 text-success hover:bg-success/10'
-                                  : 'border-error/30 text-error hover:bg-error/10'
-                              } ${
-                                isThisToggling ? 'opacity-50 cursor-wait' : ''
-                              }`}
+                                  ? 'bg-success/10 text-success hover:bg-success hover:text-white border-0'
+                                  : 'bg-error/5 text-error hover:bg-error hover:text-white border-0'
+                              } ${isThisToggling ? 'loading' : ''}`}
                             >
-                              {isThisToggling ? (
-                                <span className="loading loading-spinner loading-xs" />
-                              ) : isSuspended ? (
-                                <>
-                                  <CheckCircle size={14} />
-                                  Activate
-                                </>
-                              ) : (
-                                <>
-                                  <Ban size={14} />
-                                  Suspend
-                                </>
-                              )}
+                              {isSuspended ? 'Activate' : 'Suspend'}
                             </button>
                           </td>
                         </motion.tr>
@@ -277,17 +250,54 @@ export default function AdminUsers() {
               </table>
             </div>
 
-            {/* ── Footer with count ── */}
-            {!isLoading && dentists.length > 0 && (
-              <div className="px-4 py-3 border-t border-neutral-light bg-base-200/40 text-xs text-base-content/60">
-                Showing {dentists.length} dentist
-                {dentists.length !== 1 ? 's' : ''}
-                {search && ` matching "${search}"`}
+            {/* ── Premium Pagination Footer ── */}
+            <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-neutral-light/50 bg-base-200/20 gap-4">
+              <div className="text-[10px] font-black uppercase text-base-content/40 tracking-widest">
+                Showing <span className="text-base-content font-black">{dentists.length}</span> of <span className="text-base-content font-black">{totalDentists}</span> Result Index
               </div>
-            )}
+
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={handlePrevPage}
+                  disabled={page === 1 || isFetching}
+                  className="btn btn-square btn-ghost btn-xs disabled:opacity-30"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <div className="flex items-center bg-base-100 rounded-lg border border-neutral-light/50 p-0.5">
+                  {[...Array(totalPages)].map((_, i) => {
+                    const p = i + 1;
+                    // Only show first, last, and around current page for massive sets
+                    if (totalPages > 5 && p > 1 && p < totalPages && Math.abs(p - page) > 1) {
+                      if (p === 2 || p === totalPages - 1) return <span key={p} className="px-1 opacity-30 text-[10px]">...</span>;
+                      return null;
+                    }
+                    return (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={`w-7 h-7 rounded-md text-[10px] font-black transition-all ${
+                          page === p ? 'bg-primary text-white shadow-sm' : 'hover:bg-base-200 text-base-content/60'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  onClick={handleNextPage}
+                  disabled={page === totalPages || isFetching}
+                  className="btn btn-square btn-ghost btn-xs disabled:opacity-30"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
           </Card>
         </motion.div>
       )}
     </div>
   );
 }
+

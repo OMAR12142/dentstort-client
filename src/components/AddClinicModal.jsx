@@ -130,14 +130,14 @@ export default function AddClinicModal({ open, onClose, clinic = null }) {
         {/* Address */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <MapPin size={14} className="text-teal-500" />
+            <MapPin size={14} className="text-primary/60" />
             Address
           </label>
           <input
             name="address"
             value={formData.address}
             onChange={handleInputChange}
-            className="input input-bordered w-full rounded-lg focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-all"
+            className="input input-bordered w-full rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             placeholder="123 Main St, Cairo"
           />
         </motion.div>
@@ -145,7 +145,7 @@ export default function AddClinicModal({ open, onClose, clinic = null }) {
         {/* Commission */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <Percent size={14} className="text-amber-500" />
+            <Percent size={14} className="text-primary/60" />
             Commission Percentage <span className="text-error">*</span>
           </label>
           <input
@@ -154,7 +154,7 @@ export default function AddClinicModal({ open, onClose, clinic = null }) {
             step="0.5"
             value={formData.default_commission_percentage}
             onChange={handleInputChange}
-            className={`input input-bordered w-full rounded-lg focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all ${errors.default_commission_percentage ? 'border-error focus:border-error focus:ring-error' : ''}`}
+            className={`input input-bordered w-full rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all ${errors.default_commission_percentage ? 'border-error focus:border-error focus:ring-error' : ''}`}
             placeholder="40"
           />
           {errors.default_commission_percentage && (

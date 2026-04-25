@@ -1,26 +1,38 @@
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import ClinicsPage from './pages/ClinicsPage';
-import PatientsPage from './pages/PatientsPage';
-import PatientProfilePage from './pages/PatientProfilePage';
-import TreatmentPlanPage from './pages/TreatmentPlanPage';
-import AnalyticsPage from './pages/AnalyticsPage';
-import CareerAnalyticsPage from './pages/CareerAnalyticsPage';
-import TasksPage from './pages/TasksPage';
-import AdminOverview from './pages/admin/AdminOverview';
-import AdminUsers from './pages/admin/AdminUsers';
-import AdminRevenue from './pages/admin/AdminRevenue';
-import AdminDentistProfile from './pages/admin/AdminDentistProfile';
-import NotFound from './components/common/NotFound';
-import LandingPage from './pages/LandingPageAdvanced';
-import SuspendedPage from './pages/SuspendedPage';
+import PortfolioLayout from './layouts/PortfolioLayout';
+
+// ── Lazy Loaded Pages ─────────────────────────
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const ClinicsPage = lazy(() => import('./pages/ClinicsPage'));
+const PatientsPage = lazy(() => import('./pages/PatientsPage'));
+const PatientProfilePage = lazy(() => import('./pages/PatientProfilePage'));
+const TreatmentPlanPage = lazy(() => import('./pages/TreatmentPlanPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const CareerAnalyticsPage = lazy(() => import('./pages/CareerAnalyticsPage'));
+const TasksPage = lazy(() => import('./pages/TasksPage'));
+const AdminOverview = lazy(() => import('./pages/admin/AdminOverview'));
+const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
+const AdminRevenue = lazy(() => import('./pages/admin/AdminRevenue'));
+const AdminDentistProfile = lazy(() => import('./pages/admin/AdminDentistProfile'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const ChangePasswordPage = lazy(() => import('./pages/ChangePasswordPage'));
+const LandingPage = lazy(() => import('./pages/LandingPageAdvanced'));
+const SuspendedPage = lazy(() => import('./pages/SuspendedPage'));
+const NotFound = lazy(() => import('./components/common/NotFound'));
+const PublicPortfolioPage = lazy(() => import('./pages/portfolio/PublicPortfolioPage'));
+const PublicCaseDetailPage = lazy(() => import('./pages/portfolio/PublicCaseDetailPage'));
+const PortfolioEditorPage = lazy(() => import('./pages/portfolio/PortfolioEditorPage'));
+
+// SEO Component
+import SEO from './components/common/SEO';
 
 /**
  * ProtectedRoute: Wrapper for authenticated user routes
@@ -89,6 +101,29 @@ function PublicRoute() {
   return <Outlet />;
 }
 
+/**
+ * DentistRoute: Wrapper for dentist-only routes
+ * - Prevents admins from seeing clinical dashboards
+ */
+function DentistRoute() {
+  const user = useAuthStore((s) => s.user);
+
+  if (user === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-base-100">
+        <span className="loading loading-spinner loading-lg text-primary" />
+      </div>
+    );
+  }
+
+  // If user is admin, they don't belong here. Send them to their panel.
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
+
+  return <Outlet />;
+}
+
 export default function App() {
   // Initialize theme on app mount
   const isDark = useThemeStore((s) => s.isDark);
@@ -107,46 +142,168 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Public Landing Page */}
-        <Route path="/" element={<LandingPage />} />
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center bg-base-100">
+          <span className="loading loading-spinner loading-lg text-primary" />
+        </div>
+      }>
+        <Routes>
+          {/* Public Landing Page */}
+          <Route path="/" element={
+            <>
+              <SEO 
+                title="Management Software for Dentists" 
+                description="The all-in-one SaaS platform for modern dentists. Manage patient records, clinical sessions, and earnings with ease."
+              />
+              <LandingPage />
+            </>
+          } />
 
-        {/* Auth Routes (Wrapped in PublicRoute) */}
-        <Route element={<PublicRoute />}>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Route>
-
-        {/* Protected Routes (Wrapped in ProtectedRoute + MainLayout) */}
-        <Route element={<ProtectedRoute />}>
-          <Route element={<MainLayout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/patients" element={<PatientsPage />} />
-            <Route path="/patients/:id" element={<PatientProfilePage />} />
-            <Route path="/patients/:id/treatment-plan" element={<TreatmentPlanPage />} />
-            <Route path="/clinics" element={<ClinicsPage />} />
-            <Route path="/tasks" element={<TasksPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/career-analytics" element={<CareerAnalyticsPage />} />
+          {/* Public Portfolio Routes (No Auth Required) */}
+          <Route element={<PortfolioLayout />}>
+            <Route path="/portfolio/:slug" element={<PublicPortfolioPage />} />
+            <Route path="/portfolio/:slug/case/:caseId" element={<PublicCaseDetailPage />} />
           </Route>
 
-          {/* Admin Routes (ProtectedRoute → AdminRoute → AdminLayout) */}
-          <Route element={<AdminRoute />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/admin" element={<AdminOverview />} />
-              <Route path="/admin/revenue" element={<AdminRevenue />} />
-              <Route path="/admin/dentists" element={<AdminUsers />} />
-              <Route path="/admin/dentists/:id" element={<AdminDentistProfile />} />
+          {/* Auth Routes (Wrapped in PublicRoute) */}
+          <Route element={<PublicRoute />}>
+            <Route path="/login" element={
+              <>
+                <SEO title="Login" description="Access your DentStory account." noindex />
+                <LoginPage />
+              </>
+            } />
+            <Route path="/register" element={
+              <>
+                <SEO title="Get Started" description="Join 1,000+ dentists transforming their practice with DentStory." />
+                <RegisterPage />
+              </>
+            } />
+          </Route>
+
+          {/* Protected Routes (Wrapped in ProtectedRoute) */}
+          <Route element={<ProtectedRoute />}>
+            
+            {/* Dentist-Only Routes (Excludes Admins) */}
+            <Route element={<DentistRoute />}>
+              <Route element={<MainLayout />}>
+                <Route path="/dashboard" element={
+                  <>
+                    <SEO title="Dashboard" noindex />
+                    <DashboardPage />
+                  </>
+                } />
+                <Route path="/patients" element={
+                  <>
+                    <SEO title="Patient Registry" noindex />
+                    <PatientsPage />
+                  </>
+                } />
+                <Route path="/patients/:id" element={
+                  <>
+                    <SEO title="Patient Profile" noindex />
+                    <PatientProfilePage />
+                  </>
+                } />
+                <Route path="/patients/:id/treatment-plan" element={
+                  <>
+                    <SEO title="Treatment Plan" noindex />
+                    <TreatmentPlanPage />
+                  </>
+                } />
+                <Route path="/clinics" element={
+                  <>
+                    <SEO title="My Clinics" noindex />
+                    <ClinicsPage />
+                  </>
+                } />
+                <Route path="/tasks" element={
+                  <>
+                    <SEO title="Clinical Tasks" noindex />
+                    <TasksPage />
+                  </>
+                } />
+                <Route path="/analytics" element={
+                  <>
+                    <SEO title="Practice Analytics" noindex />
+                    <AnalyticsPage />
+                  </>
+                } />
+                <Route path="/career-analytics" element={
+                  <>
+                    <SEO title="Career Insights" noindex />
+                    <CareerAnalyticsPage />
+                  </>
+                } />
+                <Route path="/profile" element={
+                  <>
+                    <SEO title="My Profile" noindex />
+                    <ProfilePage />
+                  </>
+                } />
+                <Route path="/profile/security" element={
+                  <>
+                    <SEO title="Change Password" noindex />
+                    <ChangePasswordPage />
+                  </>
+                } />
+                <Route path="/portfolio/manage" element={
+                  <>
+                    <SEO title="Portfolio Editor" noindex />
+                    <PortfolioEditorPage />
+                  </>
+                } />
+              </Route>
+            </Route>
+
+            {/* Admin-Only Routes (Excludes Dentists) */}
+            <Route element={<AdminRoute />}>
+              <Route element={<AdminLayout />}>
+                <Route path="/admin" element={
+                  <>
+                    <SEO title="Admin Overview" noindex />
+                    <AdminOverview />
+                  </>
+                } />
+                <Route path="/admin/revenue" element={
+                  <>
+                    <SEO title="Revenue Management" noindex />
+                    <AdminRevenue />
+                  </>
+                } />
+                <Route path="/admin/dentists" element={
+                  <>
+                    <SEO title="Dentist Management" noindex />
+                    <AdminUsers />
+                  </>
+                } />
+                <Route path="/admin/dentists/:id" element={
+                  <>
+                    <SEO title="Dentist Profile Audit" noindex />
+                    <AdminDentistProfile />
+                  </>
+                } />
+              </Route>
             </Route>
           </Route>
-        </Route>
 
-        {/* Suspended Account — outside ProtectedRoute so no layout chrome */}
-        <Route path="/suspended" element={<SuspendedPage />} />
+          {/* Suspended Account */}
+          <Route path="/suspended" element={
+            <>
+              <SEO title="Account Suspended" noindex />
+              <SuspendedPage />
+            </>
+          } />
 
-        {/* Catch-all 404 */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Catch-all 404 */}
+          <Route path="*" element={
+            <>
+              <SEO title="Page Not Found" noindex />
+              <NotFound />
+            </>
+          } />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

@@ -136,7 +136,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-5 sm:space-y-6 pb-20 lg:pb-0">
+    <div className="space-y-5 sm:space-y-6">
       {/* Header with Timeframe Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -172,67 +172,67 @@ export default function DashboardPage() {
         transition={{ duration: 0.2 }}
       >
         {/* Card 1 - Earnings */}
-        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5">
+        <Card className="hover:border-success/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-emerald-50 flex items-center justify-center">
-              <DollarSign size={18} className="sm:text-[22px] text-emerald-500" />
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-success/10 flex items-center justify-center text-success transition-transform group-hover:scale-110">
+              <DollarSign size={20} strokeWidth={2.5} />
             </div>
-            <span className="text-[10px] sm:text-xs font-medium text-emerald-500 bg-emerald-50 px-2 py-1 rounded-full whitespace-nowrap">
+            <span className="text-[10px] sm:text-xs font-black text-success bg-success/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
               {getTimeframeLabel(timeframe)}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-base-content break-words">
-            {totalEarnings.toLocaleString()} EGP
+          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
+            {totalEarnings.toLocaleString()} <span className="text-sm font-normal opacity-50 uppercase tracking-tighter">EGP</span>
           </p>
-          <p className="text-xs sm:text-sm text-base-content/70 mt-1">{getTimeframeLabel(timeframe)} Earnings</p>
+          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">{getTimeframeLabel(timeframe)} Earnings</p>
         </Card>
 
-        {/* Card 2 - Patients Added in Timeframe */}
-        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5">
+        {/* Card 2 - Patients Added */}
+        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-sky-50 flex items-center justify-center">
-              <UserPlus size={18} className="sm:text-[22px] text-sky-500" />
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
+              <UserPlus size={20} strokeWidth={2.5} />
             </div>
-            <span className="text-[10px] sm:text-xs font-medium text-sky-500 bg-sky-50 px-2 py-1 rounded-full whitespace-nowrap">
-              Added
+            <span className="text-[10px] sm:text-xs font-black text-primary bg-primary/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
+              New
             </span>
           </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-base-content break-words">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
             {patientsAdded}
           </p>
-          <p className="text-xs sm:text-sm text-base-content/70 mt-1">Patients {getTimeframeLabel(timeframe).toLowerCase()}</p>
+          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Patients {getTimeframeLabel(timeframe).toLowerCase()}</p>
         </Card>
 
-        {/* Card 3 - Sessions This Timeframe */}
-        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5">
+        {/* Card 3 - Sessions */}
+        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-violet-50 flex items-center justify-center">
-              <CalendarClock size={18} className="sm:text-[22px] text-violet-500" />
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
+              <CalendarClock size={20} strokeWidth={2.5} />
             </div>
-            <span className="text-[10px] sm:text-xs font-medium text-violet-500 bg-violet-50 px-2 py-1 rounded-full whitespace-nowrap">
-              {getTimeframeLabel(timeframe)}
+            <span className="text-[10px] sm:text-xs font-black text-primary bg-primary/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
+              History
             </span>
           </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-base-content break-words">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
             {totalSessions}
           </p>
-          <p className="text-xs sm:text-sm text-base-content/70 mt-1">Sessions {getTimeframeLabel(timeframe).toLowerCase()}</p>
+          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Sessions {getTimeframeLabel(timeframe).toLowerCase()}</p>
         </Card>
 
-        {/* Card 4 - Total Lifetime Patients */}
-        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5">
+        {/* Card 4 - Total Patients */}
+        <Card className="hover:border-warning/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-amber-50 flex items-center justify-center">
-              <Users size={18} className="sm:text-[22px] text-amber-500" />
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-warning/10 flex items-center justify-center text-warning transition-transform group-hover:scale-110">
+              <Users size={20} strokeWidth={2.5} />
             </div>
-            <span className="text-[10px] sm:text-xs font-medium text-amber-500 bg-amber-50 px-2 py-1 rounded-full whitespace-nowrap">
-              All Time
+            <span className="text-[10px] sm:text-xs font-black text-warning bg-warning/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
+              Growth
             </span>
           </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-base-content break-words">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
             {totalPatients}
           </p>
-          <p className="text-xs sm:text-sm text-base-content/70 mt-1">Total Patients</p>
+          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Total Patients</p>
         </Card>
       </motion.div>
 
@@ -319,11 +319,13 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-sm sm:text-base text-base-content break-words">
-                      {apt.patient_id?.name || 'Unknown Patient'}
-                    </p>
-                    <p className="text-[10px] sm:text-xs text-base-content/60 flex items-center gap-1 mt-0.5">
-                      <Clock size={10} className="sm:text-[12px]" />
+                    <Link to={`/patients/${apt.patient_id?._id}`} className="block hover:text-primary transition-colors">
+                      <p className="font-bold text-sm sm:text-[15px] text-base-content break-words leading-tight">
+                        {apt.patient_id?.name || 'Unknown Patient'}
+                      </p>
+                    </Link>
+                    <p className="text-[10px] sm:text-xs text-base-content/50 flex items-center gap-1.5 mt-1 font-medium italic">
+                      <Clock size={11} className="shrink-0" />
                       {formatAppointmentTime(apt.next_appointment)}
                     </p>
                   </div>
@@ -334,11 +336,11 @@ export default function DashboardPage() {
                     href={getWhatsAppLink(apt.patient_id.phone)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-1.5 sm:p-2 text-zinc-400 hover:text-[#25D366] hover:bg-[#25D366]/10 rounded-lg transition-all duration-200 shrink-0"
+                    className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-base-content/30 hover:text-[#25D366] hover:bg-[#25D366]/10 rounded-xl transition-all duration-200 shrink-0 border border-transparent hover:border-[#25D366]/20"
                     title="Chat on WhatsApp"
                     aria-label="Chat on WhatsApp"
                   >
-                    <WhatsAppIcon size={16} className="sm:text-[18px]" />
+                    <WhatsAppIcon size={18} />
                   </a>
                 )}
               </motion.div>
@@ -351,13 +353,13 @@ export default function DashboardPage() {
       <Card className="p-4 sm:p-5">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
-              <ListTodo size={16} className="sm:text-[20px] text-violet-600" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <ListTodo size={16} className="sm:text-[20px] text-primary" />
             </div>
             <h2 className="text-base sm:text-lg font-bold text-base-content">Smart Shift Tasks</h2>
           </div>
           {tasks.length > 0 && (
-            <span className="bg-violet-100 text-violet-700 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap">
+            <span className="bg-primary/10 text-primary text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap">
               {activeTasks.length} active
             </span>
           )}
@@ -384,13 +386,13 @@ export default function DashboardPage() {
                 className="flex items-center justify-between gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-base-100/50 hover:bg-base-100 transition-colors"
               >
                 <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-violet-500 shrink-0" />
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary shrink-0" />
                   <p className="text-xs sm:text-sm font-medium text-base-content break-words line-clamp-2">
                     {task.text}
                   </p>
                 </div>
                 {task.clinic_id?.name && (
-                  <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-base-300/50 rounded truncate shrink-0 max-w-[80px] sm:max-w-none">
+                  <span className="text-[10px] sm:text-xs px-2 py-0.5 bg-base-100 text-primary font-bold border border-primary/10 rounded-lg truncate shrink-0 max-w-[80px] sm:max-w-none">
                     {task.clinic_id.name}
                   </span>
                 )}

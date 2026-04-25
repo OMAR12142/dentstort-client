@@ -27,12 +27,12 @@ export const useRevenueStats = () =>
   });
 
 /**
- * Fetch all dentists with optional search filter.
+ * Fetch all dentists with optional search and pagination.
  */
-export const useAdminDentists = (search = '') =>
+export const useAdminDentists = (filters = {}) =>
   useQuery({
-    queryKey: ['admin', 'dentists', search],
-    queryFn: () => getAdminDentistsApi(search),
+    queryKey: ['admin', 'dentists', filters],
+    queryFn: () => getAdminDentistsApi(filters),
     keepPreviousData: true,
   });
 

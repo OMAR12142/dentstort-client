@@ -52,11 +52,12 @@
   html,
   body {
     @apply w-full max-w-full h-full;
+    font-family: 'Inter', sans-serif;
     /* تم إزالة overflow-x-hidden */
   }
 
   body {
-    @apply bg-base-100 text-base-content min-h-screen overscroll-x-none overflow-y-auto;
+    @apply bg-base-100 text-base-content min-h-screen overscroll-x-none overflow-y-auto font-medium;
   }
 
   #root {

@@ -213,7 +213,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             value={form.name}
             onChange={(e) => setField('name', e.target.value)}
             className={`input input-bordered w-full rounded-lg transition-all ${
-              errors.name ? 'border-error focus:border-error' : 'focus:border-sky-400'
+              errors.name ? 'border-error focus:border-error' : 'focus:border-primary'
             }`}
             placeholder="Omar Mahmoud"
           />
@@ -239,7 +239,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
               type="date"
               value={form.dateOfBirth}
               onChange={(e) => setField('dateOfBirth', e.target.value)}
-              className="input input-bordered w-full rounded-lg focus:border-amber-400 text-sm"
+              className="input input-bordered w-full rounded-lg focus:border-primary text-sm"
               max={new Date().toISOString().split('T')[0]}
             />
           </div>
@@ -250,7 +250,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             <input
               value={form.phone}
               onChange={(e) => setField('phone', e.target.value)}
-              className="input input-bordered w-full rounded-lg focus:border-teal-400"
+              className="input input-bordered w-full rounded-lg focus:border-primary"
               placeholder="+20 1xx xxx xxxx"
             />
           </div>
@@ -268,7 +268,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
           <input
             value={form.phone2}
             onChange={(e) => setField('phone2', e.target.value)}
-            className="input input-bordered w-full rounded-lg focus:border-emerald-400"
+            className="input input-bordered w-full rounded-lg focus:border-primary"
             placeholder="+20 1xx xxx xxxx"
           />
         </motion.div>
@@ -288,7 +288,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
               value={form.clinic_id}
               onChange={(e) => handleClinicChange(e.target.value)}
               className={`select select-bordered w-full rounded-lg ${
-                errors.clinic_id ? 'border-error' : 'focus:border-violet-400'
+                errors.clinic_id ? 'border-error' : 'focus:border-primary'
               }`}
             >
               <option value="">— No clinic —</option>
@@ -307,7 +307,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
 
           <div>
             <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-              <Percent size={14} className="text-emerald-500" /> Commission % <span className="text-error">*</span>
+              <Percent size={14} className="text-primary" /> Commission % <span className="text-error">*</span>
             </label>
             <input
               type="number"
@@ -316,7 +316,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
               max="100"
               value={form.commission_percentage}
               onChange={(e) => setField('commission_percentage', e.target.value)}
-              className="input input-bordered w-full rounded-lg focus:border-emerald-400"
+              className="input input-bordered w-full rounded-lg focus:border-primary"
               placeholder={
                 selectedClinic
                   ? `${selectedClinic.default_commission_percentage}% (default)`
@@ -355,7 +355,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
                   setField('insuranceCompany', e.target.value);
                 }
               }}
-              className="select select-bordered w-full rounded-lg focus:border-rose-400"
+              className="select select-bordered w-full rounded-lg focus:border-primary"
             >
               {savedProviders.map((p) => (
                 <option key={p} value={p}>
@@ -385,7 +385,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
                     setShowAddInsurance(false);
                   }
                 }}
-                className="input input-bordered flex-1 rounded-lg focus:border-rose-400"
+                className="input input-bordered flex-1 rounded-lg focus:border-primary"
                 placeholder="e.g., MetLife, AXA…"
               />
               <button
@@ -428,7 +428,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             <input
               value={form.address}
               onChange={(e) => setField('address', e.target.value)}
-              className="input input-bordered w-full rounded-lg focus:border-indigo-400"
+              className="input input-bordered w-full rounded-lg focus:border-primary"
               placeholder="e.g., Cairo, Egypt"
             />
           </div>
@@ -439,7 +439,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             <input
               value={form.job}
               onChange={(e) => setField('job', e.target.value)}
-              className="input input-bordered w-full rounded-lg focus:border-cyan-400"
+              className="input input-bordered w-full rounded-lg focus:border-primary"
               placeholder="e.g., Engineer"
             />
           </div>
@@ -457,7 +457,7 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
           <textarea
             value={form.medical_history}
             onChange={(e) => setField('medical_history', e.target.value)}
-            className="textarea textarea-bordered w-full rounded-lg resize-none focus:border-orange-400"
+            className="textarea textarea-bordered w-full rounded-lg resize-none focus:border-primary"
             placeholder="e.g., Diabetic, Penicillin Allergy, Aspirin, Metformin"
             rows="2"
           />

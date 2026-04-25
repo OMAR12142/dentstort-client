@@ -6,18 +6,16 @@
  *   className – extra classes
  */
 
-// Light-mode logo (used when isDark = false)
-const logoLight = new URL('../assets/dentstory logo-512.png', import.meta.url).href;
-// Dark-mode logo (used when isDark = true)
-const logoDark = new URL('../assets/dark dentstory logo-512.png', import.meta.url).href;
+import logoLight from '../assets/dentstory logo-512.png';
+import logoDark from '../assets/dark dentstory logo-512.png';
 
 import { useThemeStore } from '../store/themeStore';
 
 const sizes = {
-  sm: 'h-12 w-auto',
-  md: 'h-18 w-auto',
-  lg: 'h-24 w-auto',
-  xl: 'h-36 w-auto',
+  sm: 'h-8 w-32',
+  md: 'h-10 w-40',
+  lg: 'h-12 w-48',
+  xl: 'h-16 w-64',
 };
 
 export default function AppLogo({ size = 'md', className = '' }) {

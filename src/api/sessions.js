@@ -1,7 +1,7 @@
 import api from './axios';
 
-export const getSessionsByPatientApi = (patientId) =>
-  api.get(`/api/sessions`, { params: { patient_id: patientId } }).then((r) => r.data);
+export const getSessionsByPatientApi = (patientId, page = 1, limit = 10) =>
+  api.get(`/api/sessions`, { params: { patient_id: patientId, page, limit } }).then((r) => r.data);
 
 export const getUpcomingAppointmentsApi = () =>
   api.get('/api/sessions/upcoming').then((r) => r.data);

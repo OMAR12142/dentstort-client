@@ -76,11 +76,11 @@ export default function AddTaskModal({ open, onClose }) {
         {/* Task Description */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <ListTodo size={14} className="text-violet-500" />
+            <ListTodo size={14} className="text-primary/60" />
             Task Description <span className="text-error">*</span>
           </label>
           <textarea
-            className={`textarea textarea-bordered w-full rounded-lg focus:border-violet-400 focus:ring-1 focus:ring-violet-400 transition-all resize-none ${errors.text ? 'border-error focus:border-error focus:ring-error' : ''}`}
+            className={`textarea textarea-bordered w-full rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none shadow-sm ${errors.text ? 'border-error focus:border-error' : 'focus:border-primary'}`}
             placeholder="e.g., Send patient report to lab, Follow up with Ahmed..."
             rows="3"
             value={formData.text}
@@ -97,11 +97,11 @@ export default function AddTaskModal({ open, onClose }) {
         {/* Task Type */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <Tag size={14} className="text-sky-500" />
+            <Tag size={14} className="text-primary/60" />
             Task Type
           </label>
           <select
-            className="select select-bordered w-full rounded-lg focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all"
+            className="select select-bordered w-full rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
             value={formData.type}
             onChange={(e) => handleChange('type', e.target.value)}
           >
@@ -115,11 +115,11 @@ export default function AddTaskModal({ open, onClose }) {
         {/* Clinic (Optional) */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <Building2 size={14} className="text-teal-500" />
+            <Building2 size={14} className="text-primary/60" />
             Clinic <span className="text-xs text-base-content/50">(Optional)</span>
           </label>
           <select
-            className="select select-bordered w-full rounded-lg focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-all"
+            className="select select-bordered w-full rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
             value={formData.clinic_id}
             onChange={(e) => handleChange('clinic_id', e.target.value)}
           >
@@ -144,7 +144,7 @@ export default function AddTaskModal({ open, onClose }) {
               Patient <span className="text-xs text-base-content/50">(Optional)</span>
             </label>
             <select
-              className="select select-bordered w-full rounded-lg focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all"
+              className="select select-bordered w-full rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
               value={formData.patient_id}
               onChange={(e) => handleChange('patient_id', e.target.value)}
             >
@@ -164,12 +164,12 @@ export default function AddTaskModal({ open, onClose }) {
         {/* Due Date (Optional) */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
           <label className="label text-sm font-semibold text-base-content/80 flex items-center gap-2">
-            <CalendarDays size={14} className="text-amber-500" />
+            <CalendarDays size={14} className="text-primary/60" />
             Due Date <span className="text-xs text-base-content/50">(Optional)</span>
           </label>
           <input
             type="date"
-            className="input input-bordered w-full rounded-lg focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
+            className="input input-bordered w-full rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
             value={formData.dueDate}
             onChange={(e) => handleChange('dueDate', e.target.value)}
           />

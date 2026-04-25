@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -103,9 +103,6 @@ export default function PatientProfilePage() {
   const { data: patient, isLoading: loadP, isError: isErrorP, error: errorP, refetch: refetchP } = usePatient(id);
   const { mutate: updatePatient, isPending: isUpdating } = useUpdatePatient();
   const { mutate: deletePatient, isPending: isDeletingPatient } = useDeletePatient();
-  const { data: sessionsData, isLoading: loadS, isError: isErrorS, error: errorS, refetch: refetchS } = useSessions(id);
-  const { mutate: deleteSession, isPending: isDeleting } = useDeleteSession();
-
   const [showLogSession, setShowLogSession] = useState(false);
   const [sessionToEdit, setSessionToEdit] = useState(null);
   const [lightbox, setLightbox] = useState({ isOpen: false, images: [], index: 0 });
@@ -114,33 +111,31 @@ export default function PatientProfilePage() {
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [editingText, setEditingText] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
 
-  const sessions = Array.isArray(sessionsData)
-    ? sessionsData
-    : sessionsData?.sessions || [];
+  // Auto-scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
 
-  const sortedSessions = useMemo(() => {
-    return [...sessions].sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [sessions]);
+  const { data: sessionsData, isLoading: loadS, isError: isErrorS, error: errorS, refetch: refetchS } = useSessions(id, currentPage, limit);
+  const { mutate: deleteSession, isPending: isDeleting } = useDeleteSession();
+
+  const sessions = sessionsData?.sessions || [];
+  const totalPages = sessionsData?.pages || 1;
 
   const financialSummary = useMemo(() => {
-    let cost = 0;
-    let paid = 0;
-    let cut = 0;
-
-    sortedSessions.forEach((s) => {
-      cost += Number(s.total_cost) || 0;
-      paid += Number(s.amount_paid) || 0;
-      cut += Number(s.dentist_cut) || 0;
-    });
-
+    const stats = sessionsData?.financialSummary || { total_cost: 0, total_paid: 0, total_cut: 0 };
     return {
-      total_cost: cost,
-      total_paid: paid,
-      remaining_balance: cost - paid,
-      total_cut: cut,
+      ...stats,
+      remaining_balance: stats.total_cost - stats.total_paid,
     };
-  }, [sortedSessions]);
+  }, [sessionsData?.financialSummary]);
+
+  const sortedSessions = useMemo(() => {
+    return sessions;
+  }, [sessions]);
 
   const handleEdit = (session) => {
     setSessionToEdit(session);
@@ -344,10 +339,10 @@ export default function PatientProfilePage() {
 
                   <button
                     onClick={() => setShowLogSession(true)}
-                    className="btn h-12 min-h-0 bg-primary hover:bg-primary-focus text-white border-0 rounded-2xl px-6 font-black text-xs uppercase tracking-widest active:scale-95 transition-all gap-2 flex-1"
+                    className="btn  sm:h-12 min-h-0 bg-primary hover:bg-primary-focus text-white border-0 rounded-2xl px-8 sm:px-6 font-black text-[13px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-widest active:scale-95 transition-all gap-3 flex-1 shadow-lg shadow-primary/20"
                   >
-                    <Plus size={20} strokeWidth={3} />
-                    Add Session
+                    <Plus size={22} strokeWidth={3} className="shrink-0" />
+                    <span className='sm:h-10 text-center flex items-center'>Add Session</span>
                   </button>
                 </div>
               </div>
@@ -359,7 +354,7 @@ export default function PatientProfilePage() {
                 icon={Phone}
                 label="Primary Phone"
                 value={patient.phone}
-                colorClass="text-emerald-500"
+                colorClass="text-primary"
               />
               <InfoBlock
                 icon={Phone}
@@ -371,25 +366,25 @@ export default function PatientProfilePage() {
                 icon={CalendarDays}
                 label="Age"
                 value={patient.dateOfBirth || patient.age != null ? `${patient.dateOfBirth ? calculateAge(patient.dateOfBirth) : patient.age} Y` : null}
-                colorClass="text-indigo-500"
+                colorClass="text-primary"
               />
               <InfoBlock
                 icon={Briefcase}
                 label="Job"
                 value={patient.job}
-                colorClass="text-cyan-500"
+                colorClass="text-primary"
               />
               <InfoBlock
                 icon={ShieldCheck}
                 label="Insurance"
                 value={patient.insuranceCompany || 'Private'}
-                colorClass="text-blue-500"
+                colorClass="text-primary"
               />
               <InfoBlock
                 icon={Pill}
                 label="Med. History"
                 value={patient.medical_history?.length > 0 ? patient.medical_history.join(', ') : 'None'}
-                colorClass="text-orange-500"
+                colorClass="text-warning"
               />
             </div>
 
@@ -397,24 +392,24 @@ export default function PatientProfilePage() {
             <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-stretch">
               {patient.address && (
                 <div className="flex-1 w-full bg-base-100/40 p-4 rounded-xl border border-neutral-light/20 flex items-center gap-3 min-w-0 overflow-hidden">
-                  <div className="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <MapPin size={20} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] uppercase font-black text-rose-600 tracking-wider">Address</p>
+                    <p className="text-[10px] uppercase font-black text-primary tracking-wider">Address</p>
                     <p className="text-sm font-semibold text-base-content break-all [overflow-wrap:anywhere] leading-snug">{patient.address}</p>
                   </div>
                 </div>
               )}
 
               {warnings.length > 0 && (
-                <div className="flex-1 min-w-0 w-full bg-amber-50 dark:bg-amber-900/10 p-4 rounded-xl border border-amber-200 dark:border-amber-800/30 flex items-center gap-3 overflow-hidden">
-                  <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+                <div className="flex-1 min-w-0 w-full bg-warning/5 p-4 rounded-xl border border-warning/20 flex items-center gap-3 overflow-hidden">
+                  <div className="w-10 h-10 rounded-lg bg-warning/10 text-warning flex items-center justify-center shrink-0">
                     <AlertTriangle size={20} className="animate-pulse" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] uppercase font-bold text-amber-600 tracking-wider">Medical Alert</p>
-                    <p className="text-sm font-black text-amber-700 dark:text-amber-400 break-all [overflow-wrap:anywhere] uppercase leading-snug">
+                    <p className="text-[10px] uppercase font-bold text-warning tracking-wider">Medical Alert</p>
+                    <p className="text-sm font-black text-warning dark:text-warning break-all [overflow-wrap:anywhere] uppercase leading-snug">
                       {warnings.join(', ')}
                     </p>
                   </div>
@@ -454,13 +449,13 @@ export default function PatientProfilePage() {
                 </div>
               </div>
 
-              <div className="bg-indigo-50/50 dark:bg-indigo-900/5 p-3 sm:p-4 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left">
-                <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/20 text-indigo-600 flex items-center justify-center shrink-0">
+              <div className="bg-primary/5 p-3 sm:p-4 rounded-2xl border border-primary/20 flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <Activity size={20} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[9px] uppercase font-black text-indigo-500/60 tracking-widest mb-0.5">Dentist Cut</p>
-                  <p className="text-sm sm:text-base font-black text-indigo-600 leading-none">EGP {financialSummary.total_cut.toLocaleString()}</p>
+                  <p className="text-[9px] uppercase font-black text-primary/60 tracking-widest mb-0.5">Dentist Cut</p>
+                  <p className="text-sm sm:text-base font-black text-primary leading-none">EGP {financialSummary.total_cut.toLocaleString()}</p>
                 </div>
               </div>
             </div>
@@ -501,7 +496,7 @@ export default function PatientProfilePage() {
           {(patient.treatment_plan?.length || 0) > 0 && (
             <div className="mt-3 w-full h-1.5 bg-base-300 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-primary rounded-full transition-all duration-500"
+                className="h-full bg-primary rounded-full transition-all duration-500"
                 style={{ width: `${Math.round((patient.treatment_plan.filter(i => i.isCompleted).length / patient.treatment_plan.length) * 100)}%` }}
               />
             </div>
@@ -584,7 +579,7 @@ export default function PatientProfilePage() {
                 {/* Treatment Details - Robust for long text */}
                 {s.treatment_details && (
                   <div className="bg-base-100/50 rounded-xl p-4 border border-neutral-light/30 mb-4 shadow-inner min-w-0">
-                    <h1 className="text-[13px] text-primary dark:text-indigo-400 uppercase font-black mb-2 tracking-widest flex items-center gap-2">
+                    <h1 className="text-[13px] text-primary dark:text-primary uppercase font-black mb-2 tracking-widest flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Treatment Details
                     </h1>
@@ -624,7 +619,7 @@ export default function PatientProfilePage() {
 
                 {/* Next Appointment */}
                 {s.next_appointment && (
-                  <p className="text-xs text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/20 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 mb-3">
+                  <p className="text-xs text-primary bg-primary/5 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 mb-3 border border-primary/10">
                     <Clock size={13} />
                     Next:{' '}
                     {new Date(s.next_appointment).toLocaleDateString('en-GB', {
@@ -657,6 +652,29 @@ export default function PatientProfilePage() {
               </Card>
             </motion.div>
           ))}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-8 pb-10">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                className="btn btn-sm sm:btn-md bg-base-200 hover:bg-base-300 border-neutral-light text-base-content disabled:opacity-30 rounded-xl px-4"
+              >
+                Previous
+              </button>
+              <span className="text-sm font-bold text-base-content/60">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                className="btn btn-sm sm:btn-md bg-base-200 hover:bg-base-300 border-neutral-light text-base-content disabled:opacity-30 rounded-xl px-4"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       )}
 

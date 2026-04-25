@@ -81,21 +81,24 @@ export default function ClinicsPage() {
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: (idx + shiftIdx) * 0.05 }}
-                    className="bg-primary/5 dark:bg-primary/10 rounded-lg p-4 sm:p-5 border border-primary/20 hover:border-primary/40 transition-all"
+                    className="bg-primary/5 rounded-xl p-4 sm:p-5 border border-primary/20 hover:border-primary/40 transition-all group"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-lg font-bold text-base-content break-words">{clinic.name}</h3>
+                        <h3 className="text-lg font-bold text-base-content break-words flex items-center gap-2">
+                          <Building2 size={18} className="text-primary/60" />
+                          {clinic.name}
+                        </h3>
                         {clinic.address && (
-                          <p className="text-sm text-base-content/70 flex items-center gap-1.5 mt-1 break-words">
-                            <MapPin size={14} className="shrink-0" />
+                          <p className="text-sm text-base-content/70 flex items-center gap-1.5 mt-1.5 break-words">
+                            <MapPin size={14} className="shrink-0 text-primary/40" />
                             {clinic.address}
                           </p>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full shrink-0 w-fit">
+                      <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-xl shrink-0 w-fit border border-primary/10">
                         <Clock size={14} className="text-primary" />
-                        <span className="text-sm font-semibold text-primary">
+                        <span className="text-sm font-black text-primary tracking-tight">
                           {formatTime(shift.start_time)} - {formatTime(shift.end_time)}
                         </span>
                       </div>

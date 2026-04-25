@@ -90,7 +90,25 @@ export default function PatientsPage() {
   }, [viewMode]);
 
   const limit = viewMode === 'card' ? (isMobile ? 8 : 12) : 10;
-  const { data, isLoading, isError, error, refetch } = usePatients({ page, limit, clinic_id: clinicFilter });
+  
+  // Sort mapping for backend
+  const backendSortBy = useMemo(() => {
+    if (sortBy === 'newest') return '';
+    if (sortBy === 'name') return 'name';
+    if (sortBy === 'age') return 'age_low';
+    return '';
+  }, [sortBy]);
+
+  const { data, isLoading, isError, error, refetch } = usePatients({ 
+    page, 
+    limit, 
+    clinic_id: clinicFilter,
+    search: search.trim(),
+    status: statusFilter,
+    sortBy: backendSortBy,
+    dateFrom,
+    dateTo
+  });
   const { mutate: deletePatient, isPending: isDeleting } = useDeletePatient();
   const patients = data?.patients || [];
   const totalPages = data?.totalPages || 1;
@@ -104,64 +122,9 @@ export default function PatientsPage() {
     }
   };
 
-  // Text search — name, phone, address, job, insurance, medical fields only
-  let filtered = search
-    ? patients.filter((p) => {
-      const term = search.toLowerCase();
-      if (p.name?.toLowerCase().includes(term)) return true;
-      if (p.phone?.toLowerCase().includes(term)) return true;
-      if (p.phone2?.toLowerCase().includes(term)) return true;
-      if (p.address?.toLowerCase().includes(term)) return true;
-      if (p.job?.toLowerCase().includes(term)) return true;
-      if (p.insuranceCompany?.toLowerCase().includes(term)) return true;
-      if (p.medical_history?.some((h) => h.toLowerCase().includes(term))) return true;
-      return false;
-    })
-    : patients;
-
-  // Date filter — specific date or date range
-  if (dateFrom || dateTo) {
-    filtered = filtered.filter((p) => {
-      if (!p.createdAt) return false;
-      const created = new Date(p.createdAt);
-      // Normalize to start of day for comparison
-      created.setHours(0, 0, 0, 0);
-
-      if (dateFrom && dateTo) {
-        const from = new Date(dateFrom); from.setHours(0, 0, 0, 0);
-        const to = new Date(dateTo); to.setHours(23, 59, 59, 999);
-        return created >= from && created <= to;
-      }
-      if (dateFrom) {
-        const from = new Date(dateFrom); from.setHours(0, 0, 0, 0);
-        // If only "from" is set, match that exact day
-        const endOfDay = new Date(dateFrom); endOfDay.setHours(23, 59, 59, 999);
-        return created >= from && created <= endOfDay;
-      }
-      if (dateTo) {
-        const to = new Date(dateTo); to.setHours(23, 59, 59, 999);
-        return created <= to;
-      }
-      return true;
-    });
-  }
-
-  filtered = filtered.filter((p) => {
-    if (statusFilter === 'All Patients') return true;
-    return (p.status || 'Active') === statusFilter;
-  });
-
-
-  filtered = filtered.sort((a, b) => {
-    if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
-    if (sortBy === 'name') return a.name.localeCompare(b.name);
-    if (sortBy === 'age') {
-      const ageA = a.dateOfBirth ? calculateAge(a.dateOfBirth) : (a.age || 0);
-      const ageB = b.dateOfBirth ? calculateAge(b.dateOfBirth) : (b.age || 0);
-      return ageA - ageB;
-    }
-    return 0;
-  });
+  // Redundant client-side filtering removed. 
+  // We now use serverside search and filtering for accuracy across the entire DB.
+  const filtered = patients;
 
   const stats = useMemo(() => ({
     total: totalPatients,

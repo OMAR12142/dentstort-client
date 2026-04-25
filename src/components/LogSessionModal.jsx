@@ -195,10 +195,10 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
       if (formData.next_appointment) {
         fd.append('next_appointment', formData.next_appointment);
       }
-      
+
       // Send the current list of existing media URLs as kept
       fd.append('existing_media', JSON.stringify(existingMedia));
-      
+
       if (files.length > 0) {
         files.forEach((f) => fd.append('images', f));
       }
@@ -254,7 +254,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
             <input
               type="text"
               placeholder="Search patient…"
-              className="input input-bordered w-full rounded-lg mb-1"
+              className="input input-bordered w-full rounded-lg mb-1 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               value={patientSearch}
               onChange={(e) => {
                 setPatientSearch(e.target.value);
@@ -264,7 +264,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
             />
             <select
               name="patient_id"
-              className={`select select-bordered w-full rounded-lg ${errors.patient_id ? errCls : ''}`}
+              className={`select select-bordered w-full rounded-lg transition-all ${errors.patient_id ? errCls : 'focus:border-primary focus:ring-1 focus:ring-primary'}`}
               value={selectedPatientId}
               onChange={(e) => {
                 setSelectedPatientId(e.target.value);
@@ -300,7 +300,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
             type="date"
             value={formData.date}
             onChange={(e) => handleFormChange('date', e.target.value)}
-            className="input input-bordered w-full rounded-lg"
+            className="input input-bordered w-full rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all"
           />
         </div>
 
@@ -340,11 +340,10 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
                   key={cat}
                   type="button"
                   onClick={() => toggleCategory(cat)}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-primary text-white border-primary'
-                      : 'bg-base-100 text-base-content/70 border-neutral-light hover:border-primary hover:text-primary'
-                  }`}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${isSelected
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-base-100 text-base-content/70 border-neutral-light hover:border-primary hover:text-primary'
+                    }`}
                 >
                   {cat}
                 </button>
@@ -370,7 +369,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
               <input
                 type="text"
                 autoFocus
-                className="input input-sm input-bordered flex-1 rounded-lg"
+                className="input input-sm input-bordered flex-1 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 placeholder="Type custom category (e.g. Insurance)..."
                 value={customCatInput}
                 onChange={(e) => setCustomCatInput(e.target.value)}
@@ -411,7 +410,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
           <textarea
             name="treatment_details"
             rows={3}
-            className="textarea textarea-bordered w-full rounded-lg resize-none"
+            className="textarea textarea-bordered w-full rounded-lg resize-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             placeholder="Root canal on upper left molar…"
             value={formData.treatment_details}
             onChange={(e) => handleFormChange('treatment_details', e.target.value)}
@@ -428,7 +427,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
               name="total_cost"
               type="number"
               step="0.01"
-              className={`input input-bordered w-full rounded-lg ${errors.total_cost ? errCls : ''}`}
+              className={`input input-bordered w-full rounded-lg transition-all ${errors.total_cost ? errCls : 'focus:border-primary focus:ring-1 focus:ring-primary'}`}
               placeholder="500"
               value={formData.total_cost}
               onChange={(e) => handleFormChange('total_cost', e.target.value)}
@@ -446,7 +445,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
               name="amount_paid"
               type="number"
               step="0.01"
-              className="input input-bordered w-full rounded-lg"
+              className="input input-bordered w-full rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               placeholder="200"
               value={formData.amount_paid}
               onChange={(e) => handleFormChange('amount_paid', e.target.value)}
@@ -460,7 +459,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
           <input
             name="next_appointment"
             type="datetime-local"
-            className="input input-bordered w-full rounded-lg"
+            className="input input-bordered w-full rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             value={formData.next_appointment}
             onChange={(e) => handleFormChange('next_appointment', e.target.value)}
           />
@@ -474,9 +473,8 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
               ({5 - existingMedia.length - files.length} slots remaining)
             </span>
           </label>
-          <label className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-4 sm:p-6 cursor-pointer transition-colors ${
-            errors.media ? 'border-error bg-error/5' : 'border-neutral-light hover:border-primary hover:bg-primary/5'
-          }`}>
+          <label className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-4 sm:p-6 cursor-pointer transition-colors ${errors.media ? 'border-error bg-error/5' : 'border-neutral-light hover:border-primary hover:bg-primary/5'
+            }`}>
             <Upload size={28} className={`${errors.media ? 'text-error' : 'text-base-content/50'} mb-2`} />
             <span className={`text-sm ${errors.media ? 'text-error font-medium' : 'text-base-content/70'}`}>
               {errors.media ? errors.media : isEditMode ? 'Click to add more media' : 'Click to upload X-rays or photos'}
@@ -524,7 +522,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
           {/* New Uploads Preview */}
           {files.length > 0 && (
             <div className="mt-4">
-               <span className="text-[10px] uppercase font-bold text-primary mb-2 block tracking-wider">
+              <span className="text-[10px] uppercase font-bold text-primary mb-2 block tracking-wider">
                 New Media to Upload
               </span>
               <div className="flex gap-2 flex-wrap">

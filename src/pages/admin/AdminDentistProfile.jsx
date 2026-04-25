@@ -140,7 +140,7 @@ export default function AdminDentistProfile() {
     );
   }
 
-  const { dentist, stats, patientCount, patients, clinics, recentSessions, earningsByClinic, treatmentBreakdown } = data;
+  const { dentist, stats, patientCount, clinics, earningsByClinic, treatmentBreakdown } = data;
 
   return (
     <div className="space-y-5 sm:space-y-6 pb-8">
@@ -271,105 +271,6 @@ export default function AdminDentistProfile() {
           </Card>
         </motion.div>
       </div>
-
-      {/* ── Recent Sessions ── */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-        <Card className="p-0 overflow-hidden">
-          <div className="px-5 py-4 border-b border-neutral-light flex items-center gap-2">
-            <CalendarDays size={18} className="text-primary" />
-            <h2 className="text-base font-bold text-base-content">Recent Sessions</h2>
-            <span className="ml-auto text-xs text-base-content/50">Last 10</span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="table w-full">
-              <thead>
-                <tr className="border-b border-neutral-light bg-base-200/60">
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5">Date</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5">Patient</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5 hidden sm:table-cell">Clinic</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5 hidden md:table-cell">Category</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5 text-right">Cost</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5 text-right">Paid</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-light">
-                {recentSessions.length === 0 ? (
-                  <tr><td colSpan={6} className="text-center py-8 text-base-content/50 text-sm">No sessions</td></tr>
-                ) : (
-                  recentSessions.map((s) => (
-                    <tr key={s._id} className="hover:bg-base-100/60 transition-colors">
-                      <td className="px-4 py-2.5 text-sm text-base-content whitespace-nowrap">{fmtDate(s.date)}</td>
-                      <td className="px-4 py-2.5 text-sm text-base-content font-medium truncate max-w-[120px]">
-                        {s.patient_id?.name || '—'}
-                      </td>
-                      <td className="px-4 py-2.5 text-sm text-base-content/70 hidden sm:table-cell truncate max-w-[120px]">
-                        {s.clinic_id?.name || '—'}
-                      </td>
-                      <td className="px-4 py-2.5 hidden md:table-cell">
-                        <div className="flex flex-wrap gap-1">
-                          {(Array.isArray(s.treatment_category) ? s.treatment_category : [s.treatment_category].filter(Boolean)).map((cat) => (
-                            <span key={cat} className="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">
-                              {cat}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td className="px-4 py-2.5 text-sm text-right text-base-content font-medium">{fmt(s.total_cost)} EGP</td>
-                      <td className="px-4 py-2.5 text-sm text-right text-success">{fmt(s.amount_paid)} EGP</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      </motion.div>
-
-      {/* ── Patient List ── */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-        <Card className="p-0 overflow-hidden">
-          <div className="px-5 py-4 border-b border-neutral-light flex items-center gap-2">
-            <Users size={18} className="text-primary" />
-            <h2 className="text-base font-bold text-base-content">Patients</h2>
-            <span className="ml-auto text-xs text-base-content/50">{patientCount} total</span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="table w-full">
-              <thead>
-                <tr className="border-b border-neutral-light bg-base-200/60">
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5">Name</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5">Age</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5 hidden sm:table-cell">Phone</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5 hidden md:table-cell">Insurance</th>
-                  <th className="text-xs font-semibold text-base-content/70 uppercase px-4 py-2.5">Added</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-light">
-                {patients.length === 0 ? (
-                  <tr><td colSpan={4} className="text-center py-8 text-base-content/50 text-sm">No patients</td></tr>
-                ) : (
-                  patients.slice(0, 20).map((p) => (
-                    <tr key={p._id} className="hover:bg-base-100/60 transition-colors">
-                      <td className="px-4 py-2.5 text-sm font-medium text-base-content">{p.name}</td>
-                      <td className="px-4 py-2.5 text-sm text-base-content/70">
-                        {p.dateOfBirth || p.age != null ? `${p.dateOfBirth ? calculateAge(p.dateOfBirth) : p.age} yrs` : '—'}
-                      </td>
-                      <td className="px-4 py-2.5 text-sm text-base-content/70 hidden sm:table-cell">{p.phone || '—'}</td>
-                      <td className="px-4 py-2.5 text-sm text-base-content/70 hidden md:table-cell">{p.insuranceCompany || 'Private'}</td>
-                      <td className="px-4 py-2.5 text-sm text-base-content/60 whitespace-nowrap">{fmtDate(p.createdAt)}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-            {patients.length > 20 && (
-              <div className="px-4 py-3 border-t border-neutral-light bg-base-200/40 text-xs text-base-content/60">
-                Showing 20 of {patientCount} patients
-              </div>
-            )}
-          </div>
-        </Card>
-      </motion.div>
 
       {/* ── Reset Password Modal ── */}
       <Modal 

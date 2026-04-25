@@ -8,10 +8,16 @@ export const getAdminStatsApi = () =>
 export const getRevenueStatsApi = () =>
   api.get('/api/admin/revenue').then((r) => r.data);
 
-// ── GET /api/admin/dentists?search=keyword ────
-export const getAdminDentistsApi = (search = '') =>
+// ── GET /api/admin/dentists?search=keyword&page=1&limit=10
+export const getAdminDentistsApi = (filters = {}) =>
   api
-    .get('/api/admin/dentists', { params: search ? { search } : {} })
+    .get('/api/admin/dentists', { 
+      params: { 
+        search: filters.search || '',
+        page: filters.page || 1,
+        limit: filters.limit || 10
+      } 
+    })
     .then((r) => r.data);
 
 // ── GET /api/admin/dentists/:id ───────────────

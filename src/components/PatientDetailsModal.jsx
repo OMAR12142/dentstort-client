@@ -55,7 +55,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-base-200/50 p-3 rounded-xl border border-neutral-light">
             <div className="flex items-center gap-1.5 text-base-content/60 mb-1">
-              <Calendar size={14} className="text-amber-500" />
+              <Calendar size={14} className="text-primary/60" />
               <span className="text-xs font-semibold">Age</span>
             </div>
             <p className="font-medium text-base-content">
@@ -65,7 +65,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
 
           <div className="bg-base-200/50 p-3 rounded-xl border border-neutral-light">
             <div className="flex items-center gap-1.5 text-base-content/60 mb-1">
-              <Phone size={14} className="text-teal-500" />
+              <Phone size={14} className="text-primary/60" />
               <span className="text-xs font-semibold">Phone</span>
             </div>
             <p className="font-medium text-base-content">{patient.phone || 'Not provided'}</p>
@@ -73,7 +73,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
 
           <div className="bg-base-200/50 p-3 rounded-xl border border-neutral-light">
             <div className="flex items-center gap-1.5 text-base-content/60 mb-1">
-              <MapPin size={14} className="text-indigo-500" />
+              <MapPin size={14} className="text-primary/60" />
               <span className="text-xs font-semibold">Address</span>
             </div>
             <p className="font-medium text-base-content break-words" title={patient.address}>{patient.address || 'Not provided'}</p>
@@ -81,7 +81,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
 
           <div className="bg-base-200/50 p-3 rounded-xl border border-neutral-light">
             <div className="flex items-center gap-1.5 text-base-content/60 mb-1">
-              <Briefcase size={14} className="text-cyan-500" />
+              <Briefcase size={14} className="text-primary/60" />
               <span className="text-xs font-semibold">Job / Title</span>
             </div>
             <p className="font-medium text-base-content break-words" title={patient.job}>{patient.job || 'Not provided'}</p>
@@ -90,23 +90,23 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
 
         {/* Clinical Info Group */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2 bg-rose-50/50 dark:bg-rose-900/10 p-3 rounded-xl border border-rose-100 dark:border-rose-900/30">
-            <Stethoscope size={16} className="text-rose-500 shrink-0" />
+          <div className="flex items-center gap-2 bg-primary/5 dark:bg-primary/10 p-3 rounded-xl border border-primary/10 dark:border-primary/30">
+            <Stethoscope size={16} className="text-primary/60 shrink-0" />
             <div className="min-w-0">
-              <p className="text-[10px] uppercase font-bold text-rose-500/80">Insurance Provider</p>
+              <p className="text-[10px] uppercase font-bold text-primary/80">Insurance Provider</p>
               <p className="font-medium text-base-content break-words">{patient.insuranceCompany || 'Private'}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-violet-50/50 dark:bg-violet-900/10 p-3 rounded-xl border border-violet-100 dark:border-violet-900/30">
-            <Building2 size={16} className="text-violet-500 shrink-0" />
+          <div className="flex items-center gap-2 bg-primary/5 dark:bg-primary/10 p-3 rounded-xl border border-primary/10 dark:border-primary/30">
+            <Building2 size={16} className="text-primary/60 shrink-0" />
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase font-bold text-violet-500/80">Primary Clinic</p>
+              <p className="text-[10px] uppercase font-bold text-primary/80">Primary Clinic</p>
               <p className="font-medium text-base-content break-words">{patient.clinic_id?.name || 'Unknown Clinic'}</p>
             </div>
-            <div className="text-right flex items-center justify-end gap-1 px-2 py-1 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
-              <Percent size={12} className="text-violet-600 dark:text-violet-400" />
-              <span className="text-xs font-bold text-violet-700 dark:text-violet-300">{patient.commission_percentage}%</span>
+            <div className="text-right flex items-center justify-end gap-1 px-2 py-1 bg-primary/10 dark:bg-primary/20 rounded-lg">
+              <Percent size={12} className="text-primary" />
+              <span className="text-xs font-bold text-primary">{patient.commission_percentage}%</span>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function PatientDetailsModal({ open, onClose, patient }) {
         <div className="space-y-4 pt-2 border-t border-neutral-light">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Activity size={16} className="text-orange-500" />
+              <Activity size={16} className="text-primary/60" />
               <h3 className="font-bold text-sm text-base-content">Medical History & Drugs</h3>
             </div>
             {patient.medical_history?.length > 0 ? (
