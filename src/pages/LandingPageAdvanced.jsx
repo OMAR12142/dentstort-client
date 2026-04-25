@@ -150,16 +150,16 @@ export default function LandingPage() {
       <PublicNavbar />
 
       {/* ── 1. HERO SECTION ── */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-32">
+      <section className="relative overflow-hidden pt-8 pb-16 md:pt-20 md:pb-32">
         {/* Abstract Background Design */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -mr-64 -mt-32 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-sky-500/5 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative">
-          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
             {/* Hero Text */}
-            <div className="flex-1 text-center lg:text-left">
+            <div className="flex-1 text-center lg:text-left pt-4 lg:pt-0">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -173,7 +173,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-5xl md:text-6xl lg:text-7xl font-black text-[#191919] dark:text-white mb-6 leading-[1.05] tracking-tight"
+                className="text-4xl sm:text-6xl lg:text-7xl font-black text-[#191919] dark:text-white mb-6 leading-[1.1] tracking-tight"
               >
                 Your Entire Dental Story, <span className="text-primary">In One Place.</span>
               </motion.h1>
@@ -182,26 +182,26 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-lg md:text-xl text-[#666666] dark:text-gray-300 leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 font-medium"
+                className="text-base sm:text-xl text-[#666666] dark:text-gray-300 leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 font-medium"
               >
-                DentStory is the all-in-one clinical SaaS designed for Dentists. Manage patients, analyze revenue, and showcase your portfolio .
+                DentStory is the all-in-one clinical SaaS designed for Dentists. Manage patients, analyze revenue, and showcase your portfolio.
               </motion.p>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="flex flex-col sm:flex-row items-center gap-4"
+                className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center lg:justify-start mt-4"
               >
                 <button
                   onClick={handleCTA}
-                  className="px-8 py-4 bg-primary text-white text-lg font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all w-full sm:w-auto"
+                  className="px-8 py-3.5 sm:py-4 bg-primary text-white text-base sm:text-lg font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto"
                 >
                   {token ? 'Go to Dashboard' : 'Start My Story — Free'}
                 </button>
                 <a
                   href="#features"
-                  className="px-8 py-4 bg-white dark:bg-[#252525] border border-base-content/10 text-base-content text-lg font-black rounded-2xl hover:bg-base-content/5 transition-all w-full sm:w-auto text-center"
+                  className="px-8 py-3.5 sm:py-4 bg-white dark:bg-[#252525] border border-base-content/10 text-base-content text-base sm:text-lg font-black rounded-2xl hover:bg-base-content/5 transition-all w-full sm:w-auto text-center"
                 >
                   Explore Features
                 </a>
@@ -212,16 +212,16 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="flex items-center gap-6 mt-12 overflow-x-auto pb-4 lg:pb-0"
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 mt-10 sm:mt-12"
               >
                 {highlights.map((h, i) => (
-                  <div key={i} className="flex items-center gap-2 whitespace-nowrap">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                      <h.icon size={16} />
+                  <div key={i} className="flex items-center gap-1.5 sm:gap-2 bg-base-100/50 dark:bg-white/5 px-2.5 py-1.5 rounded-xl border border-base-content/5 sm:bg-transparent sm:border-none sm:p-0">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                      <h.icon size={13} className="sm:w-4 sm:h-4" />
                     </div>
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-widest text-[#191919] dark:text-white">{h.title}</p>
-                      <p className="text-[10px] text-[#666666] dark:text-gray-500">{h.desc}</p>
+                    <div className="text-left">
+                      <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[#191919] dark:text-white leading-none">{h.title}</p>
+                      <p className="hidden md:block text-[9px] text-[#666666] dark:text-gray-500 mt-0.5">{h.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -296,28 +296,28 @@ export default function LandingPage() {
       </section>
 
       {/* ── 2. FEATURE MISSION ── */}
-      <section id="features" className="bg-white dark:bg-[#252525] py-24 border-y border-base-content/5">
+      <section id="features" className="bg-white dark:bg-[#252525] py-16 sm:py-24 border-y border-base-content/5">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-black text-[#191919] dark:text-white mb-6 tracking-tight">The Practitioner's Toolkit.</h2>
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-20">
+            <h2 className="text-4xl md:text-5xl font-black text-[#191919] dark:text-white mb-6 tracking-tight">DentStory features.</h2>
             <p className="text-lg text-[#666666] dark:text-gray-400 font-medium leading-relaxed">
               Every feature in DentStory is designed to solve a friction point in the surgical and clinical workflow. Zero fluff, maximum performance.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {features.map((f, i) => (
               <motion.div
                 key={i}
                 whileHover={{ y: -8 }}
-                className="p-8 bg-[#F3F2EF] dark:bg-[#1A1A1A] rounded-3xl border border-base-content/5 hover:border-primary/40 transition-all group"
+                className="p-5 sm:p-8 bg-[#F3F2EF] dark:bg-[#1A1A1A] rounded-2xl sm:rounded-3xl border border-base-content/5 hover:border-primary/40 transition-all group"
               >
-                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#252525] flex items-center justify-center text-primary mb-6 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
-                  <f.icon size={24} />
+                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white dark:bg-[#252525] flex items-center justify-center text-primary mb-4 sm:mb-6 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                  <f.icon size={20} className="sm:w-6 sm:h-6" />
                 </div>
-                <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-2 opacity-60">{f.category}</p>
-                <h3 className="text-xl font-bold text-[#191919] dark:text-white mb-4 leading-tight">{f.title}</h3>
-                <p className="text-sm text-[#666666] dark:text-gray-400 leading-relaxed font-medium">
+                <p className="text-[8px] sm:text-[10px] font-black uppercase text-primary tracking-tighter sm:tracking-widest mb-1 sm:mb-2 opacity-60">{f.category}</p>
+                <h3 className="text-sm sm:text-xl font-bold text-[#191919] dark:text-white mb-2 sm:mb-4 leading-tight">{f.title}</h3>
+                <p className="text-[10px] sm:text-sm text-[#666666] dark:text-gray-400 leading-relaxed font-medium line-clamp-3 sm:line-clamp-none">
                   {f.description}
                 </p>
               </motion.div>
@@ -327,9 +327,9 @@ export default function LandingPage() {
       </section>
 
       {/* ── 3. PORTFOLIO SHOWCASE ── */}
-      <section className="bg-primary py-24 relative overflow-hidden">
+      <section className="bg-primary py-16 sm:py-24 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-full bg-white opacity-[0.03] skew-x-[-20deg] translate-x-32" />
-        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <div className="flex-1 text-center lg:text-left">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Built-in Professional Portfolio.</h2>
             <p className="text-lg text-white/80 leading-relaxed max-w-xl mb-8 font-medium">
@@ -395,9 +395,9 @@ export default function LandingPage() {
       </section>
 
       {/* ── 4. PRICING MISSION ── */}
-      <section id="pricing" className="py-24 bg-[#F3F2EF] dark:bg-[#1A1A1A]">
+      <section id="pricing" className="py-16 sm:py-24 bg-[#F3F2EF] dark:bg-[#1A1A1A]">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="bg-white dark:bg-[#252525] rounded-[3rem] border border-base-content/5 shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+          <div className="bg-white dark:bg-[#252525] rounded-3xl sm:rounded-[3rem] border border-base-content/5 shadow-2xl overflow-hidden flex flex-col lg:flex-row">
 
             {/* Pricing Left */}
             <div className="p-10 lg:p-16 flex-1 bg-primary text-white relative">
@@ -430,11 +430,11 @@ export default function LandingPage() {
               </div>
               <button
                 onClick={handleCTA}
-                className="w-full py-5 bg-primary text-white text-lg font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all"
+                className="w-full py-4 sm:py-5 bg-primary text-white text-base sm:text-lg font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all"
               >
                 Start My Clinical Story
               </button>
-              <p className="text-center text-xs font-bold uppercase tracking-widest text-base-content opacity-30 mt-4">Takes 30 seconds • No Card needed</p>
+              <p className="text-center text-[10px] font-bold uppercase tracking-widest text-base-content opacity-30 mt-4">Takes 30 seconds • No Card needed</p>
             </div>
 
           </div>
@@ -442,7 +442,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── 5. FINAL MISSION ── */}
-      <section className="bg-white dark:bg-[#252525] py-24 border-t border-base-content/5">
+      <section className="bg-white dark:bg-[#252525] py-16 sm:py-24 border-t border-base-content/5">
         <div className="max-w-4xl mx-auto px-4 md:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-black text-[#191919] dark:text-white mb-8">Ready to evolve your practice?</h2>
           <p className="text-xl text-[#666666] dark:text-gray-400 mb-12 leading-relaxed font-medium">
@@ -450,7 +450,7 @@ export default function LandingPage() {
           </p>
           <button
             onClick={handleCTA}
-            className="px-12 py-5 bg-primary text-white text-xl font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.05] transition-all"
+            className="w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 bg-primary text-white text-lg sm:text-xl font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.05] active:scale-95 transition-all"
           >
             Get Started for Free
           </button>
