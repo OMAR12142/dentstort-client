@@ -421,30 +421,42 @@ export default function PortfolioEditorPage() {
                             <ImageIcon size={32} className="text-[#666666]/10" />
                           </div>
                         )}
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                        <div className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-start gap-1 p-1">
                           {/* Reordering Controls */}
                           <div className="flex flex-col gap-1 mr-1">
-                             <button 
-                               onClick={() => handleReorder(c._id, 'up')}
-                               className="w-6 h-6 rounded bg-white/80 dark:bg-black/60 text-[#191919] dark:text-white flex items-center justify-center hover:bg-white"
-                               title="Move Up"
-                             >
-                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-                             </button>
-                             <button 
-                               onClick={() => handleReorder(c._id, 'down')}
-                               className="w-6 h-6 rounded bg-white/80 dark:bg-black/60 text-[#191919] dark:text-white flex items-center justify-center hover:bg-white"
-                               title="Move Down"
-                             >
-                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                             </button>
+                            <button
+                              onClick={() => handleReorder(c._id, 'up')}
+                              className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg bg-black/50 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                              title="Move Up"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+                            </button>
+                            <button
+                              onClick={() => handleReorder(c._id, 'down')}
+                              className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg bg-black/50 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                              title="Move Down"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                            </button>
                           </div>
-                          <button onClick={() => setEditCaseModal(c)} className="w-8 h-8 rounded-lg bg-white/90 backdrop-blur-sm text-[#191919] flex items-center justify-center shadow-sm hover:bg-white transition-colors">
-                            <Pencil size={14} />
-                          </button>
-                          <button onClick={() => setConfirmDelete(c._id)} className="w-8 h-8 rounded-lg bg-white/90 backdrop-blur-sm text-[#E74C3C] flex items-center justify-center shadow-sm hover:bg-white transition-colors">
-                            <Trash2 size={14} />
-                          </button>
+                          
+                          {/* Action Buttons */}
+                          <div className="flex gap-1">
+                            <button 
+                              onClick={() => setEditCaseModal(c)} 
+                              className="w-9 h-9 sm:w-8 sm:h-8 rounded-lg bg-[#0A66C2] text-white flex items-center justify-center shadow-lg hover:bg-[#0A66C2]/90 transition-all active:scale-90"
+                              title="Edit Case"
+                            >
+                              <Pencil size={16} className="sm:size-[14px]" />
+                            </button>
+                            <button 
+                              onClick={() => setConfirmDelete(c._id)} 
+                              className="w-9 h-9 sm:w-8 sm:h-8 rounded-lg bg-red-600 text-white flex items-center justify-center shadow-lg hover:bg-red-700 transition-all active:scale-90"
+                              title="Delete Case"
+                            >
+                              <Trash2 size={16} className="sm:size-[14px]" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <div className="p-4">
