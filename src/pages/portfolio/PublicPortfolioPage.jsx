@@ -121,14 +121,14 @@ export default function PublicPortfolioPage() {
         <div className="grid lg:grid-cols-12 gap-8 items-start">
 
           {/* Bio Section */}
-          <div className="lg:col-span-8">
-            <section className="bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-2xl p-6 sm:p-8">
+          <div className="lg:col-span-8 w-full overflow-hidden">
+            <section className="bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-2xl p-5 sm:p-8 overflow-hidden w-full">
               <h2 className="text-xs font-bold text-[#666666] dark:text-gray-400 uppercase mb-6 flex items-center gap-3">
                 <span className="w-8 h-px bg-[#0A66C2]/30" /> Professional Experience
               </h2>
               {bio ? (
-                <div className="space-y-4">
-                  <p className={`text-lg text-[#191919] dark:text-gray-200 leading-relaxed max-w-none whitespace-pre-wrap break-words ${!isExpanded ? 'line-clamp-[12]' : ''}`}>
+                <div className="space-y-4 w-full">
+                  <p className={`text-base sm:text-lg text-[#191919] dark:text-gray-200 leading-relaxed whitespace-pre-wrap break-words overflow-hidden ${!isExpanded ? 'line-clamp-[12]' : ''}`}>
                     {bio}
                   </p>
                   {bio.length > 500 && (
