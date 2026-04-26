@@ -67,8 +67,8 @@ export default function RegisterPage() {
           className="w-full max-w-sm lg:w-96"
         >
           {/* Branding */}
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <AppLogo size="lg" />
+          <div className="flex items-center justify-center gap-3 mb-10">
+            <AppLogo size="xl" />
           </div>
 
           <h2 className="text-2xl font-bold text-base-content tracking-tight">Create account</h2>

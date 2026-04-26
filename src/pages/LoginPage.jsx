@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, AlertCircle, Sun, Moon } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, Sun, Moon, ArrowLeft } from 'lucide-react';
 import { useLogin } from '../hooks/useAuth';
 import { useThemeStore } from '../store/themeStore';
 import AppLogo from '../components/AppLogo';
@@ -57,8 +57,8 @@ export default function LoginPage() {
           className="w-full max-w-sm lg:w-96"
         >
           {/* Branding */}
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <AppLogo size="lg" />
+          <div className="flex items-center justify-center gap-3 mb-10">
+            <AppLogo size="xl" />
           </div>
 
           <h2 className="text-2xl font-bold text-base-content tracking-tight">Welcome back</h2>

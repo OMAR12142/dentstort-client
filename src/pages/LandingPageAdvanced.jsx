@@ -13,6 +13,7 @@ import AppLogo from '../components/AppLogo';
 import SEO from '../components/common/SEO';
 import PublicNavbar from '../components/common/PublicNavbar';
 import PublicFooter from '../components/common/PublicFooter';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -166,8 +167,7 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-8 border border-emerald-500/20"
               >
                 <Heart size={14} className="fill-current" />
-                Empowering 100+ Modern Dentists
-              </motion.div>
+                Helping 100+ Dentists to Grow              </motion.div>
 
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -195,9 +195,9 @@ export default function LandingPage() {
               >
                 <button
                   onClick={handleCTA}
-                  className="px-8 py-3.5 sm:py-4 bg-primary text-white text-base sm:text-lg font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto"
+                  className="px-8 py-3.5 sm:py-4 bg-primary text-white text-base sm:text-lg font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto"
                 >
-                  {token ? 'Go to Dashboard' : 'Start My Story — Free'}
+                  {token ? 'Go to Dashboard' : 'Start Your Dental Story'}
                 </button>
                 <a
                   href="#features"
@@ -430,9 +430,9 @@ export default function LandingPage() {
               </div>
               <button
                 onClick={handleCTA}
-                className="w-full py-4 sm:py-5 bg-primary text-white text-base sm:text-lg font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all"
+                className="w-full py-4 sm:py-5 bg-primary text-white text-base sm:text-lg font-black rounded-2xl hover:scale-[1.01] active:scale-95 transition-all"
               >
-                Start My Clinical Story
+                Start Your denta Story
               </button>
               <p className="text-center text-[10px] font-bold uppercase tracking-widest text-base-content opacity-30 mt-4">Takes 30 seconds • No Card needed</p>
             </div>
@@ -444,16 +444,53 @@ export default function LandingPage() {
       {/* ── 5. FINAL MISSION ── */}
       <section className="bg-white dark:bg-[#252525] py-16 sm:py-24 border-t border-base-content/5">
         <div className="max-w-4xl mx-auto px-4 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-black text-[#191919] dark:text-white mb-8">Ready to evolve your practice?</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-[#191919] dark:text-white mb-8">Ready to take your career to the next level?</h2>
           <p className="text-xl text-[#666666] dark:text-gray-400 mb-12 leading-relaxed font-medium">
             Join the clinical family today. Streamline your sessions, track your growth, and showcase your expertise in one beautiful workspace.
           </p>
           <button
             onClick={handleCTA}
-            className="w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 bg-primary text-white text-lg sm:text-xl font-black rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.05] active:scale-95 transition-all"
+            className="w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 bg-primary text-white text-lg sm:text-xl font-black rounded-2xl hover:scale-[1.05] active:scale-95 transition-all"
           >
             Get Started for Free
           </button>
+
+          {/* ── Feedback & Support Identity ── */}
+          <div className="mt-20 sm:mt-32 max-w-2xl mx-auto px-4">
+            <div className="bg-[#F3F2EF] dark:bg-[#1A1A1A] rounded-[2.5rem] p-8 sm:p-10 border border-base-content/5 relative overflow-hidden group">
+              {/* Decorative Accents (No Glow) */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-colors pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/5 rounded-full -ml-12 -mb-12 pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col items-center text-center">
+                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#252525] flex items-center justify-center text-primary mb-6 border border-base-content/5">
+                  <Sparkles size={24} />
+                </div>
+
+                <h3 className="text-2xl sm:text-3xl font-black text-[#191919] dark:text-white mb-2 tracking-tight italic">Direct clinical support.</h3>
+                <p className="text-sm sm:text-base text-[#666666] dark:text-gray-400 font-medium mb-8 max-w-sm leading-relaxed">
+                  Have clinical feedback, need surgical advice, or encounter an issue? Reach out to us directly.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+                  <a
+                    href="https://wa.me/201019876800?text=Hello%20Omar,%20I%20have%20some%20feedback/advice%20regarding%20DentStory."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-10 py-4 rounded-2xl bg-emerald-500 text-white text-sm font-black hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto justify-center"
+                  >
+                    <WhatsAppIcon size={20} /> WhatsApp
+                  </a>
+                  <a
+                    href="mailto:omarselema52@gmail.com?subject=DentStory Feedback"
+                    className="flex items-center gap-3 px-10 py-4 rounded-2xl bg-white dark:bg-[#252525] text-[#191919] dark:text-white text-sm font-black border border-base-content/10 hover:bg-base-content/5 active:scale-95 transition-all w-full sm:w-auto justify-center shadow-sm"
+                  >
+                    <Mail size={20} /> Gmail
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -466,10 +503,10 @@ export default function LandingPage() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100 }}
-            className="fixed bottom-6 right-6 z-[60] bg-white dark:bg-[#252525] p-4 rounded-3xl shadow-2xl border border-base-content/10 flex items-center gap-4 cursor-pointer hover:scale-[1.02] transition-transform"
+            className="fixed bottom-6 right-6 z-[60] bg-white dark:bg-[#252525] p-4 rounded-3xl border border-base-content/10 flex items-center gap-4 cursor-pointer hover:scale-[1.02] transition-transform"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <div className="w-10 h-10 rounded-2xl bg-sky-500 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
+            <div className="w-10 h-10 rounded-2xl bg-sky-500 flex items-center justify-center text-white">
               <SmartphoneIcon size={20} />
             </div>
             <div className="pr-2">

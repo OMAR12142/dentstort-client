@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ArrowRight } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import AppLogo from '../AppLogo';
 
@@ -22,63 +22,78 @@ export default function PublicNavbar() {
   const isPortfolioPage = location.pathname.includes('/portfolio/');
   const navLinks = isPortfolioPage ? [] : [
     { name: 'Features', href: '/#features' },
-    { name: 'Pricing', href: '/#pricing' },
-    { name: 'How It Works', href: '/#how-it-works' },
-    { name: 'Contact', href: '/#feedback' },
+    { name: 'Showcase', href: '/#cases-section' },
+    { name: 'Support', href: '/#feedback' },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#252525]/80 backdrop-blur-xl border-b border-[#E0DFDC] dark:border-[#3A3A3A]">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <AppLogo size="sm" />
-        </Link>
+    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#1A1A1A]/80 backdrop-blur-xl border-b border-base-content/5">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between font-sans">
+        
+        {/* Brand Area */}
+        <div className="flex-1 flex items-center">
+          <Link to="/" className="flex items-center group">
+            <AppLogo size="sm" className="group-hover:scale-105 transition-transform" />
+          </Link>
+        </div>
 
-        {/* Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* Center Nav Links */}
+        <div className="hidden lg:flex flex-1 justify-center items-center gap-8">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-[#191919] dark:text-white hover:text-[#0A66C2] transition-colors font-medium text-sm"
+              className="text-[11px] font-black uppercase tracking-[0.2em] text-[#666666] dark:text-gray-400 hover:text-primary transition-all relative group/link"
             >
               {link.name}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover/link:w-full" />
             </a>
           ))}
         </div>
 
-        {/* Right Section / Actions */}
-        <div className="flex items-center gap-2">
-          {token ? (
+        {/* Right Section / Action Hub */}
+        <div className="flex-1 flex items-center justify-end gap-4">
+          <div className="hidden sm:flex items-center gap-1 bg-[#F3F2EF] dark:bg-[#252525] p-1.5 rounded-2xl border border-base-content/5 shadow-inner">
+            {token ? (
+              <Link
+                to="/dashboard"
+                className="px-6 py-2.5 text-[10px] sm:text-xs font-black uppercase tracking-widest bg-primary text-white border-0 hover:bg-primary/90 hover:scale-[1.02] active:scale-95 rounded-xl transition-all flex items-center gap-2"
+              >
+                Dashboard <ArrowRight size={14} />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="px-5 py-2.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#666666] dark:text-gray-400 hover:text-primary transition-all"
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-7 py-2.5 text-[10px] sm:text-xs font-black uppercase tracking-widest bg-primary text-white border-0 hover:bg-primary/90 hover:scale-[1.02] active:scale-95 rounded-xl transition-all"
+                >
+                  Join Free
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile CTA Pill */}
+          {!token && (
             <Link
-              to="/dashboard"
-              className="px-4 py-1.5 sm:px-6 sm:py-2.5 text-[10px] sm:text-xs font-black uppercase tracking-widest bg-[#0A66C2] text-white border-0 hover:bg-[#0A66C2]/90 rounded-xl transition-all active:scale-95 shadow-lg shadow-[#0A66C2]/20"
+              to="/register"
+              className="sm:hidden px-4 py-2 text-[10px] font-black uppercase tracking-widest bg-primary text-white rounded-xl"
             >
-              Dashboard
+              Start Free
             </Link>
-          ) : (
-            <div className="flex items-center gap-1.5">
-              <Link
-                to="/login"
-                className="px-3 py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#0A66C2] hover:bg-[#0A66C2]/5 rounded-xl transition-all"
-              >
-                Log In
-              </Link>
-              <Link
-                to="/register"
-                className="px-4 py-1.5 sm:px-5 sm:py-2 text-[10px] sm:text-xs font-black uppercase tracking-widest bg-[#0A66C2] text-white border-0 hover:bg-[#0A66C2]/90 rounded-xl transition-all shadow-lg shadow-[#0A66C2]/20"
-              >
-                Join Free
-              </Link>
-            </div>
           )}
 
-          {/* Mobile Menu Toggle — Only if there are links to show */}
+          {/* Mobile Menu Toggle */}
           {navLinks.length > 0 && (
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-[#191919] dark:text-white"
+              className="lg:hidden p-2.5 text-[#191919] dark:text-white bg-[#F3F2EF] dark:bg-[#252525] rounded-xl border border-base-content/5 outline-none"
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -86,39 +101,45 @@ export default function PublicNavbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-[#252525] border-t border-[#E0DFDC] dark:border-[#3A3A3A] p-4 space-y-3 overflow-hidden"
+            className="lg:hidden bg-white dark:bg-[#1A1A1A] border-t border-base-content/5 p-6 space-y-4 overflow-hidden shadow-2xl"
           >
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-[#191919] dark:text-white hover:text-[#0A66C2] font-medium"
-              >
-                {link.name}
-              </a>
-            ))}
+            <div className="grid grid-cols-1 gap-2">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-4 py-3 text-xs font-black uppercase tracking-[.15em] text-[#191919] dark:text-white hover:bg-primary/5 rounded-xl transition-all flex items-center justify-between group"
+                >
+                  {link.name}
+                  <ArrowRight size={14} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                </a>
+              ))}
+            </div>
+            
             {!token && (
-              <div className="flex gap-2 pt-3">
+              <div className="flex flex-col gap-3 pt-4 border-t border-base-content/5">
                 <Link
                   to="/login"
-                  className="px-4 py-2.5 text-sm font-bold text-[#0A66C2] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-lg hover:bg-[#0A66C2]/5 transition-colors flex-1 text-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full py-4 text-xs font-black uppercase tracking-widest text-[#191919] dark:text-white text-center border border-base-content/10 rounded-2xl hover:bg-base-content/5 transition-all"
                 >
                   Log In
                 </Link>
-                <button
-                  onClick={handleCTA}
-                  className="px-4 py-2.5 text-sm font-bold bg-[#0A66C2] text-white rounded-lg hover:bg-[#0A66C2]/90 transition-colors flex-1"
+                <Link
+                  to="/register"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full py-4 text-xs font-black uppercase tracking-widest bg-primary text-white text-center rounded-2xl active:scale-95 transition-all"
                 >
-                  Get Started Free
-                </button>
+                  Get Started for Free
+                </Link>
               </div>
             )}
           </motion.div>

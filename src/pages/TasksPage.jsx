@@ -38,7 +38,7 @@ export default function TasksPage() {
     const isFollowUp = task.type === 'Follow_Up';
     const whatsappLink =
       isFollowUp && task.patient_id?.phone
-        ? `https://wa.me/${task.patient_id.phone.replace(/\D/g, '')}`
+        ? `https://wa.me/${task.patient_id.phone.replace(/\D/g, '').startsWith('0') ? '20' + task.patient_id.phone.replace(/\D/g, '').substring(1) : task.patient_id.phone.replace(/\D/g, '').startsWith('20') ? task.patient_id.phone.replace(/\D/g, '') : '20' + task.patient_id.phone.replace(/\D/g, '')}`
         : null;
     const isOverdue = task.dueDate && !task.isCompleted && new Date(task.dueDate) < new Date();
 

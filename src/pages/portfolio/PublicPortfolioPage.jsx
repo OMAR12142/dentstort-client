@@ -170,7 +170,7 @@ export default function PublicPortfolioPage() {
               <div className=" space-y-2 mt-auto">
                 {contactPhone && (
                   <a
-                    href={`https://wa.me/${contactPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hello Dr. ${dentist.name}, I am interested in booking a consultation regarding your portfolio.`)}`}
+                    href={`https://wa.me/${contactPhone.replace(/\D/g, '').startsWith('0') ? '20' + contactPhone.replace(/\D/g, '').substring(1) : contactPhone.replace(/\D/g, '').startsWith('20') ? contactPhone.replace(/\D/g, '') : '20' + contactPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hello Dr. ${dentist.name}, I am interested in booking a consultation regarding your portfolio.`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full btn bg-[#057642] hover:bg-[#046338] text-white border-none rounded-xl font-bold gap-2 h-12 shadow-lg shadow-[#057642]/20"

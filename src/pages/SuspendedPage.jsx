@@ -33,7 +33,7 @@ export default function SuspendedPage() {
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Contact Support — Primary */}
           <a
-            href="https://wa.me/2001019876800?text=Hello%2C%20my%20DentStory%20account%20has%20been%20suspended.%20Please%20help."
+            href="https://wa.me/201019876800?text=Hello%2C%20my%20DentStory%20account%20has%20been%20suspended.%20Please%20help."
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
