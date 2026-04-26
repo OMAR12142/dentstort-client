@@ -455,40 +455,27 @@ export default function LandingPage() {
             Get Started for Free
           </button>
 
-          {/* ── Feedback & Support Identity ── */}
-          <div className="mt-20 sm:mt-32 max-w-2xl mx-auto px-4">
-            <div className="bg-[#F3F2EF] dark:bg-[#1A1A1A] rounded-[2.5rem] p-8 sm:p-10 border border-base-content/5 relative overflow-hidden group">
-              {/* Decorative Accents (No Glow) */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-colors pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/5 rounded-full -ml-12 -mb-12 pointer-events-none" />
+          {/* ── Simple Support Hub ── */}
+          <div id="feedback" className=" sm:mt-16 text-center max-w-xl mx-auto px-4">
+            <h3 className="text-2xl font-black text-[#191919] dark:text-white mb-4 "> Support.</h3>
+            <p className="text-[#666666] dark:text-gray-400 text-sm font-medium mb-10 leading-relaxed">
+              Have feedback, need advice, or ran into an issue? Reach out to us.            </p>
 
-              <div className="relative z-10 flex flex-col items-center text-center">
-                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#252525] flex items-center justify-center text-primary mb-6 border border-base-content/5">
-                  <Sparkles size={24} />
-                </div>
-
-                <h3 className="text-2xl sm:text-3xl font-black text-[#191919] dark:text-white mb-2 tracking-tight italic">Direct clinical support.</h3>
-                <p className="text-sm sm:text-base text-[#666666] dark:text-gray-400 font-medium mb-8 max-w-sm leading-relaxed">
-                  Have clinical feedback, need surgical advice, or encounter an issue? Reach out to us directly.
-                </p>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
-                  <a
-                    href="https://wa.me/201019876800?text=Hello%20Omar,%20I%20have%20some%20feedback/advice%20regarding%20DentStory."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 px-10 py-4 rounded-2xl bg-emerald-500 text-white text-sm font-black hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto justify-center"
-                  >
-                    <WhatsAppIcon size={20} /> WhatsApp
-                  </a>
-                  <a
-                    href="mailto:omarselema52@gmail.com?subject=DentStory Feedback"
-                    className="flex items-center gap-3 px-10 py-4 rounded-2xl bg-white dark:bg-[#252525] text-[#191919] dark:text-white text-sm font-black border border-base-content/10 hover:bg-base-content/5 active:scale-95 transition-all w-full sm:w-auto justify-center shadow-sm"
-                  >
-                    <Mail size={20} /> Gmail
-                  </a>
-                </div>
-              </div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href="https://wa.me/201019876800?text=Hello%20Omar,%20I%20have%20some%20feedback/advice%20regarding%20DentStory."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-emerald-500 text-white text-sm font-black hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto justify-center"
+              >
+                <WhatsAppIcon size={18} /> WhatsApp
+              </a>
+              <a
+                href="mailto:omarselema52@gmail.com?subject=DentStory Feedback"
+                className="flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-[#F3F2EF] dark:bg-[#252525] text-[#191919] dark:text-white text-sm font-black border border-base-content/5 hover:bg-base-content/10 active:scale-95 transition-all w-full sm:w-auto justify-center"
+              >
+                <Mail size={18} /> Gmail
+              </a>
             </div>
           </div>
         </div>
