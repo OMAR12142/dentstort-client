@@ -22,6 +22,7 @@ const AdminOverview = lazy(() => import('./pages/admin/AdminOverview'));
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminRevenue = lazy(() => import('./pages/admin/AdminRevenue'));
 const AdminDentistProfile = lazy(() => import('./pages/admin/AdminDentistProfile'));
+const AdminAnnouncements = lazy(() => import('./pages/admin/AdminAnnouncements'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const ChangePasswordPage = lazy(() => import('./pages/ChangePasswordPage'));
 const LandingPage = lazy(() => import('./pages/LandingPageAdvanced'));
@@ -33,6 +34,7 @@ const PortfolioEditorPage = lazy(() => import('./pages/portfolio/PortfolioEditor
 
 // SEO Component
 import SEO from './components/common/SEO';
+import { Toaster } from 'react-hot-toast';
 
 /**
  * ProtectedRoute: Wrapper for authenticated user routes
@@ -142,6 +144,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <Toaster position="top-right" reverseOrder={false} />
       <Suspense fallback={
         <div className="min-h-screen flex items-center justify-center bg-base-100">
           <span className="loading loading-spinner loading-lg text-primary" />
@@ -281,6 +284,12 @@ export default function App() {
                   <>
                     <SEO title="Dentist Profile Audit" noindex />
                     <AdminDentistProfile />
+                  </>
+                } />
+                <Route path="/admin/broadcasts" element={
+                  <>
+                    <SEO title="Broadcast Center" noindex />
+                    <AdminAnnouncements />
                   </>
                 } />
               </Route>

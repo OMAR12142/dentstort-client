@@ -6,6 +6,11 @@ import {
   getDentistProfileApi,
   toggleDentistStatusApi,
   resetDentistPasswordApi,
+  getAdminAnnouncementsApi,
+  createAnnouncementApi,
+  toggleAnnouncementApi,
+  deleteAnnouncementApi,
+  getActiveAnnouncementApi,
 } from '../api/admin';
 
 /**
@@ -69,3 +74,62 @@ export const useResetDentistPassword = () => {
     mutationFn: resetDentistPasswordApi,
   });
 };
+
+/**
+ * Fetch all announcements for admin view.
+ */
+export const useAdminAnnouncements = () =>
+  useQuery({
+    queryKey: ['admin', 'announcements'],
+    queryFn: getAdminAnnouncementsApi,
+  });
+
+/**
+ * Create a new announcement.
+ */
+export const useCreateAnnouncement = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createAnnouncementApi,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'announcements'] });
+    },
+  });
+};
+
+/**
+ * Toggle announcement isActive state.
+ */
+export const useToggleAnnouncement = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: toggleAnnouncementApi,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'announcements'] });
+      queryClient.invalidateQueries({ queryKey: ['announcement', 'active'] });
+    },
+  });
+};
+
+/**
+ * Delete an announcement.
+ */
+export const useDeleteAnnouncement = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteAnnouncementApi,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'announcements'] });
+    },
+  });
+};
+
+/**
+ * Public/Auth: Get the single active announcement to show to the dentist.
+ */
+export const useActiveAnnouncement = () =>
+  useQuery({
+    queryKey: ['announcement', 'active'],
+    queryFn: getActiveAnnouncementApi,
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
+  });

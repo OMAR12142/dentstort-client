@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSuspensionGuard, SuspensionOverlay } from '../hooks/useSuspensionGuard';
 import TopHeader from '../components/TopHeader';
 import Sidebar from '../components/Sidebar';
+import AnnouncementBanner from '../components/AnnouncementBanner';
 
 export default function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -15,6 +16,9 @@ export default function MainLayout() {
   return (
     <div className="h-screen w-full flex flex-col bg-base-200 text-base-content overflow-hidden font-sans">
       {isSuspended && <SuspensionOverlay />}
+
+      {/* Announcements */}
+      <AnnouncementBanner />
 
       {/* Global Top Navigation Bar */}
       <TopHeader setMobileOpen={setMobileOpen} />

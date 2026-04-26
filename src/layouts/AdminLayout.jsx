@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   ArrowLeft,
+  Megaphone,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useLogout } from '../hooks/useAuth';
@@ -23,6 +24,7 @@ const adminNavItems = [
   { to: '/admin', icon: LayoutDashboard, label: 'Overview', end: true },
   { to: '/admin/revenue', icon: DollarSign, label: 'Revenue', end: false },
   { to: '/admin/dentists', icon: Users, label: 'Dentists', end: false },
+  { to: '/admin/broadcasts', icon: Megaphone, label: 'Broadcasts', end: false },
 ];
 
 function SidebarLink({ to, icon: Icon, label, end, onClick }) {
@@ -55,7 +57,7 @@ export default function AdminLayout() {
 
   // Handle potential trailing slashes for robust route checking
   const basePath = location.pathname.replace(/\/$/, '') || '/';
-  const rootPaths = ['/admin', '/admin/revenue', '/admin/dentists'];
+  const rootPaths = ['/admin', '/admin/revenue', '/admin/dentists', '/admin/broadcasts'];
   const showBackButton = !rootPaths.includes(basePath);
 
   return (

@@ -31,3 +31,20 @@ export const toggleDentistStatusApi = (id) =>
 // ── POST /api/admin/dentists/:id/reset-password
 export const resetDentistPasswordApi = (id) =>
   api.post(`/api/admin/dentists/${id}/reset-password`).then((r) => r.data);
+
+// ── Announcements (Admin) ─────────────────────
+export const getAdminAnnouncementsApi = () =>
+  api.get('/api/admin/announcements').then((r) => r.data);
+
+export const createAnnouncementApi = (data) =>
+  api.post('/api/admin/announcements', data).then((r) => r.data);
+
+export const toggleAnnouncementApi = (id) =>
+  api.patch(`/api/admin/announcements/${id}/toggle`).then((r) => r.data);
+
+export const deleteAnnouncementApi = (id) =>
+  api.delete(`/api/admin/announcements/${id}`).then((r) => r.data);
+
+// ── Announcements (Public/Auth) ───────────────
+export const getActiveAnnouncementApi = () =>
+  api.get('/api/announcements/active').then((r) => r.data);
