@@ -151,16 +151,16 @@ export default function LandingPage() {
       <PublicNavbar />
 
       {/* ── 1. HERO SECTION ── */}
-      <section className="relative overflow-hidden pt-8 pb-16 md:pt-20 md:pb-32">
+      <section className="relative overflow-hidden pb-10 md:pt-12 md:pb-32">
         {/* Abstract Background Design */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -mr-64 -mt-32 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -mr-64 -mt-24 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-sky-500/5 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative">
           <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
             {/* Hero Text */}
-            <div className="flex-1 text-center lg:text-left pt-4 lg:pt-0">
+            <div className="flex-1 text-center lg:text-left  lg:pt-0">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -208,24 +208,6 @@ export default function LandingPage() {
               </motion.div>
 
               {/* USP Highlights */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 mt-10 sm:mt-12"
-              >
-                {highlights.map((h, i) => (
-                  <div key={i} className="flex items-center gap-1.5 sm:gap-2 bg-base-100/50 dark:bg-white/5 px-2.5 py-1.5 rounded-xl border border-base-content/5 sm:bg-transparent sm:border-none sm:p-0">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                      <h.icon size={13} className="sm:w-4 sm:h-4" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[#191919] dark:text-white leading-none">{h.title}</p>
-                      <p className="hidden md:block text-[9px] text-[#666666] dark:text-gray-500 mt-0.5">{h.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
             </div>
 
             {/* Dashboard Preview Overlay */}
@@ -240,7 +222,7 @@ export default function LandingPage() {
                   <div className="w-2.5 h-2.5 rounded-full bg-error/40" />
                   <div className="w-2.5 h-2.5 rounded-full bg-warning/40" />
                   <div className="w-2.5 h-2.5 rounded-full bg-success/40" />
-                  <span className="text-[10px] ml-2 font-black text-base-content/30 uppercase tracking-widest">clinical System Interface</span>
+                  <span className="text-[10px] ml-2 font-black text-base-content/30 uppercase tracking-widest">Dashboard</span>
                 </div>
                 <div className="p-4 sm:p-6 space-y-6">
                   {/* Quick Stats Mockup */}
@@ -258,7 +240,7 @@ export default function LandingPage() {
                   <div className="space-y-2">
                     <p className="text-[10px] font-black text-base-content/40 uppercase tracking-widest">Current Clinical Rotation</p>
                     {[
-                      { name: 'Ahmed Hassan', op: 'Implants', status: 'Success' },
+                      { name: 'Ahmed Hassan', op: 'Implants', status: 'active' },
                       { name: 'Sara Mohamed', op: 'Orthodontics', status: 'In Progress' }
                     ].map((p, idx) => (
                       <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-base-100 border border-base-content/5">

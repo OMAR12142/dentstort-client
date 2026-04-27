@@ -101,7 +101,7 @@ export default function PublicCaseDetailPage() {
 
             {/* Minimized Doctor Identity */}
             <div className="flex items-center gap-3 pt-4 border-t border-[#E0DFDC]/50 dark:border-[#3A3A3A]/50">
-              <div 
+              <div
                 onClick={() => setProfilePhotoOpen(true)}
                 className="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-[#3A3A3A] shadow-sm shrink-0 cursor-pointer hover:scale-110 transition-transform"
               >
