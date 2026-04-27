@@ -154,8 +154,8 @@ export default function App() {
           {/* Public Landing Page */}
           <Route path="/" element={
             <>
-              <SEO 
-                title="Management Software for Dentists" 
+              <SEO
+                title="Management Software for Dentists"
                 description="The all-in-one SaaS platform for modern dentists. Manage patient records, clinical sessions, and earnings with ease."
               />
               <LandingPage />
@@ -186,7 +186,7 @@ export default function App() {
 
           {/* Protected Routes (Wrapped in ProtectedRoute) */}
           <Route element={<ProtectedRoute />}>
-            
+
             {/* Dentist-Only Routes (Excludes Admins) */}
             <Route element={<DentistRoute />}>
               <Route element={<MainLayout />}>
