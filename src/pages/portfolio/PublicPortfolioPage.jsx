@@ -71,7 +71,7 @@ export default function PublicPortfolioPage() {
   const totalPages = pagination?.totalPages || 1;
 
   return (
-    <div className="bg-[#F3F2EF] dark:bg-[#1A1A1A] min-h-screen pb-20 font-sans transition-colors duration-300">
+    <div className="bg-[#F3F2EF] dark:bg-[#1A1A1A] min-h-screen pb-2 font-sans transition-colors duration-300">
       <SEO
         title={`Dr. ${dentist.name} — Dental Portfolio`}
         description={bio ? bio.substring(0, 150) : `View Dr. ${dentist.name}'s professional clinical portfolio.`}
@@ -225,12 +225,12 @@ export default function PublicPortfolioPage() {
           </header>
 
           {/* ── Treatment Filter Bar ── */}
-          <div className="flex flex-wrap items-center gap-3 mb-12">
+          <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-3 mb-16 lg:mb-20">
             {Object.keys(TREATMENT_ICONS).map((type) => (
               <button
                 key={type}
                 onClick={() => setSelectedFilter(type)}
-                className={`flex items-center gap-2.5 px-6 py-3 rounded-2xl text-xs font-bold transition-all border ${selectedFilter === type
+                className={`flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 pb-1 pt-1 sm:gap-2.5 px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-bold transition-all border ${selectedFilter === type
                   ? 'bg-[#0A66C2] text-white border-[#0A66C2] shadow-xl shadow-[#0A66C2]/20'
                   : 'bg-white dark:bg-[#252525] text-[#666666] dark:text-gray-400 border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]'
                   }`}
@@ -238,7 +238,7 @@ export default function PublicPortfolioPage() {
                 <span className={selectedFilter === type ? 'text-white' : 'text-[#0A66C2]'}>
                   {TREATMENT_ICONS[type]}
                 </span>
-                {type}
+                <span className="truncate w-full text-center sm:text-left">{type}</span>
               </button>
             ))}
           </div>
@@ -249,8 +249,8 @@ export default function PublicPortfolioPage() {
               <p className="font-bold text-[#666666]/40 uppercase text-sm tracking-widest">No {selectedFilter !== 'All' ? selectedFilter : ''} cases available</p>
             </div>
           ) : (
-            <div className="space-y-12">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="space-y-16">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
                 {cases
                   .filter(c => selectedFilter === 'All' || c.treatmentType === selectedFilter)
                   .map((c, i) => (
@@ -271,25 +271,25 @@ export default function PublicPortfolioPage() {
                           ) : (
                             <div className="w-full h-full flex items-center justify-center"><Briefcase size={40} className="text-[#666666]/10" /></div>
                           )}
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            <span className="px-3 py-1 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm text-[#0A66C2] text-[10px] font-bold uppercase rounded-lg shadow-sm border border-[#E0DFDC] dark:border-[#3A3A3A] flex items-center gap-1.5">
+                          <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex flex-wrap gap-1 sm:gap-2">
+                            <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm text-[#0A66C2] text-[8px] sm:text-[10px] font-bold uppercase rounded-md sm:rounded-lg shadow-sm border border-[#E0DFDC] dark:border-[#3A3A3A] flex items-center gap-1 sm:gap-1.5 shrink-0">
                               {TREATMENT_ICONS[c.treatmentType || 'General']}
-                              {c.treatmentType || 'General'}
+                              <span className="hidden xs:inline">{c.treatmentType || 'General'}</span>
                             </span>
                             {c.category && (
-                              <span className="px-3 py-1 bg-black/70 text-white text-[10px] font-bold uppercase rounded-lg shadow-sm border border-white/10">
+                              <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-black/70 text-white text-[8px] sm:text-[10px] font-bold uppercase rounded-md sm:rounded-lg shadow-sm border border-white/10 shrink-0">
                                 {c.category}
                               </span>
                             )}
                           </div>
                         </div>
-                        <div className="p-6">
-                          <h3 className="font-bold text-xl text-[#191919] dark:text-white group-hover:text-[#0A66C2] transition-colors line-clamp-1 mb-4">
+                        <div className="p-3 sm:p-6">
+                          <h3 className="font-bold text-sm sm:text-xl text-[#191919] dark:text-white group-hover:text-[#0A66C2] transition-colors line-clamp-1 mb-2 sm:mb-4">
                             {c.title}
                           </h3>
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-xs font-bold text-[#666666] dark:text-gray-400 group-hover:text-[#0A66C2] transition-colors">
-                              View Case Study <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                            <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-[#666666] dark:text-gray-400 group-hover:text-[#0A66C2] transition-colors">
+                              <span className="hidden xs:inline">View Case Study</span> <ArrowRight size={12} className="group-hover:translate-x-2 transition-transform" />
                             </div>
                           </div>
                         </div>
@@ -300,7 +300,7 @@ export default function PublicPortfolioPage() {
 
               {/* ── Pagination Controls ── */}
               {selectedFilter === 'All' && totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 pb-12">
+                <div className="flex items-center justify-center gap-2">
                   <button
                     disabled={page === 1}
                     onClick={() => handlePageChange(page - 1)}
