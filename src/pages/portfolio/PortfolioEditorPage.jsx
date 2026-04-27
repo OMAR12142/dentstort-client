@@ -21,6 +21,13 @@ import {
 } from '../../hooks/usePortfolio';
 
 // ════════════════════════════════════════════════
+//  CONSTANTS
+// ════════════════════════════════════════════════
+const TREATMENT_TYPES = [
+  'Surgery', 'Implant', 'Endo', 'Perio', 'Fixed', 'Removable', 'Restorative', 'General'
+];
+
+// ════════════════════════════════════════════════
 //  MAIN EDITOR PAGE
 // ════════════════════════════════════════════════
 export default function PortfolioEditorPage() {
@@ -568,6 +575,7 @@ function AddCaseModal({ onClose }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
+  const [treatmentType, setTreatmentType] = useState('General');
   const [selectedImages, setSelectedImages] = useState([]);
   const [coverImage, setCoverImage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -609,6 +617,7 @@ function AddCaseModal({ onClose }) {
       title,
       description,
       category,
+      treatmentType,
       selectedImages,
       coverImage: coverImage || selectedImages[0],
     }, {
@@ -685,14 +694,33 @@ function AddCaseModal({ onClose }) {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white">Clinical Category</label>
+                <label className="text-sm font-bold text-[#191919] dark:text-white">Trial/Patient Note (Internal)</label>
                 <input
                   type="text"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  placeholder="e.g. Surgery, Esthetics"
+                  placeholder="e.g. Case #12, VIP Patient"
                   className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-[#191919] dark:text-white">Treatment Type *</label>
+                <div className="flex flex-wrap gap-2">
+                  {TREATMENT_TYPES.map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setTreatmentType(type)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${treatmentType === type
+                        ? 'bg-[#0A66C2] text-white border-[#0A66C2] shadow-md shadow-[#0A66C2]/20'
+                        : 'bg-white dark:bg-[#1A1A1A] text-[#666666] border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]'
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
               </div>
             </motion.div>
           )}
@@ -800,6 +828,7 @@ function EditCaseModal({ caseData, onClose }) {
   const [title, setTitle] = useState(caseData.title || '');
   const [description, setDescription] = useState(caseData.description || '');
   const [category, setCategory] = useState(caseData.category || '');
+  const [treatmentType, setTreatmentType] = useState(caseData.treatmentType || 'General');
   const [selectedImages, setSelectedImages] = useState(caseData.selectedImages || []);
   const [coverImage, setCoverImage] = useState(caseData.coverImage || (caseData.selectedImages?.[0] || ''));
   const [error, setError] = useState('');
@@ -829,6 +858,7 @@ function EditCaseModal({ caseData, onClose }) {
       title,
       description,
       category,
+      treatmentType,
       selectedImages,
       coverImage: coverImage || selectedImages[0]
     }, {
@@ -881,6 +911,25 @@ function EditCaseModal({ caseData, onClose }) {
               <div className="space-y-2">
                 <label className="text-sm font-bold text-[#191919] dark:text-white">Description</label>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl p-4 text-sm resize-none" />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-[#191919] dark:text-white">Treatment Type</label>
+                <div className="flex flex-wrap gap-2">
+                  {TREATMENT_TYPES.map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setTreatmentType(type)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${treatmentType === type
+                        ? 'bg-[#0A66C2] text-white border-[#0A66C2]'
+                        : 'bg-white dark:bg-[#1A1A1A] text-[#666666] border-[#E0DFDC] dark:border-[#3A3A3A]'
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}

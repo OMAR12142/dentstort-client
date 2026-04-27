@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, Briefcase, Mail, Phone, MapPin, ArrowRight, Award, Sparkles, MessageCircle, X
+  User, Briefcase, Mail, Phone, MapPin, ArrowRight, Award, Sparkles, MessageCircle, X,
+  Activity, Anchor, Zap, Layers, ShieldCheck, RefreshCcw, LayoutGrid, AppWindow, Stethoscope
 } from 'lucide-react';
 import { usePublicPortfolio } from '../../hooks/usePortfolio';
 import SEO from '../../components/common/SEO';
@@ -20,6 +21,19 @@ export default function PublicPortfolioPage() {
   const limit = 6;
 
   const { data, isLoading, error } = usePublicPortfolio(slug, page, limit);
+  const [selectedFilter, setSelectedFilter] = useState('All');
+
+  const TREATMENT_ICONS = {
+    'All': <LayoutGrid size={18} />,
+    'Surgery': <Stethoscope size={18} />,
+    'Implant': <Anchor size={18} />,
+    'Endo': <Zap size={18} />,
+    'Perio': <Layers size={18} />,
+    'Fixed': <ShieldCheck size={18} />,
+    'Removable': <RefreshCcw size={18} />,
+    'Restorative': <Sparkles size={18} />,
+    'General': <AppWindow size={18} />
+  };
 
   // Scroll to grid on page change
   const handlePageChange = (newPage) => {
@@ -80,7 +94,7 @@ export default function PublicPortfolioPage() {
 
             <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 text-center sm:text-left">
               {/* Overlapping Avatar */}
-              <div 
+              <div
                 onClick={() => setProfilePhotoOpen(true)}
                 className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden border-[6px] border-white dark:border-[#252525] bg-white dark:bg-[#252525] shadow-xl shrink-0 transition-transform hover:scale-105 duration-500 cursor-pointer"
               >
@@ -117,13 +131,13 @@ export default function PublicPortfolioPage() {
       </div>
 
       {/* ── 2. Information Row (Bio & Contact) ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
 
           {/* Bio Section */}
           <div className="lg:col-span-8 w-full overflow-hidden">
-            <section className="bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-2xl p-5 sm:p-8 overflow-hidden w-full">
-              <h2 className="text-xs font-bold text-[#666666] dark:text-gray-400 uppercase mb-6 flex items-center gap-3">
+            <section className="   rounded-2xl p-5 sm:p-8 overflow-hidden w-full">
+              <h2 className="text-xs font-bold text-[#666666] dark:text-gray-400 uppercase mb-1 flex items-center gap-3">
                 <span className="w-8 h-px bg-[#0A66C2]/30" /> Professional Experience
               </h2>
               {bio ? (
@@ -132,7 +146,7 @@ export default function PublicPortfolioPage() {
                     {bio}
                   </p>
                   {bio.length > 500 && (
-                    <button 
+                    <button
                       onClick={() => setIsExpanded(!isExpanded)}
                       className="text-[#0A66C2] font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:opacity-70 transition-opacity mt-4"
                     >
@@ -146,12 +160,12 @@ export default function PublicPortfolioPage() {
 
               {/* services Badges Integration */}
               {services && services.length > 0 && (
-                <div className="mt-10 pt-8 border-t border-[#E0DFDC] dark:border-[#3A3A3A]">
+                <div className="mt-6 pt-4 border-t border-[#E0DFDC] dark:border-[#3A3A3A]">
                   <h3 className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] mb-4">Core Expertise</h3>
                   <div className="flex flex-wrap gap-2">
                     {services.map((service, i) => (
-                      <span 
-                        key={i} 
+                      <span
+                        key={i}
                         className="px-4 py-2 bg-[#0A66C2]/5 text-[#0A66C2] text-xs font-bold rounded-xl border border-[#0A66C2]/20 hover:bg-[#0A66C2]/10 transition-colors"
                       >
                         {service}
@@ -165,15 +179,15 @@ export default function PublicPortfolioPage() {
 
           {/* Contact Section */}
           <div className="lg:col-span-4">
-            <div className="bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-2xl  sm:p-8 shadow-sm h-full flex flex-col justify-between">
+            <div className="  rounded-2xl  sm:p-8 shadow-sm h-full flex flex-col justify-between">
 
-              <div className=" space-y-2 mt-auto">
+              <div className=" space-y-4 mt-auto">
                 {contactPhone && (
                   <a
                     href={`https://wa.me/${contactPhone.replace(/\D/g, '').startsWith('0') ? '20' + contactPhone.replace(/\D/g, '').substring(1) : contactPhone.replace(/\D/g, '').startsWith('20') ? contactPhone.replace(/\D/g, '') : '20' + contactPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hello Dr. ${dentist.name}, I am interested in booking a consultation regarding your portfolio.`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full btn bg-[#057642] hover:bg-[#046338] text-white border-none rounded-xl font-bold gap-2 h-12 shadow-lg shadow-[#057642]/20"
+                    className="w-full btn bg-[#00c066] hover:bg-[#18a666] text-white border-none rounded-xl font-bold gap-2 h-12 shadow-lg shadow-[#057642]/20"
                   >
                     <WhatsAppIcon size={18} /> WhatsApp Contact
                   </a>
@@ -210,57 +224,82 @@ export default function PublicPortfolioPage() {
             </div>
           </header>
 
-          {cases.length === 0 ? (
+          {/* ── Treatment Filter Bar ── */}
+          <div className="flex flex-wrap items-center gap-3 mb-12">
+            {Object.keys(TREATMENT_ICONS).map((type) => (
+              <button
+                key={type}
+                onClick={() => setSelectedFilter(type)}
+                className={`flex items-center gap-2.5 px-6 py-3 rounded-2xl text-xs font-bold transition-all border ${selectedFilter === type
+                  ? 'bg-[#0A66C2] text-white border-[#0A66C2] shadow-xl shadow-[#0A66C2]/20'
+                  : 'bg-white dark:bg-[#252525] text-[#666666] dark:text-gray-400 border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]'
+                  }`}
+              >
+                <span className={selectedFilter === type ? 'text-white' : 'text-[#0A66C2]'}>
+                  {TREATMENT_ICONS[type]}
+                </span>
+                {type}
+              </button>
+            ))}
+          </div>
+
+          {cases.filter(c => selectedFilter === 'All' || c.treatmentType === selectedFilter).length === 0 ? (
             <div className="text-center py-24 bg-white dark:bg-[#252525] rounded-3xl border-2 border-dashed border-[#E0DFDC] dark:border-[#3A3A3A]">
               <Briefcase size={48} className="mx-auto text-[#666666]/20 mb-6" />
-              <p className="font-bold text-[#666666]/40 uppercase text-sm tracking-widest">No public cases available yet</p>
+              <p className="font-bold text-[#666666]/40 uppercase text-sm tracking-widest">No {selectedFilter !== 'All' ? selectedFilter : ''} cases available</p>
             </div>
           ) : (
             <div className="space-y-12">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {cases.map((c, i) => (
-                  <motion.div
-                    key={c._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <Link
-                      to={`/portfolio/${slug}/case/${c._id}`}
-                      className="group block bg-white dark:bg-[#252525] rounded-3xl overflow-hidden border border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]/40 shadow-sm hover:shadow-2xl transition-all duration-500"
+                {cases
+                  .filter(c => selectedFilter === 'All' || c.treatmentType === selectedFilter)
+                  .map((c, i) => (
+                    <motion.div
+                      key={c._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
                     >
-                      <div className="aspect-[4/3] relative overflow-hidden bg-[#F3F2EF] dark:bg-[#1A1A1A]">
-                        {c.coverImage ? (
-                          <img src={c.coverImage} alt={c.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center"><Briefcase size={40} className="text-[#666666]/10" /></div>
-                        )}
-                        <div className="absolute top-4 left-4 flex gap-2">
-                          {c.category && (
-                            <span className="px-3 py-1 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm text-[#0A66C2] text-[10px] font-bold uppercase rounded-lg shadow-sm border border-[#E0DFDC] dark:border-[#3A3A3A]">
-                              {c.category}
-                            </span>
+                      <Link
+                        to={`/portfolio/${slug}/case/${c._id}`}
+                        className="group block bg-white dark:bg-[#252525] rounded-3xl overflow-hidden border border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]/40 shadow-sm hover:shadow-2xl transition-all duration-500"
+                      >
+                        <div className="aspect-[4/3] relative overflow-hidden bg-[#F3F2EF] dark:bg-[#1A1A1A]">
+                          {c.coverImage ? (
+                            <img src={c.coverImage} alt={c.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center"><Briefcase size={40} className="text-[#666666]/10" /></div>
                           )}
-                        </div>
-                      </div>
-                      <div className="p-6">
-                        <h3 className="font-bold text-xl text-[#191919] dark:text-white group-hover:text-[#0A66C2] transition-colors line-clamp-1 mb-4">
-                          {c.title}
-                        </h3>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-xs font-bold text-[#666666] dark:text-gray-400 group-hover:text-[#0A66C2] transition-colors">
-                            View Case Study <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                          <div className="absolute top-4 left-4 flex gap-2">
+                            <span className="px-3 py-1 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm text-[#0A66C2] text-[10px] font-bold uppercase rounded-lg shadow-sm border border-[#E0DFDC] dark:border-[#3A3A3A] flex items-center gap-1.5">
+                              {TREATMENT_ICONS[c.treatmentType || 'General']}
+                              {c.treatmentType || 'General'}
+                            </span>
+                            {c.category && (
+                              <span className="px-3 py-1 bg-black/70 text-white text-[10px] font-bold uppercase rounded-lg shadow-sm border border-white/10">
+                                {c.category}
+                              </span>
+                            )}
                           </div>
                         </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
+                        <div className="p-6">
+                          <h3 className="font-bold text-xl text-[#191919] dark:text-white group-hover:text-[#0A66C2] transition-colors line-clamp-1 mb-4">
+                            {c.title}
+                          </h3>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-xs font-bold text-[#666666] dark:text-gray-400 group-hover:text-[#0A66C2] transition-colors">
+                              View Case Study <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
               </div>
 
               {/* ── Pagination Controls ── */}
-              {totalPages > 1 && (
+              {selectedFilter === 'All' && totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 pb-12">
                   <button
                     disabled={page === 1}
