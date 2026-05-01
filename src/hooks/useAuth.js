@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { loginApi, registerApi, logoutApi, updateProfileApi, updatePasswordApi, uploadPhotoApi, removePhotoApi } from '../api/auth';
+import { loginApi, registerApi, logoutApi, updateProfileApi, updatePasswordApi, uploadPhotoApi, removePhotoApi, googleLoginApi } from '../api/auth';
 import { useAuthStore } from '../store/authStore';
 
 export const useLogin = () => {
@@ -9,6 +9,20 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: loginApi,
+    onSuccess: (data) => {
+      const { accessToken, ...user } = data;
+      setAuth(user, accessToken);
+      navigate(user.role === 'admin' ? '/admin' : '/dashboard');
+    },
+  });
+};
+
+export const useGoogleLogin = () => {
+  const setAuth = useAuthStore((s) => s.setAuth);
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: googleLoginApi,
     onSuccess: (data) => {
       const { accessToken, ...user } = data;
       setAuth(user, accessToken);

@@ -28,3 +28,6 @@ export const uploadPhotoApi = (file) => {
 
 export const removePhotoApi = () =>
   api.delete('/api/auth/photo').then((r) => r.data);
+
+export const googleLoginApi = (googleToken) =>
+  api.post('/api/auth/google', { googleToken }).then((r) => r.data);

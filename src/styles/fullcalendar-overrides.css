@@ -1,0 +1,227 @@
+/* ═══════════════════════════════════════════════
+   FullCalendar — DentStory Design System Override
+   Matches the "LinkedIn Flat" look-and-feel
+   ═══════════════════════════════════════════════ */
+
+/* ── Base Layout ────────────────────────────── */
+.fc {
+  font-family: inherit;
+  --fc-border-color: oklch(var(--bc) / 0.1);
+  --fc-today-bg-color: oklch(var(--p) / 0.04);
+  --fc-neutral-bg-color: transparent;
+  --fc-page-bg-color: transparent;
+  --fc-event-border-color: transparent;
+}
+
+/* ── Toolbar / Header ───────────────────────── */
+.fc .fc-toolbar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem !important;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: oklch(var(--bc));
+}
+
+/* Navigation Buttons */
+.fc .fc-button {
+  background: oklch(var(--b2)) !important;
+  border: 1px solid oklch(var(--bc) / 0.1) !important;
+  color: oklch(var(--bc) / 0.7) !important;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+  padding: 0.35rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  box-shadow: none !important;
+  transition: all 0.15s ease !important;
+  text-transform: capitalize !important;
+}
+
+.fc .fc-button:hover {
+  background: oklch(var(--b3)) !important;
+  color: oklch(var(--bc)) !important;
+}
+
+.fc .fc-button-active,
+.fc .fc-button.fc-button-active {
+  background: oklch(var(--p)) !important;
+  color: oklch(var(--pc)) !important;
+  border-color: oklch(var(--p)) !important;
+}
+
+.fc .fc-button:focus {
+  box-shadow: 0 0 0 2px oklch(var(--p) / 0.25) !important;
+}
+
+/* Today Button */
+.fc .fc-today-button {
+  background: oklch(var(--p) / 0.1) !important;
+  color: oklch(var(--p)) !important;
+  border-color: oklch(var(--p) / 0.2) !important;
+  font-weight: 700 !important;
+}
+
+.fc .fc-today-button:disabled {
+  opacity: 0.4 !important;
+}
+
+/* ── Column Headers ─────────────────────────── */
+.fc .fc-col-header-cell {
+  background: oklch(var(--b2));
+  padding: 0.625rem 0 !important;
+  border-bottom: 2px solid oklch(var(--bc) / 0.08) !important;
+}
+
+.fc .fc-col-header-cell-cushion {
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  color: oklch(var(--bc) / 0.6) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* ── Day Cells (Month Grid) ─────────────────── */
+.fc .fc-daygrid-day-number {
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+  color: oklch(var(--bc) / 0.7) !important;
+  padding: 0.5rem 0.625rem !important;
+}
+
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  background: oklch(var(--p));
+  color: oklch(var(--pc)) !important;
+  border-radius: 0.375rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+/* Clickable day cells */
+.fc .fc-daygrid-day {
+  cursor: pointer !important;
+  transition: background-color 0.15s ease;
+}
+
+.fc .fc-daygrid-day:hover {
+  background-color: oklch(var(--p) / 0.06) !important;
+}
+
+/* ── Time Slots (Week/Day views) ────────────── */
+.fc .fc-timegrid-slot {
+  height: 2.75rem !important;
+  border-bottom: 1px dashed oklch(var(--bc) / 0.06) !important;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  color: oklch(var(--bc) / 0.4) !important;
+  padding: 0 0.5rem !important;
+}
+
+/* Now Indicator */
+.fc .fc-timegrid-now-indicator-line {
+  border-color: oklch(var(--er)) !important;
+  border-width: 2px !important;
+}
+
+.fc .fc-timegrid-now-indicator-arrow {
+  border-color: oklch(var(--er)) !important;
+}
+
+/* ── Events ─────────────────────────────────── */
+.fc .fc-event {
+  border-radius: 0.375rem !important;
+  border-width: 0 0 0 3px !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.fc .fc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.fc .fc-daygrid-event {
+  padding: 0.125rem 0.375rem !important;
+  margin: 0.125rem 0.25rem !important;
+}
+
+.fc .fc-timegrid-event {
+  padding: 0.25rem !important;
+}
+
+.fc .fc-event-title {
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+}
+
+.fc .fc-event-time {
+  font-weight: 500 !important;
+  font-size: 0.6875rem !important;
+  opacity: 0.85;
+}
+
+/* "More" link */
+.fc .fc-daygrid-more-link {
+  font-size: 0.6875rem !important;
+  font-weight: 700 !important;
+  color: oklch(var(--p)) !important;
+}
+
+/* ── Business Hours ─────────────────────────── */
+.fc .fc-non-business {
+  background: oklch(var(--bc) / 0.02) !important;
+}
+
+/* ── Scrollbar Styling ──────────────────────── */
+.fc .fc-scroller::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fc .fc-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fc .fc-scroller::-webkit-scrollbar-thumb {
+  background: oklch(var(--bc) / 0.1);
+  border-radius: 3px;
+}
+
+/* ── Mobile Responsive ──────────────────────── */
+@media (max-width: 640px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1rem !important;
+    text-align: center;
+  }
+
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+
+  .fc .fc-button {
+    padding: 0.3rem 0.5rem !important;
+    font-size: 0.6875rem !important;
+  }
+
+  .fc .fc-timegrid-slot {
+    height: 2.25rem !important;
+  }
+
+  .fc .fc-col-header-cell-cushion {
+    font-size: 0.625rem !important;
+  }
+}

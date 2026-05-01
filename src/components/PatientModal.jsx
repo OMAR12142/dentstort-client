@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import {
   User,
   Phone,
@@ -201,7 +202,27 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
       title={isEdit ? 'Edit Patient' : 'Add New Patient'}
       size="md"
     >
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      {!isEdit && clinics.length === 0 ? (
+        <div className="bg-amber-50/50 border border-amber-100 rounded-2xl p-8 text-center space-y-5 my-2">
+          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-600 shadow-inner">
+            <Building2 size={32} />
+          </div>
+          <div className="space-y-2">
+            <h3 className="font-bold text-amber-900 text-lg">No Clinics Found</h3>
+            <p className="text-amber-700/80 text-sm leading-relaxed max-w-[280px] mx-auto">
+              You must add at least one clinic before you can add patients. 
+            </p>
+          </div>
+          <Link 
+            to="/clinics" 
+            onClick={onClose}
+            className="btn btn-warning w-full rounded-xl shadow-sm border-0 font-bold"
+          >
+            Go to Clinics Page
+          </Link>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
 
         {/* Full Name */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
@@ -519,7 +540,8 @@ export default function PatientModal({ open, onClose, patientToEdit = null }) {
             )}
           </button>
         </motion.div>
-      </form>
+        </form>
+      )}
     </Modal>
   );
 }

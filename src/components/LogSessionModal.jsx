@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Upload, X, AlertCircle, Plus } from 'lucide-react';
+import toast from 'react-hot-toast';
 import Modal from './Modal';
 import { useCreateSession, useUpdateSession } from '../hooks/useSessions';
 import { usePatients } from '../hooks/usePatients';
@@ -21,7 +22,7 @@ const saveCustomCategory = (cat) => {
   }
 };
 
-export default function LogSessionModal({ open, onClose, initialPatientId, sessionToEdit }) {
+export default function LogSessionModal({ open, onClose, initialPatientId, sessionToEdit, linkedAppointmentId }) {
   const { mutate: createMutate, isPending: createPending } = useCreateSession();
   const { mutate: updateMutate, isPending: updatePending } = useUpdateSession();
   const { data: patientsData } = usePatients({ page: 1, limit: 200 });
@@ -206,7 +207,12 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
       updateMutate(
         { id: sessionToEdit._id, formData: fd },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
+            if (data?.conflictWarning) {
+              toast.error('Session updated, but next appointment time was already booked!', { duration: 5000 });
+            } else {
+              toast.success('Session updated successfully');
+            }
             setFiles([]);
             setErrors({});
             onClose();
@@ -228,8 +234,17 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
         files.forEach((f) => fd.append('images', f));
       }
 
+      if (linkedAppointmentId) {
+        fd.append('linked_appointment_id', linkedAppointmentId);
+      }
+
       createMutate(fd, {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          if (data?.conflictWarning) {
+            toast.error('Session saved, but next appointment time was already booked!', { duration: 5000 });
+          } else {
+            toast.success('Session saved successfully');
+          }
           setFiles([]);
           setErrors({});
           setPatientSearch('');
@@ -559,7 +574,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
           className="btn w-full sm:w-auto rounded-lg text-white border-0 bg-primary"
         >
           {isPending ? (
-            <span className="loading loading-spinner loading-sm" />
+            'Saving...'
           ) : isEditMode ? (
             'Update Session'
           ) : (

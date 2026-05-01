@@ -5,13 +5,19 @@ import { useSuspensionGuard, SuspensionOverlay } from '../hooks/useSuspensionGua
 import TopHeader from '../components/TopHeader';
 import Sidebar from '../components/Sidebar';
 import AnnouncementBanner from '../components/AnnouncementBanner';
+import { useAuthStore } from '../store/authStore';
+import CompleteProfileModal from '../components/CompleteProfileModal';
 
 export default function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const user = useAuthStore((s) => s.user);
+  const [hasDismissedPhonePrompt, setHasDismissedPhonePrompt] = useState(false);
 
   // ── Real-time suspension detection ──────────
   const isSuspended = useSuspensionGuard();
+
+  const showPhonePrompt = user && !user.phone && !hasDismissedPhonePrompt;
 
   return (
     <div className="h-screen w-full flex flex-col bg-base-200 text-base-content overflow-hidden font-sans">
@@ -45,6 +51,11 @@ export default function MainLayout() {
           </AnimatePresence>
         </main>
       </div>
+
+      <CompleteProfileModal
+        open={!!showPhonePrompt}
+        onClose={() => setHasDismissedPhonePrompt(true)}
+      />
     </div>
   );
 }

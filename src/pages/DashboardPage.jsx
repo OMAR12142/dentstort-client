@@ -14,11 +14,12 @@ import {
   ArrowRight,
   Zap,
   MapPin,
+  Plus,
 } from 'lucide-react';
 import { useClinics } from '../hooks/useClinics';
 import { useDashboardStats } from '../hooks/useAnalytics';
 import { usePatients } from '../hooks/usePatients';
-import { useUpcomingAppointments } from '../hooks/useSessions';
+import { useTodaysAppointments } from '../hooks/useAppointments';
 import { useTasks } from '../hooks/useTasks';
 import DashboardSkeleton from '../components/skeletons/DashboardSkeleton';
 import ErrorState from '../components/common/ErrorState';
@@ -53,10 +54,13 @@ export default function DashboardPage() {
   const [timeframe, setTimeframe] = useState('monthly');
   const { data: stats, isLoading: loadStats, isFetching: isFetchingStats, isError: isErrorStats, error: errorStats, refetch: refetchStats } = useDashboardStats(timeframe);
   const { data: patientsData, isLoading: loadP, isError: isErrorP, error: errorP, refetch: refetchP } = usePatients({ page: 1, limit: 5 });
-  const { data: appointmentsData, isLoading: loadA, isError: isErrorA, error: errorA, refetch: refetchA } = useUpcomingAppointments();
+  const { data: appointmentsData, isLoading: loadA, isError: isErrorA, error: errorA, refetch: refetchA } = useTodaysAppointments();
   const { data: tasksData, isLoading: loadT, isError: isErrorT, error: errorT, refetch: refetchT } = useTasks();
   const { data: clinicsData, isLoading: loadC, isError: isErrorC, refetch: refetchC } = useClinics();
   const [showAddPatient, setShowAddPatient] = useState(false);
+  const [logSessionModalOpen, setLogSessionModalOpen] = useState(false);
+  const [logSessionPatientId, setLogSessionPatientId] = useState('');
+  const [logSessionLinkedAptId, setLogSessionLinkedAptId] = useState('');
   const [showLogSession, setShowLogSession] = useState(false);
 
   const totalEarnings = stats?.stats?.totalEarnings || 0;
@@ -66,7 +70,7 @@ export default function DashboardPage() {
   const earnings = stats?.earnings || [];
 
   const totalPatients = patientsData?.totalPatients || 0;
-  const appointments = appointmentsData?.appointments || [];
+  const appointments = appointmentsData || [];
   const tasks = tasksData?.tasks || [];
   const activeTasks = tasks.filter((t) => !t.isCompleted);
   const clinics = Array.isArray(clinicsData) ? clinicsData : clinicsData?.clinics || [];
@@ -287,13 +291,13 @@ export default function DashboardPage() {
         </Card>
       )}
 
-      {/* Upcoming Appointments */}
+      {/* Today's Appointments */}
       <Card className="p-4 sm:p-5">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
             <Calendar size={18} className="sm:text-[20px] text-primary" />
           </div>
-          <h2 className="text-base sm:text-lg font-bold text-base-content">Upcoming Appointments</h2>
+          <h2 className="text-base sm:text-lg font-bold text-base-content">Today's Appointments</h2>
           {appointments.length > 0 && (
             <span className="ml-auto bg-teal-100 text-primary text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap">
               {appointments.length} scheduled
@@ -304,7 +308,13 @@ export default function DashboardPage() {
         {appointments.length === 0 ? (
           <div className="text-center py-6 sm:py-8 text-base-content/70">
             <Calendar size={32} className="sm:text-[40px] mx-auto mb-3 text-base-content/30" />
-            <p className="text-xs sm:text-sm">No upcoming appointments scheduled yet.</p>
+            <p className="text-xs sm:text-sm">No appointments scheduled for today.</p>
+            <Link
+              to="/appointments"
+              className="inline-flex items-center gap-1.5 mt-3 text-xs sm:text-sm font-medium text-primary hover:underline"
+            >
+              Open Calendar <ArrowRight size={14} />
+            </Link>
           </div>
         ) : (
           <div className="space-y-2 sm:space-y-3">
@@ -326,25 +336,46 @@ export default function DashboardPage() {
                     </Link>
                     <p className="text-[10px] sm:text-xs text-base-content/50 flex items-center gap-1.5 mt-1 font-medium italic">
                       <Clock size={11} className="shrink-0" />
-                      {formatAppointmentTime(apt.next_appointment)}
+                      {apt.startTime} · {apt.clinic_id?.name || ''}
                     </p>
                   </div>
                 </div>
 
-                {apt.patient_id?.phone && (
-                  <a
-                    href={getWhatsAppLink(apt.patient_id.phone)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-base-content/30 hover:text-[#25D366] hover:bg-[#25D366]/10 rounded-xl transition-all duration-200 shrink-0 border border-transparent hover:border-[#25D366]/20"
-                    title="Chat on WhatsApp"
-                    aria-label="Chat on WhatsApp"
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => {
+                      setLogSessionPatientId(apt.patient_id?._id);
+                      setLogSessionLinkedAptId(apt._id);
+                      setLogSessionModalOpen(true);
+                    }}
+                    className="btn btn-xs btn-primary gap-1"
                   >
-                    <WhatsAppIcon size={18} />
-                  </a>
-                )}
+                    <Plus size={12} /> Log Session
+                  </button>
+
+                  {apt.patient_id?.phone && (
+                    <a
+                      href={getWhatsAppLink(apt.patient_id.phone)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-base-content/30 hover:text-[#25D366] hover:bg-[#25D366]/10 rounded-xl transition-all duration-200 shrink-0 border border-transparent hover:border-[#25D366]/20"
+                      title="Chat on WhatsApp"
+                      aria-label="Chat on WhatsApp"
+                    >
+                      <WhatsAppIcon size={18} />
+                    </a>
+                  )}
+                </div>
               </motion.div>
             ))}
+            <div className="text-center pt-2">
+              <Link
+                to="/appointments"
+                className="inline-flex items-center gap-1 text-xs sm:text-sm font-medium text-primary hover:underline"
+              >
+                View full calendar <ArrowRight size={12} className="sm:text-[14px]" />
+              </Link>
+            </div>
           </div>
         )}
       </Card>
@@ -471,8 +502,17 @@ export default function DashboardPage() {
         </motion.button>
       </div>
       <PatientModal open={showAddPatient} onClose={() => setShowAddPatient(false)} patientToEdit={null} />
-      <LogSessionModal open={showLogSession} onClose={() => setShowLogSession(false)} />
-
+      <LogSessionModal 
+        open={showLogSession || logSessionModalOpen} 
+        onClose={() => {
+          setShowLogSession(false);
+          setLogSessionModalOpen(false);
+          setLogSessionPatientId('');
+          setLogSessionLinkedAptId('');
+        }} 
+        initialPatientId={logSessionPatientId}
+        linkedAppointmentId={logSessionLinkedAptId}
+      />
     </div>
   );
 }

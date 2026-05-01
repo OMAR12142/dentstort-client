@@ -5,6 +5,7 @@ import {
   createSessionApi,
   updateSessionApi,
   deleteSessionApi,
+  getSessionsByDateApi,
 } from '../api/sessions';
 
 export const useSessions = (patientId, page = 1, limit = 10) =>
@@ -55,3 +56,10 @@ export const useDeleteSession = () => {
     },
   });
 };
+
+export const useSessionsByDate = (date) =>
+  useQuery({
+    queryKey: ['sessions', 'by-date', date],
+    queryFn: () => getSessionsByDateApi(date),
+    enabled: !!date,
+  });

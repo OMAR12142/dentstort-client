@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  LayoutDashboard, Building2, Users, BarChart3, TrendingUp, ListTodo, Briefcase, ChevronLeft, ChevronRight, X
+  LayoutDashboard, CalendarDays, Building2, Users, BarChart3, TrendingUp, ListTodo, Briefcase, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
 import { useLayoutStore } from '../store/layoutStore';
 import AppLogo from './AppLogo';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/appointments', icon: CalendarDays, label: 'Appointments' },
   { to: '/clinics', icon: Building2, label: 'Clinics' },
   { to: '/patients', icon: Users, label: 'Patients' },
   { to: '/tasks', icon: ListTodo, label: 'Tasks' },

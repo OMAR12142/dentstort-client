@@ -22,3 +22,6 @@ export const updateSessionApi = ({ id, formData }) =>
 
 export const deleteSessionApi = (id) =>
   api.delete(`/api/sessions/${id}`).then((r) => r.data);
+
+export const getSessionsByDateApi = (date) =>
+  api.get('/api/sessions/by-date', { params: { date } }).then((r) => r.data);

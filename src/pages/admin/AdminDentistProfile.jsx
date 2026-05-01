@@ -14,6 +14,8 @@ import {
   Key,
   Copy,
   Check,
+  Briefcase,
+  ExternalLink,
 } from 'lucide-react';
 import {
   PieChart,
@@ -23,7 +25,13 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { useDentistProfile, useResetDentistPassword } from '../../hooks/useAdmin';
+import { 
+  useDentistProfile, 
+  useResetDentistPassword,
+  useImpersonateDentist,
+  useTogglePortfolioStatus
+} from '../../hooks/useAdmin';
+import { useAuthStore } from '../../store/authStore';
 import Card from '../../components/Card';
 import Modal from '../../components/Modal';
 import { calculateAge } from '../../utils/dateUtils';
@@ -75,6 +83,9 @@ export default function AdminDentistProfile() {
   const navigate = useNavigate();
   const { data, isLoading, isError, error } = useDentistProfile(id);
   const { mutate: resetPassword, isPending: isResetting } = useResetDentistPassword();
+  const { mutate: impersonate, isPending: isImpersonating } = useImpersonateDentist();
+  const { mutate: togglePortfolio, isPending: isTogglingPortfolio } = useTogglePortfolioStatus();
+  const setAuth = useAuthStore((s) => s.setAuth);
 
   // Reset Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -105,6 +116,20 @@ export default function AdminDentistProfile() {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     }
+  };
+
+  const handleShadowAccess = () => {
+    impersonate(id, {
+      onSuccess: (res) => {
+        // Switch session to this user, but flag it as shadow mode
+        setAuth(res, res.accessToken, true);
+        navigate('/dashboard');
+      }
+    });
+  };
+
+  const handleTogglePortfolio = () => {
+    togglePortfolio(id);
   };
 
   if (isLoading) {
@@ -140,7 +165,7 @@ export default function AdminDentistProfile() {
     );
   }
 
-  const { dentist, stats, patientCount, clinics, earningsByClinic, treatmentBreakdown } = data;
+  const { dentist, stats, patientCount, clinics, earningsByClinic, treatmentBreakdown, portfolio } = data;
 
   return (
     <div className="space-y-5 sm:space-y-6 pb-8">
@@ -161,6 +186,27 @@ export default function AdminDentistProfile() {
             <p className="text-xs sm:text-sm text-base-content/60">{dentist.email} · {dentist.phone || 'No phone'}</p>
           </div>
           <div className="ml-auto flex items-center gap-3">
+            {portfolio && (
+              <a
+                href={`/portfolio/${portfolio.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-sm btn-ghost gap-2 border-neutral-light"
+                title="View how this portfolio looks to the public"
+              >
+                <ExternalLink size={14} />
+                View Portfolio
+              </a>
+            )}
+            <button
+              onClick={handleShadowAccess}
+              disabled={isImpersonating || dentist.status === 'suspended'}
+              className="btn btn-sm btn-primary gap-2"
+              title="Access this doctor's dashboard to provide support"
+            >
+              {isImpersonating ? <span className="loading loading-spinner loading-xs" /> : <Users size={14} />}
+              Shadow Access
+            </button>
             <button
               onClick={initiateReset}
               disabled={dentist.status === 'suspended'}
@@ -192,6 +238,57 @@ export default function AdminDentistProfile() {
         <KPI icon={Wallet} label="Dentist Cut" value={`${fmt(stats.totalDentistCut)} EGP`} color="info" />
         <KPI icon={Users} label="Patients" value={patientCount} color="secondary" />
         <KPI icon={CalendarDays} label="Sessions" value={stats.sessionCount} color="accent" />
+      </motion.div>
+
+      {/* ── Portfolio Control ── */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}>
+        <Card className="p-5 border-l-4 border-primary">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h2 className="text-lg font-bold text-base-content flex items-center gap-2">
+                <Briefcase size={18} className="text-primary" />
+                Clinical Portfolio Moderation
+              </h2>
+              <p className="text-sm text-base-content/60">
+                Control the visibility of this clinician's public showcase and published cases.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              {data.portfolio ? (
+                <>
+                  <div className={`px-3 py-1.5 rounded-lg text-xs font-bold border ${
+                    data.portfolio.isSuspended 
+                      ? 'bg-error/10 text-error border-error/20' 
+                      : data.portfolio.isPublished 
+                        ? 'bg-success/10 text-success border-success/20' 
+                        : 'bg-base-200 text-base-content/60 border-neutral-light'
+                  }`}>
+                    {data.portfolio.isSuspended 
+                      ? 'SUSPENDED BY ADMIN' 
+                      : data.portfolio.isPublished 
+                        ? 'PUBLICLY VISIBLE' 
+                        : 'IN DRAFT MODE'}
+                  </div>
+                  <button
+                    onClick={handleTogglePortfolio}
+                    disabled={isTogglingPortfolio}
+                    className={`btn btn-sm ${data.portfolio.isSuspended ? 'btn-success' : 'btn-error'} min-w-[140px]`}
+                  >
+                    {isTogglingPortfolio ? (
+                      <span className="loading loading-spinner loading-xs" />
+                    ) : data.portfolio.isSuspended ? (
+                      'Unsuspend Portfolio'
+                    ) : (
+                      'Suspend Portfolio'
+                    )}
+                  </button>
+                </>
+              ) : (
+                <span className="text-xs font-medium text-base-content/40 italic">No portfolio created yet</span>
+              )}
+            </div>
+          </div>
+        </Card>
       </motion.div>
 
       {/* ── Two-Column: Treatment Breakdown + Clinics ── */}

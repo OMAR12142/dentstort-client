@@ -11,6 +11,8 @@ import {
   toggleAnnouncementApi,
   deleteAnnouncementApi,
   getActiveAnnouncementApi,
+  impersonateDentistApi,
+  togglePortfolioStatusApi,
 } from '../api/admin';
 
 /**
@@ -72,6 +74,29 @@ export const useToggleDentistStatus = () => {
 export const useResetDentistPassword = () => {
   return useMutation({
     mutationFn: resetDentistPasswordApi,
+  });
+};
+
+/**
+ * Impersonate a dentist (Shadow Access).
+ */
+export const useImpersonateDentist = () => {
+  return useMutation({
+    mutationFn: impersonateDentistApi,
+  });
+};
+
+/**
+ * Toggle a dentist's portfolio suspension status.
+ */
+export const useTogglePortfolioStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: togglePortfolioStatusApi,
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dentist', id] });
+    },
   });
 };
 

@@ -45,6 +45,14 @@ export const toggleAnnouncementApi = (id) =>
 export const deleteAnnouncementApi = (id) =>
   api.delete(`/api/admin/announcements/${id}`).then((r) => r.data);
 
+// ── POST /api/admin/dentists/:id/impersonate
+export const impersonateDentistApi = (id) =>
+  api.post(`/api/admin/dentists/${id}/impersonate`).then((r) => r.data);
+
+// ── PATCH /api/admin/dentists/:id/portfolio-status
+export const togglePortfolioStatusApi = (id) =>
+  api.patch(`/api/admin/dentists/${id}/portfolio-status`).then((r) => r.data);
+
 // ── Announcements (Public/Auth) ───────────────
 export const getActiveAnnouncementApi = () =>
   api.get('/api/announcements/active').then((r) => r.data);
