@@ -27,13 +27,13 @@ export default function PublicNavbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#1A1A1A]/80 backdrop-blur-xl border-b border-base-content/5">
+    <nav className="sticky top-0 z-50 bg-[#1A1A1A]/80 backdrop-blur-xl border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between font-sans">
         
         {/* Brand Area */}
         <div className="flex-1 flex items-center">
           <Link to="/" className="flex items-center group">
-            <AppLogo size="sm" className="group-hover:scale-105 transition-transform" />
+            <AppLogo size="sm" forceTheme="dark" className="group-hover:scale-105 transition-transform" />
           </Link>
         </div>
 
@@ -43,7 +43,7 @@ export default function PublicNavbar() {
             <a
               key={link.name}
               href={link.href}
-              className="text-[11px] font-black uppercase tracking-[0.2em] text-[#666666] dark:text-gray-400 hover:text-primary transition-all relative group/link"
+              className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-primary transition-all relative group/link"
             >
               {link.name}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover/link:w-full" />
@@ -53,7 +53,7 @@ export default function PublicNavbar() {
 
         {/* Right Section / Action Hub */}
         <div className="flex-1 flex items-center justify-end gap-4">
-          <div className="hidden sm:flex items-center gap-1 bg-[#F3F2EF] dark:bg-[#252525] p-1.5 rounded-2xl border border-base-content/5 shadow-inner">
+          <div className="hidden sm:flex items-center gap-1 bg-[#252525] p-1.5 rounded-2xl border border-white/5 shadow-inner">
             {token ? (
               <Link
                 to="/dashboard"
@@ -65,7 +65,7 @@ export default function PublicNavbar() {
               <>
                 <Link
                   to="/login"
-                  className="px-5 py-2.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#666666] dark:text-gray-400 hover:text-primary transition-all"
+                  className="px-5 py-2.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-all"
                 >
                   Log In
                 </Link>
@@ -93,7 +93,7 @@ export default function PublicNavbar() {
           {navLinks.length > 0 && (
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2.5 text-[#191919] dark:text-white bg-[#F3F2EF] dark:bg-[#252525] rounded-xl border border-base-content/5 outline-none"
+              className="lg:hidden p-2.5 text-white bg-[#252525] rounded-xl border border-white/5 outline-none"
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -108,7 +108,7 @@ export default function PublicNavbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white dark:bg-[#1A1A1A] border-t border-base-content/5 p-6 space-y-4 overflow-hidden shadow-2xl"
+            className="lg:hidden bg-[#1A1A1A] border-t border-white/5 p-6 space-y-4 overflow-hidden shadow-2xl"
           >
             <div className="grid grid-cols-1 gap-2">
               {navLinks.map((link) => (
@@ -116,7 +116,7 @@ export default function PublicNavbar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 text-xs font-black uppercase tracking-[.15em] text-[#191919] dark:text-white hover:bg-primary/5 rounded-xl transition-all flex items-center justify-between group"
+                  className="px-4 py-3 text-xs font-black uppercase tracking-[.15em] text-white hover:bg-primary/5 rounded-xl transition-all flex items-center justify-between group"
                 >
                   {link.name}
                   <ArrowRight size={14} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
@@ -129,7 +129,7 @@ export default function PublicNavbar() {
                 <Link
                   to="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full py-4 text-xs font-black uppercase tracking-widest text-[#191919] dark:text-white text-center border border-base-content/10 rounded-2xl hover:bg-base-content/5 transition-all"
+                  className="w-full py-4 text-xs font-black uppercase tracking-widest text-white text-center border border-white/10 rounded-2xl hover:bg-white/5 transition-all"
                 >
                   Log In
                 </Link>

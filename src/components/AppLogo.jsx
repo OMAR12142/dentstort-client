@@ -18,8 +18,9 @@ const sizes = {
   xl: 'h-16 w-64',
 };
 
-export default function AppLogo({ size = 'md', className = '' }) {
-  const isDark = useThemeStore((s) => s.isDark);
+export default function AppLogo({ size = 'md', className = '', forceTheme }) {
+  const isDarkStore = useThemeStore((s) => s.isDark);
+  const isDark = forceTheme ? (forceTheme === 'dark') : isDarkStore;
 
   return (
     <img
