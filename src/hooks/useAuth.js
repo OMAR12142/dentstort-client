@@ -40,7 +40,7 @@ export const useRegister = () => {
     onSuccess: (data) => {
       const { accessToken, ...user } = data;
       setAuth(user, accessToken);
-      navigate('/');
+      navigate('/dashboard');
     },
   });
 };
