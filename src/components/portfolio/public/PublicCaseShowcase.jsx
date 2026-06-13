@@ -72,11 +72,11 @@ export default function PublicCaseShowcase({
 
             {/* ── Pagination Controls ── */}
             {selectedFilter === 'All' && totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-8 pb-4 sm:pb-12">
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-8 pb-4 sm:pb-12">
                 <button
                   disabled={page === 1}
                   onClick={() => onPageChange(page - 1)}
-                  className="px-6 py-2 rounded-xl text-xs font-bold transition-all border border-[#E0DFDC] dark:border-[#3A3A3A] hover:bg-white dark:hover:bg-[#252525] disabled:opacity-30 disabled:cursor-not-allowed text-[#191919] dark:text-white"
+                  className="px-4 py-1 rounded-xl text-xs font-bold transition-all border border-[#E0DFDC] dark:border-[#3A3A3A] hover:bg-white dark:hover:bg-[#252525] disabled:opacity-30 disabled:cursor-not-allowed text-[#191919] dark:text-white"
                 >
                   Previous
                 </button>
@@ -86,10 +86,10 @@ export default function PublicCaseShowcase({
                     <button
                       key={i}
                       onClick={() => onPageChange(i + 1)}
-                      className={`w-10 h-10 rounded-xl text-xs font-bold transition-all ${page === i + 1
+                      className={`w-8 h-8 rounded-xl text-xs font-bold transition-all ${page === i + 1
                         ? 'bg-[#0A66C2] text-white shadow-lg shadow-[#0A66C2]/20'
-                        : 'text-[#666666] hover:bg-white dark:hover:bg-[#252525]'
-                        }`}
+                        : 'text-[#666666] hover:bg-white dark:hover:bg-[#252525]'}
+                      `}
                     >
                       {i + 1}
                     </button>
@@ -99,7 +99,7 @@ export default function PublicCaseShowcase({
                 <button
                   disabled={page === totalPages}
                   onClick={() => onPageChange(page + 1)}
-                  className="px-6 py-2 rounded-xl text-xs font-bold transition-all bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed text-[#191919] dark:text-white"
+                  className="px-4 py-1 rounded-xl text-xs font-bold transition-all bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed text-[#191919] dark:text-white"
                 >
                   Next
                 </button>
