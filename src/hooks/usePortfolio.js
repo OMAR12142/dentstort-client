@@ -14,7 +14,8 @@ export function usePublicPortfolio(slug, page = 1, limit = 12, treatmentType = '
   return useQuery({
     queryKey: ['publicPortfolio', slug, page, limit, treatmentType],
     queryFn: async () => {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const envUrl = import.meta.env.VITE_API_URL;
+      const baseUrl = (!envUrl || envUrl === 'undefined') ? '' : envUrl;
       let url = `${baseUrl}/api/portfolio/${slug}?page=${page}&limit=${limit}`;
       if (treatmentType && treatmentType !== 'All') {
         url += `&treatmentType=${encodeURIComponent(treatmentType)}`;
@@ -34,7 +35,8 @@ export function usePublicCase(slug, caseId) {
   return useQuery({
     queryKey: ['publicCase', slug, caseId],
     queryFn: async () => {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const envUrl = import.meta.env.VITE_API_URL;
+      const baseUrl = (!envUrl || envUrl === 'undefined') ? '' : envUrl;
       const { data } = await axios.get(
         `${baseUrl}/api/portfolio/${slug}/case/${caseId}`
       );
