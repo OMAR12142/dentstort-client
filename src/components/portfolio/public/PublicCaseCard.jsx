@@ -26,9 +26,11 @@ export default function PublicCaseCard({ caseData, slug, i }) {
             </div>
           )}
           <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex flex-wrap gap-1 sm:gap-2">
-            <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm text-[#0A66C2] text-[8px] sm:text-[10px] font-bold uppercase rounded-md sm:rounded-lg shadow-sm border border-[#E0DFDC] dark:border-[#3A3A3A] shrink-0">
-              {caseData.treatmentType || 'General'}
-            </span>
+            {(Array.isArray(caseData.treatmentType) ? caseData.treatmentType : [caseData.treatmentType || 'General']).map((type) => (
+              <span key={type} className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm text-[#0A66C2] text-[8px] sm:text-[10px] font-bold uppercase rounded-md sm:rounded-lg shadow-sm border border-[#E0DFDC] dark:border-[#3A3A3A] shrink-0">
+                {type}
+              </span>
+            ))}
             {caseData.category && (
               <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-black/70 text-white text-[8px] sm:text-[10px] font-bold uppercase rounded-md sm:rounded-lg shadow-sm border border-white/10 shrink-0">
                 {caseData.category}

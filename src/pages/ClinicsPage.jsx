@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Building2, MapPin, Percent, Plus, Clock, Zap, Trash2, Pencil } from 'lucide-react';
 import { useClinics, useDeleteClinic } from '../hooks/useClinics';
+import { useFixedSalaries, useCreateFixedSalary, useUpdateFixedSalary, useDeleteFixedSalary } from '../hooks/useFixedSalary';
 import { CardSkeleton } from '../components/Skeleton';
 import Card from '../components/Card';
 import AddClinicModal from '../components/AddClinicModal';
@@ -20,8 +21,17 @@ const formatTime = (timeStr) => {
 export default function ClinicsPage() {
   const { data, isLoading } = useClinics();
   const { mutate: deleteClinic, isPending: isDeleting } = useDeleteClinic();
+  const { data: fixedSalaries } = useFixedSalaries();
+  const { mutate: createFixedSalary } = useCreateFixedSalary();
+  const { mutate: updateFixedSalary } = useUpdateFixedSalary();
+  const { mutate: deleteFixedSalary } = useDeleteFixedSalary();
+
   const [showAdd, setShowAdd] = useState(false);
   const [clinicToEdit, setClinicToEdit] = useState(null);
+  
+  const [editingSalaryClinicId, setEditingSalaryClinicId] = useState(null);
+  const [salaryAmount, setSalaryAmount] = useState('');
+  const [salaryDay, setSalaryDay] = useState('');
 
   const clinics = Array.isArray(data) ? data : data?.clinics || [];
 
@@ -172,6 +182,107 @@ export default function ClinicsPage() {
                   </p>
                 )}
 
+                {/* Fixed Salary Section */}
+                <div className="mt-4 pt-4 border-t border-neutral-light">
+                  <p className="text-xs font-semibold text-base-content/60 uppercase mb-2 flex items-center gap-1">
+                    Fixed Salary
+                  </p>
+                  
+                  {(() => {
+                    const fixedSalary = fixedSalaries?.find(fs => fs.clinic_id?._id === clinic._id || fs.clinic_id === clinic._id);
+                    
+                    if (editingSalaryClinicId === clinic._id) {
+                      return (
+                        <div className="bg-base-100/50 p-2 rounded-lg space-y-2">
+                          <input 
+                            type="number" 
+                            placeholder="Amount (EGP)" 
+                            value={salaryAmount}
+                            onChange={(e) => setSalaryAmount(e.target.value)}
+                            className="input input-xs w-full"
+                          />
+                          <input 
+                            type="number" 
+                            placeholder="Salary Day (1-28)" 
+                            min="1" max="28"
+                            value={salaryDay}
+                            onChange={(e) => setSalaryDay(e.target.value)}
+                            className="input input-xs w-full"
+                          />
+                          <div className="flex gap-2">
+                            <button 
+                              disabled={!salaryAmount || Number(salaryAmount) <= 0 || !salaryDay || Number(salaryDay) < 1 || Number(salaryDay) > 28}
+                              onClick={() => {
+                                if (fixedSalary) {
+                                  updateFixedSalary({ id: fixedSalary._id, data: { amount: salaryAmount, salary_day: salaryDay }});
+                                } else {
+                                  createFixedSalary({ clinic_id: clinic._id, amount: salaryAmount, salary_day: salaryDay });
+                                }
+                                setEditingSalaryClinicId(null);
+                              }}
+                              className="btn btn-xs btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              Save
+                            </button>
+                            <button 
+                              onClick={() => setEditingSalaryClinicId(null)}
+                              className="btn btn-xs btn-ghost flex-1"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    if (fixedSalary) {
+                      return (
+                        <div className="flex items-center justify-between bg-success/10 p-2 rounded-lg border border-success/20">
+                          <div>
+                            <p className="text-sm font-bold text-success">{fixedSalary.amount} EGP</p>
+                            <p className="text-[10px] text-success/70">Day {fixedSalary.salary_day}</p>
+                          </div>
+                          <div className="flex gap-1">
+                            <button 
+                              onClick={() => {
+                                setSalaryAmount(fixedSalary.amount);
+                                setSalaryDay(fixedSalary.salary_day);
+                                setEditingSalaryClinicId(clinic._id);
+                              }}
+                              className="p-1 text-success hover:bg-success/20 rounded"
+                            >
+                              <Pencil size={14} />
+                            </button>
+                            <button 
+                              onClick={() => {
+                                if(window.confirm('Are you sure you want to remove this fixed salary?')) {
+                                  deleteFixedSalary(fixedSalary._id);
+                                }
+                              }}
+                              className="p-1 text-error hover:bg-error/10 rounded"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <button 
+                        onClick={() => {
+                          setSalaryAmount('');
+                          setSalaryDay('');
+                          setEditingSalaryClinicId(clinic._id);
+                        }}
+                        className="btn btn-xs w-full border-dashed border-primary/30 text-primary hover:bg-primary/10"
+                      >
+                        <Plus size={14} /> Add Fixed Salary
+                      </button>
+                    );
+                  })()}
+                </div>
+
                 {clinic.working_days && clinic.working_days.length > 0 && (
                   <div className="mt-4 pt-4 border-t border-neutral-light">
                     <p className="text-xs font-semibold text-base-content/60 uppercase mb-2 flex items-center gap-1">
@@ -199,7 +310,12 @@ export default function ClinicsPage() {
         </div>
       )}
 
-      <AddClinicModal open={showAdd} onClose={() => { setShowAdd(false); setClinicToEdit(null); }} clinic={clinicToEdit} />
+      <AddClinicModal 
+        open={showAdd} 
+        onClose={() => { setShowAdd(false); setClinicToEdit(null); }} 
+        clinic={clinicToEdit}
+        fixedSalary={clinicToEdit ? fixedSalaries?.find(fs => fs.clinic_id?._id === clinicToEdit._id || fs.clinic_id === clinicToEdit._id) : null}
+      />
     </div>
   );
 }

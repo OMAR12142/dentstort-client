@@ -67,6 +67,8 @@ export default function DashboardPage() {
   const totalSessions = stats?.stats?.totalSessions || 0;
   const patientsAdded = stats?.stats?.patientsAdded || 0;
   const activePatients = stats?.stats?.activePatients || 0;
+  const monthlyFixedSalary = stats?.stats?.monthly_fixed_salary || 0;
+  const totalIncome = totalEarnings + monthlyFixedSalary;
   const earnings = stats?.earnings || [];
 
   const totalPatients = patientsData?.totalPatients || 0;
@@ -186,9 +188,25 @@ export default function DashboardPage() {
             </span>
           </div>
           <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
-            {totalEarnings.toLocaleString()} <span className="text-sm font-normal opacity-50 uppercase tracking-tighter">EGP</span>
+            {totalIncome.toLocaleString()} <span className="text-sm font-normal opacity-50 uppercase tracking-tighter">EGP</span>
           </p>
-          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">{getTimeframeLabel(timeframe)} Earnings</p>
+          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">{getTimeframeLabel(timeframe)} Total Income</p>
+        </Card>
+
+        {/* Card 1.5 - Fixed Salary */}
+        <Card className="hover:border-success/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-success/10 flex items-center justify-center text-success transition-transform group-hover:scale-110">
+              <DollarSign size={20} strokeWidth={2.5} />
+            </div>
+            <span className="text-[10px] sm:text-xs font-black text-success bg-success/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
+              Fixed
+            </span>
+          </div>
+          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
+            {monthlyFixedSalary.toLocaleString()} <span className="text-sm font-normal opacity-50 uppercase tracking-tighter">EGP</span>
+          </p>
+          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Fixed Salary</p>
         </Card>
 
         {/* Card 2 - Patients Added */}
@@ -223,21 +241,6 @@ export default function DashboardPage() {
           <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Sessions {getTimeframeLabel(timeframe).toLowerCase()}</p>
         </Card>
 
-        {/* Card 4 - Total Patients */}
-        <Card className="hover:border-warning/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-warning/10 flex items-center justify-center text-warning transition-transform group-hover:scale-110">
-              <Users size={20} strokeWidth={2.5} />
-            </div>
-            <span className="text-[10px] sm:text-xs font-black text-warning bg-warning/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
-              Growth
-            </span>
-          </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
-            {totalPatients}
-          </p>
-          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Total Patients</p>
-        </Card>
       </motion.div>
 
       {/* Today's Shifts section */}

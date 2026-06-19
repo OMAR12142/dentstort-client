@@ -23,7 +23,7 @@ export default function PublicFooter() {
           <div className="space-y-6">
             <h4 className="text-xs font-black uppercase tracking-widest text-white">Clinical Solution</h4>
             <ul className="space-y-4">
-              <li><Link to="/#features" className="text-sm text-gray-400 hover:text-primary transition-colors font-bold">Dashboard Hub</Link></li>
+              <li><Link to="/#features" className="text-sm text-gray-400 hover:text-primary transition-colors font-bold">Dashboard</Link></li>
               <li><Link to="/#features" className="text-sm text-gray-400 hover:text-primary transition-colors font-bold">Portfolio Builder</Link></li>
               <li><Link to="/#features" className="text-sm text-gray-400 hover:text-primary transition-colors font-bold">Clinical Sessions</Link></li>
             </ul>

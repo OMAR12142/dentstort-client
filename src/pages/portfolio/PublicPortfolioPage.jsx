@@ -21,13 +21,23 @@ export default function PublicPortfolioPage() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [profilePhotoOpen, setProfilePhotoOpen] = useState(false);
   const limit = 6;
-
-  const { data, isLoading, error } = usePublicPortfolio(slug, page, limit);
   const [selectedFilter, setSelectedFilter] = useState('All');
+  const { data, isLoading, error } = usePublicPortfolio(slug, page, limit, selectedFilter);
 
-  const TREATMENT_TYPES = [
+  const BASE_TREATMENT_TYPES = [
     'All', 'Surgery', 'Implant', 'Endo', 'Perio', 'Fixed', 'Removable', 'Restorative', 'General'
   ];
+
+  // Use the available types returned by the backend (which scans the whole portfolio, not just one page)
+  const dynamicTreatmentTypes = data?.availableTreatmentTypes || [];
+    
+  // Merge base types with any dynamic custom ones, removing duplicates
+  const TREATMENT_TYPES = [...new Set([...BASE_TREATMENT_TYPES, ...dynamicTreatmentTypes])];
+
+  const handleFilterChange = (type) => {
+    setSelectedFilter(type);
+    setPage(1); // Reset to page 1 when changing filters
+  };
 
   // Scroll to grid on page change
   const handlePageChange = (newPage) => {
@@ -88,7 +98,7 @@ export default function PublicPortfolioPage() {
         cases={cases}
         slug={slug}
         selectedFilter={selectedFilter}
-        setSelectedFilter={setSelectedFilter}
+        setSelectedFilter={handleFilterChange}
         treatmentTypes={TREATMENT_TYPES}
         pagination={pagination}
         page={page}

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { z } from 'zod';
-import { Trash2, Plus, AlertCircle, Building2, MapPin, Percent } from 'lucide-react';
+import { Trash2, Plus, AlertCircle, Building2, MapPin, Percent, DollarSign, CalendarDays } from 'lucide-react';
 import Modal from './Modal';
 import { useCreateClinic, useUpdateClinic } from '../hooks/useClinics';
+import { useCreateFixedSalary, useUpdateFixedSalary, useDeleteFixedSalary } from '../hooks/useFixedSalary';
+import toast from 'react-hot-toast';
 
 const daysOfWeek = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -16,10 +18,14 @@ const schema = z.object({
     .max(100, 'Must be 0-100'),
 });
 
-export default function AddClinicModal({ open, onClose, clinic = null }) {
-  const { mutate: createClinic, isPending: isCreating } = useCreateClinic();
-  const { mutate: updateClinic, isPending: isUpdating } = useUpdateClinic();
+export default function AddClinicModal({ open, onClose, clinic = null, fixedSalary = null }) {
+  const { mutateAsync: createClinicAsync, isPending: isCreating } = useCreateClinic();
+  const { mutateAsync: updateClinicAsync, isPending: isUpdating } = useUpdateClinic();
   
+  const { mutateAsync: createFixedSalaryAsync } = useCreateFixedSalary();
+  const { mutateAsync: updateFixedSalaryAsync } = useUpdateFixedSalary();
+  const { mutateAsync: deleteFixedSalaryAsync } = useDeleteFixedSalary();
+
   const isPending = isCreating || isUpdating;
 
   const [errors, setErrors] = useState({});
@@ -29,6 +35,10 @@ export default function AddClinicModal({ open, onClose, clinic = null }) {
     default_commission_percentage: '',
   });
   const [workingDays, setWorkingDays] = useState([]);
+  
+  const [hasFixedSalary, setHasFixedSalary] = useState(false);
+  const [fixedSalaryAmount, setFixedSalaryAmount] = useState('');
+  const [fixedSalaryDay, setFixedSalaryDay] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -41,12 +51,25 @@ export default function AddClinicModal({ open, onClose, clinic = null }) {
         });
         // clone workingDays array so edits don't directly mutate state props
         setWorkingDays(clinic.working_days ? JSON.parse(JSON.stringify(clinic.working_days)) : []);
+
+        if (fixedSalary) {
+          setHasFixedSalary(true);
+          setFixedSalaryAmount(fixedSalary.amount || '');
+          setFixedSalaryDay(fixedSalary.salary_day || '');
+        } else {
+          setHasFixedSalary(false);
+          setFixedSalaryAmount('');
+          setFixedSalaryDay('');
+        }
       } else {
         setFormData({ name: '', address: '', default_commission_percentage: '' });
         setWorkingDays([]);
+        setHasFixedSalary(false);
+        setFixedSalaryAmount('');
+        setFixedSalaryDay('');
       }
     }
-  }, [open, clinic]);
+  }, [open, clinic, fixedSalary]);
 
   const clearError = (field) => {
     if (errors[field]) setErrors((p) => ({ ...p, [field]: undefined }));
@@ -74,12 +97,26 @@ export default function AddClinicModal({ open, onClose, clinic = null }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const result = schema.safeParse(formData);
+    const errs = {};
     if (!result.success) {
-      const errs = {};
       result.error.issues.forEach((i) => (errs[i.path[0]] = i.message));
+    }
+
+    if (hasFixedSalary) {
+      const amt = Number(fixedSalaryAmount);
+      if (!fixedSalaryAmount || isNaN(amt) || amt <= 0) {
+        errs.fixedSalaryAmount = 'Valid amount > 0 is required';
+      }
+      const day = Number(fixedSalaryDay);
+      if (!fixedSalaryDay || isNaN(day) || day < 1 || day > 28) {
+        errs.fixedSalaryDay = 'Day must be between 1 and 28';
+      }
+    }
+
+    if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
     }
@@ -89,17 +126,36 @@ export default function AddClinicModal({ open, onClose, clinic = null }) {
       working_days: workingDays,
     };
 
-    const handleSuccess = () => {
+    try {
+      let savedClinic;
+      if (clinic) {
+        savedClinic = await updateClinicAsync({ id: clinic._id, ...payload });
+      } else {
+        savedClinic = await createClinicAsync(payload);
+      }
+
+      const clinicId = savedClinic?._id || clinic?._id;
+      
+      if (hasFixedSalary && fixedSalaryAmount && fixedSalaryDay) {
+        if (fixedSalary) {
+          await updateFixedSalaryAsync({ id: fixedSalary._id, data: { amount: fixedSalaryAmount, salary_day: fixedSalaryDay }});
+        } else if (clinicId) {
+          await createFixedSalaryAsync({ clinic_id: clinicId, amount: fixedSalaryAmount, salary_day: fixedSalaryDay });
+        }
+      } else if (!hasFixedSalary && fixedSalary) {
+        await deleteFixedSalaryAsync(fixedSalary._id);
+      }
+
       setErrors({});
       setFormData({ name: '', address: '', default_commission_percentage: '' });
       setWorkingDays([]);
+      setHasFixedSalary(false);
+      setFixedSalaryAmount('');
+      setFixedSalaryDay('');
       onClose();
-    };
-
-    if (clinic) {
-      updateClinic({ id: clinic._id, ...payload }, { onSuccess: handleSuccess });
-    } else {
-      createClinic(payload, { onSuccess: handleSuccess });
+    } catch (err) {
+      console.error('Submission error:', err);
+      toast.error(err.response?.data?.message || err.message || 'Failed to save changes.');
     }
   };
 
@@ -159,8 +215,70 @@ export default function AddClinicModal({ open, onClose, clinic = null }) {
           />
           {errors.default_commission_percentage && (
             <div className="flex items-center gap-1.5 text-xs text-error mt-1.5">
-              <AlertCircle size={14} />
-              {errors.default_commission_percentage}
+               <AlertCircle size={14} />
+               {errors.default_commission_percentage}
+            </div>
+          )}
+        </motion.div>
+
+        {/* Fixed Salary Section */}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="bg-base-200/50 p-3 rounded-xl border border-neutral-light/50">
+          <label className="flex items-center gap-2 cursor-pointer mb-2">
+            <input 
+              type="checkbox" 
+              className="checkbox checkbox-sm checkbox-primary" 
+              checked={hasFixedSalary}
+              onChange={(e) => setHasFixedSalary(e.target.checked)}
+            />
+            <span className="text-sm font-bold text-base-content">Add Fixed Salary</span>
+          </label>
+          
+          {hasFixedSalary && (
+            <div className="grid grid-cols-2 gap-3 mt-3 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div>
+                <label className="label text-xs font-semibold text-base-content/80 flex items-center gap-1.5 pt-0">
+                  <DollarSign size={12} className="text-success" /> Amount (EGP)
+                </label>
+                <input
+                  type="number"
+                  value={fixedSalaryAmount}
+                  onChange={(e) => {
+                    setFixedSalaryAmount(e.target.value);
+                    clearError('fixedSalaryAmount');
+                  }}
+                  className={`input input-sm input-bordered w-full rounded-lg focus:border-primary ${errors.fixedSalaryAmount ? 'border-error focus:border-error focus:ring-error' : ''}`}
+                  placeholder="5000"
+                />
+                {errors.fixedSalaryAmount && (
+                  <div className="flex items-center gap-1.5 text-[10px] text-error mt-1">
+                    <AlertCircle size={10} />
+                    {errors.fixedSalaryAmount}
+                  </div>
+                )}
+              </div>
+              <div>
+                <label className="label text-xs font-semibold text-base-content/80 flex items-center gap-1.5 pt-0">
+                  <CalendarDays size={12} className="text-primary" /> Salary Day (1-28)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="28"
+                  value={fixedSalaryDay}
+                  onChange={(e) => {
+                    setFixedSalaryDay(e.target.value);
+                    clearError('fixedSalaryDay');
+                  }}
+                  className={`input input-sm input-bordered w-full rounded-lg focus:border-primary ${errors.fixedSalaryDay ? 'border-error focus:border-error focus:ring-error' : ''}`}
+                  placeholder="10"
+                />
+                {errors.fixedSalaryDay && (
+                  <div className="flex items-center gap-1.5 text-[10px] text-error mt-1">
+                    <AlertCircle size={10} />
+                    {errors.fixedSalaryDay}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </motion.div>

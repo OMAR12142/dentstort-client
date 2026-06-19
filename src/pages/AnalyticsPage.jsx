@@ -8,9 +8,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from 'recharts';
 import { 
   DollarSign, 
@@ -20,14 +17,13 @@ import {
   ArrowUpRight, 
   Filter,
   CheckCircle2,
-  PieChart as PieIcon,
-  BarChart3
+  BarChart3,
+  PieChart
 } from 'lucide-react';
 import { useEarningsHistory } from '../hooks/useAnalytics';
 import { CardSkeleton } from '../components/Skeleton';
 import Card from '../components/Card';
 
-const COLORS = ['#0EA5E9', '#14B8A6', '#F59E0B', '#8B5CF6', '#EF4444', '#EC4899'];
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -68,6 +64,11 @@ const ModernTooltip = ({ active, payload, label }) => {
         <p className="text-lg font-black text-primary flex items-center gap-2">
           {payload[0].value.toLocaleString()} <span className="text-[10px] font-bold opacity-50 uppercase tracking-widest">EGP</span>
         </p>
+        {payload.find(p => p.dataKey === 'fixed_salary') && (
+          <p className="text-sm font-black text-emerald-500 flex items-center gap-2">
+            + {payload.find(p => p.dataKey === 'fixed_salary').value.toLocaleString()} <span className="text-[10px] font-bold opacity-50 uppercase tracking-widest">Fixed</span>
+          </p>
+        )}
         <p className="text-[11px] font-bold text-base-content/60 flex items-center gap-1.5 mt-1 pt-1 border-t border-neutral-light/30">
           <CheckCircle2 size={12} className="text-success" />
           {payload[0].payload.sessions} Sessions recorded
@@ -86,6 +87,7 @@ export default function AnalyticsPage() {
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [chartView, setChartView] = useState('both');
 
   // Compute combined filters for the hook
   const filters = useMemo(() => {
@@ -115,16 +117,22 @@ export default function AnalyticsPage() {
   }, [currentYear]);
 
   const monthLabel = MONTH_NAMES[selectedMonth - 1];
-  const totalMonthlyEarnings = monthlyBreakdown.reduce((sum, c) => sum + c.earnings, 0);
 
-  const pieData = useMemo(() => {
-    return monthlyBreakdown.map((clinic, idx) => ({
-      name: clinic.clinicName,
-      value: clinic.earnings,
-      sessions: clinic.sessions,
-      color: COLORS[idx % COLORS.length]
-    }));
-  }, [monthlyBreakdown]);
+  const filteredBreakdown = useMemo(() => {
+    return monthlyBreakdown.filter(clinic => {
+      if (chartView === 'commissions') return clinic.commission > 0;
+      if (chartView === 'fixed') return clinic.fixed_salary > 0;
+      return clinic.earnings > 0;
+    });
+  }, [monthlyBreakdown, chartView]);
+
+  const filteredBreakdownTotal = useMemo(() => {
+    return filteredBreakdown.reduce((sum, c) => {
+      if (chartView === 'commissions') return sum + c.commission;
+      if (chartView === 'fixed') return sum + c.fixed_salary;
+      return sum + c.earnings;
+    }, 0);
+  }, [filteredBreakdown, chartView]);
 
   // Derived labels for UI
   const getPeriodLabel = () => {
@@ -219,12 +227,12 @@ export default function AnalyticsPage() {
       ) : (
         <div className="space-y-8">
           {/* Summary Cards Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <StatCard 
               icon={DollarSign}
               label={filterType === 'yearly' ? `Gross Earnings ${selectedYear}` : 'Cumulative Payout'}
               value={`${summary.totalYearlyEarnings?.toLocaleString()} EGP`}
-              subtext="Aggregated clinical revenue"
+              subtext="Commissions + Fixed Salaries"
               colorClass="text-emerald-500"
               animationDelay={0}
             />
@@ -235,14 +243,6 @@ export default function AnalyticsPage() {
               subtext="Documented patient sessions"
               colorClass="text-sky-500"
               animationDelay={0.1}
-            />
-            <StatCard 
-              icon={Building2}
-              label={filterType === 'yearly' ? `${monthLabel} Payout` : 'Period Breakpoint'}
-              value={`${summary.totalMonthlyEarnings?.toLocaleString()} EGP`}
-              subtext="Focus range earnings"
-              colorClass="text-violet-500"
-              animationDelay={0.2}
             />
           </div>
 
@@ -259,15 +259,26 @@ export default function AnalyticsPage() {
                       Fiscal Index <span className="opacity-30">Trend</span>
                     </h2>
                   </div>
-                  <div className="flex items-center gap-1 px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest">
-                    <ArrowUpRight size={12} />
-                    Range Metrics
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={chartView}
+                      onChange={(e) => setChartView(e.target.value)}
+                      className="select select-sm select-ghost font-black text-[10px] uppercase tracking-widest focus:ring-0 cursor-pointer bg-base-200/50 h-7 min-h-0"
+                    >
+                      <option value="both">Both</option>
+                      <option value="commissions">Commissions Only</option>
+                      <option value="fixed">Fixed Salary Only</option>
+                    </select>
+                    <div className="flex items-center gap-1 px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest hidden sm:flex">
+                      <ArrowUpRight size={12} />
+                      Range Metrics
+                    </div>
                   </div>
                 </div>
 
                 {yearlyTrend.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-24 text-base-content/20 italic">
-                    <PieIcon size={48} className="mb-4 opacity-5" />
+                    <PieChart size={48} className="mb-4 opacity-5" />
                     <p>No activity detected in this period</p>
                   </div>
                 ) : (
@@ -278,6 +289,10 @@ export default function AnalyticsPage() {
                           <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.2}/>
                             <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                          </linearGradient>
+                          <linearGradient id="colorFixedSalary" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" strokeOpacity={0.05} vertical={false} />
@@ -295,15 +310,30 @@ export default function AnalyticsPage() {
                           tickFormatter={(val) => `${val / 1000}k`}
                         />
                         <Tooltip content={<ModernTooltip />} cursor={{ stroke: '#0EA5E9', strokeWidth: 2, strokeDasharray: '5 5' }} />
-                        <Area 
-                          type="monotone" 
-                          dataKey="earnings" 
-                          stroke="#0EA5E9" 
-                          strokeWidth={4} 
-                          fillOpacity={1} 
-                          fill="url(#colorEarnings)" 
-                          animationDuration={1500}
-                        />
+                        {(chartView === 'both' || chartView === 'commissions') && (
+                          <Area 
+                            type="monotone" 
+                            dataKey="earnings" 
+                            stackId="1"
+                            stroke="#0EA5E9" 
+                            strokeWidth={4} 
+                            fillOpacity={1} 
+                            fill="url(#colorEarnings)" 
+                            animationDuration={1500}
+                          />
+                        )}
+                        {(chartView === 'both' || chartView === 'fixed') && (
+                          <Area 
+                            type="monotone" 
+                            dataKey="fixed_salary" 
+                            stackId="1"
+                            stroke="#10b981" 
+                            strokeWidth={4} 
+                            fillOpacity={1} 
+                            fill="url(#colorFixedSalary)" 
+                            animationDuration={1500}
+                          />
+                        )}
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
@@ -311,73 +341,80 @@ export default function AnalyticsPage() {
               </Card>
             </div>
 
-            {/* Monthly Clinic Distribution Donut */}
+            {/* Per-Clinic Earnings Breakdown */}
             <div className="lg:col-span-1">
               <Card className="p-6 border-neutral-light/50 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="p-2 rounded-lg bg-violet-500/10 text-violet-500">
-                    <PieIcon size={20} />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-violet-500/10 text-violet-500">
+                      <Building2 size={20} />
+                    </div>
+                    <h2 className="text-lg font-black text-base-content uppercase tracking-widest">
+                      Clinic <span className="opacity-30">Earnings</span>
+                    </h2>
                   </div>
-                  <h2 className="text-lg font-black text-base-content uppercase tracking-widest">
-                    Source Share
-                  </h2>
                 </div>
 
-                {monthlyBreakdown.length === 0 ? (
+                {filteredBreakdown.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-base-content/20 italic text-center px-8">
-                    <p>Insufficient clinical data for breakdown in this period</p>
+                    <p>No earnings data for this period</p>
                   </div>
                 ) : (
                   <div className="flex-1 flex flex-col">
-                    <div className="h-[240px] w-full relative">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={pieData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={65}
-                            outerRadius={85}
-                            paddingAngle={8}
-                            dataKey="value"
-                            stroke="none"
-                            animationBegin={300}
-                            animationDuration={1000}
-                          >
-                            {pieData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} cornerRadius={4} />
-                            ))}
-                          </Pie>
-                          <Tooltip content={<ModernTooltip />} />
-                        </PieChart>
-                      </ResponsiveContainer>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <p className="text-[10px] font-black uppercase text-base-content/30 tracking-[0.3em]">Range Total</p>
-                        <p className="text-xl font-black text-base-content leading-none mt-1">
-                          {summary.totalMonthlyEarnings >= 1000 ? `${(summary.totalMonthlyEarnings / 1000).toFixed(1)}k` : summary.totalMonthlyEarnings}
-                        </p>
-                      </div>
+                    {/* Total */}
+                    <div className="flex items-center justify-between p-3 bg-base-200/50 rounded-xl mb-4">
+                      <span className="text-[10px] font-black uppercase text-base-content/40 tracking-[0.2em]">Total</span>
+                      <span className="text-lg font-black text-base-content">
+                        {filteredBreakdownTotal.toLocaleString()} <span className="text-[10px] opacity-40">EGP</span>
+                      </span>
                     </div>
 
-                    <div className="mt-8 space-y-4">
-                      <p className="text-[10px] font-black uppercase text-base-content/40 tracking-[0.2em] border-b border-neutral-light/30 pb-2">Clinical Distribution Index</p>
-                      <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                        {pieData.map((clinic, idx) => (
-                          <div key={idx} className="group flex items-center justify-between p-2 rounded-xl transition-all hover:bg-base-200/50">
-                            <div className="flex items-center gap-3">
-                              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: clinic.color }} />
-                              <div className="min-w-0">
-                                <p className="text-xs font-black text-base-content truncate max-w-[120px] uppercase tracking-wide">{clinic.name}</p>
-                                <p className="text-[9px] font-bold text-base-content/30 uppercase tracking-tighter">{clinic.sessions} Sessions</p>
+                    {/* Clinic List */}
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
+                      {filteredBreakdown.map((clinic, idx) => {
+                        const displayValue = chartView === 'commissions' ? clinic.commission 
+                          : chartView === 'fixed' ? clinic.fixed_salary 
+                          : clinic.earnings;
+                        const percentage = filteredBreakdownTotal > 0 ? ((displayValue / filteredBreakdownTotal) * 100).toFixed(0) : 0;
+                        
+                        return (
+                          <motion.div 
+                            key={clinic.clinicId || idx}
+                            initial={{ opacity: 0, x: -8 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                            className="group p-3 rounded-xl transition-all hover:bg-base-200/50 border border-transparent hover:border-neutral-light/30"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <p className="text-xs font-black text-base-content truncate max-w-[140px] uppercase tracking-wide">{clinic.clinicName}</p>
+                              <p className="text-sm font-black text-base-content">
+                                {displayValue.toLocaleString()} <span className="text-[8px] opacity-40">EGP</span>
+                              </p>
+                            </div>
+                            {/* Progress bar */}
+                            <div className="w-full bg-base-200 rounded-full h-1.5">
+                              <motion.div 
+                                className="h-1.5 rounded-full bg-gradient-to-r from-primary to-emerald-400"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${percentage}%` }}
+                                transition={{ duration: 0.8, delay: idx * 0.1 }}
+                              />
+                            </div>
+                            <div className="flex items-center justify-between mt-1.5">
+                              <p className="text-[9px] font-bold text-base-content/30 uppercase">{clinic.sessions} Sessions</p>
+                              <div className="flex items-center gap-2">
+                                {chartView === 'both' && (
+                                  <>
+                                    <span className="text-[8px] font-bold text-sky-500">{clinic.commission.toLocaleString()} comm</span>
+                                    <span className="text-[8px] font-bold text-emerald-500">{clinic.fixed_salary.toLocaleString()} fixed</span>
+                                  </>
+                                )}
+                                <span className="text-[9px] font-black text-primary">{percentage}%</span>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <p className="text-[11px] font-black text-base-content">{clinic.value.toLocaleString()} <span className="text-[8px] opacity-40">EGP</span></p>
-                              <p className="text-[10px] font-black text-primary opacity-60">{((clinic.value / summary.totalMonthlyEarnings) * 100).toFixed(0)}%</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                          </motion.div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

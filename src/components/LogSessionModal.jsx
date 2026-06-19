@@ -22,7 +22,14 @@ const saveCustomCategory = (cat) => {
   }
 };
 
-export default function LogSessionModal({ open, onClose, initialPatientId, sessionToEdit, linkedAppointmentId }) {
+export default function LogSessionModal({ 
+  open, 
+  onClose, 
+  initialPatientId, 
+  sessionToEdit, 
+  linkedAppointmentId,
+  initialClinicId,
+}) {
   const { mutate: createMutate, isPending: createPending } = useCreateSession();
   const { mutate: updateMutate, isPending: updatePending } = useUpdateSession();
   const { data: patientsData } = usePatients({ page: 1, limit: 200 });
@@ -47,6 +54,7 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
   const [errors, setErrors] = useState({});
   const [customCatInput, setCustomCatInput] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [zeroConfirmOpen, setZeroConfirmOpen] = useState(false);
 
   // Build the full list of available categories
   const allCategories = [...new Set([...DEFAULT_CATEGORIES, ...getCustomCategories()])];
@@ -185,6 +193,20 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
       return;
     }
 
+    const tCost = parseFloat(formData.total_cost) || 0;
+    const aPaid = parseFloat(formData.amount_paid) || 0;
+
+    if (tCost === 0 && aPaid === 0) {
+      setZeroConfirmOpen(true);
+      return;
+    }
+
+    executeSubmit();
+  };
+
+  const executeSubmit = () => {
+    setZeroConfirmOpen(false);
+
     if (isEditMode) {
       const fd = new FormData();
       fd.append('patient_id', selectedPatientId);
@@ -236,6 +258,9 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
 
       if (linkedAppointmentId) {
         fd.append('linked_appointment_id', linkedAppointmentId);
+      }
+      if (initialClinicId) {
+        fd.append('clinic_id', initialClinicId);
       }
 
       createMutate(fd, {
@@ -582,6 +607,38 @@ export default function LogSessionModal({ open, onClose, initialPatientId, sessi
           )}
         </button>
       </form>
+
+      {/* Confirmation Modal for Zero Financials */}
+      <Modal
+        open={zeroConfirmOpen}
+        onClose={() => setZeroConfirmOpen(false)}
+        title="Confirm Session Financials"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <div className="flex items-start gap-3 text-warning">
+            <AlertCircle size={24} className="shrink-0 mt-0.5" />
+            <p className="font-medium text-base-content">Are you sure you want the Total Cost and Amount Paid to be 0?</p>
+          </div>
+          <div className="flex justify-end gap-3 pt-4 border-t border-neutral-light/50">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => setZeroConfirmOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary text-white"
+              onClick={executeSubmit}
+              disabled={isPending}
+            >
+              {isPending ? <span className="loading loading-spinner loading-sm" /> : 'Yes, Save Session'}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </Modal>
   );
 }

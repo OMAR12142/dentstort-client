@@ -10,13 +10,15 @@ import axios from 'axios';
  * Fetch a public portfolio by slug.
  * Uses raw axios (no auth interceptor) for truly public access.
  */
-export function usePublicPortfolio(slug, page = 1, limit = 12) {
+export function usePublicPortfolio(slug, page = 1, limit = 12, treatmentType = 'All') {
   return useQuery({
-    queryKey: ['publicPortfolio', slug, page, limit],
+    queryKey: ['publicPortfolio', slug, page, limit, treatmentType],
     queryFn: async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/portfolio/${slug}?page=${page}&limit=${limit}`
-      );
+      let url = `${import.meta.env.VITE_API_URL}/api/portfolio/${slug}?page=${page}&limit=${limit}`;
+      if (treatmentType && treatmentType !== 'All') {
+        url += `&treatmentType=${encodeURIComponent(treatmentType)}`;
+      }
+      const { data } = await axios.get(url);
       return data;
     },
     enabled: !!slug,

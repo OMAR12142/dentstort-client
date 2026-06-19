@@ -95,7 +95,7 @@ export default function PortfolioEditorPage() {
   };
 
   const { mutate: reorderCase } = useReorderCase();
-  
+
   const handleReorder = (caseId, direction) => {
     reorderCase({ caseId, direction });
   };
@@ -166,10 +166,10 @@ export default function PortfolioEditorPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl lg:text-2xl font-bold text-[#191919] dark:text-white tracking-tight">Public Portfolio</h1>
+                <h1 className="text-xl lg:text-2xl font-bold text-base-content tracking-tight">Public Portfolio</h1>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${portfolio.isPublished
-                    ? 'bg-[#057642]/10 text-[#057642] border-[#057642]/20'
-                    : 'bg-[#666666]/10 text-[#666666] border-[#666666]/20'
+                  ? 'bg-[#057642]/10 text-[#057642] border-[#057642]/20'
+                  : 'bg-[#666666]/10 text-[#666666] border-[#666666]/20'
                   }`}>
                   {portfolio.isPublished ? 'Live' : 'Draft'}
                 </span>
@@ -182,8 +182,8 @@ export default function PortfolioEditorPage() {
             <button
               onClick={() => togglePortfolio()}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all border ${portfolio.isPublished
-                  ? 'bg-white dark:bg-[#1A1A1A] text-[#E74C3C] border-[#E74C3C]/30 hover:bg-[#E74C3C]/5'
-                  : 'bg-[#0A66C2] text-white border-transparent hover:bg-[#0A66C2]/90 shadow-lg shadow-[#0A66C2]/20'
+                ? 'bg-white dark:bg-[#1A1A1A] text-[#E74C3C] border-[#E74C3C]/30 hover:bg-[#E74C3C]/5'
+                : 'bg-[#0A66C2] text-white border-transparent hover:bg-[#0A66C2]/90 shadow-lg shadow-[#0A66C2]/20'
                 }`}
             >
               {portfolio.isPublished ? <GlobeLock size={16} /> : <Globe size={16} />}
@@ -220,8 +220,8 @@ export default function PortfolioEditorPage() {
         <button
           onClick={() => setActiveTab('profile')}
           className={`flex items-center gap-2 px-6 py-2.5 text-sm font-bold rounded-xl transition-all ${activeTab === 'profile'
-              ? 'bg-[#0A66C2] text-white shadow-md'
-              : 'text-[#666666] dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1A1A1A]'
+            ? 'bg-[#0A66C2] text-white shadow-md'
+            : 'text-[#666666] dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1A1A1A]'
             }`}
         >
           <Briefcase size={16} />
@@ -230,15 +230,15 @@ export default function PortfolioEditorPage() {
         <button
           onClick={() => setActiveTab('cases')}
           className={`flex items-center gap-2 px-6 py-2.5 text-sm font-bold rounded-xl transition-all ${activeTab === 'cases'
-              ? 'bg-[#0A66C2] text-white shadow-md'
-              : 'text-[#666666] dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1A1A1A]'
+            ? 'bg-[#0A66C2] text-white shadow-md'
+            : 'text-[#666666] dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1A1A1A]'
             }`}
         >
           <ImageIcon size={16} />
           Cases
-          {portfolio.publishedCases?.length > 0 && (
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ml-1 ${activeTab === 'cases' ? 'bg-white/20' : 'bg-[#E0DFDC] dark:bg-[#3A3A3A] text-[#666666]'}`}>
-              {portfolio.publishedCases.length}
+          {(portfolio.pagination?.totalItems || portfolio.publishedCases?.length) > 0 && (
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ml-1 ${activeTab === 'cases' ? 'bg-white/20' : 'bg-[#E0DFDC] dark:bg-[#3A3A3A] text-white'}`}>
+              {portfolio.pagination?.totalItems || portfolio.publishedCases.length}
             </span>
           )}
         </button>
@@ -252,7 +252,7 @@ export default function PortfolioEditorPage() {
                 <div className="w-8 h-8 rounded-lg bg-[#0A66C2]/10 flex items-center justify-center">
                   <Briefcase size={16} className="text-[#0A66C2]" />
                 </div>
-                <h2 className="text-base font-bold text-[#191919] dark:text-white">Profile Identity</h2>
+                <h2 className="text-base font-bold text-base-content">Profile Identity</h2>
               </div>
               <AnimatePresence>
                 {updateSuccess && (
@@ -271,7 +271,7 @@ export default function PortfolioEditorPage() {
             <form onSubmit={handleSaveProfile} className="p-6 space-y-8">
               {/* Bio */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white flex items-center gap-2">
+                <label className="text-sm font-bold text-base-content flex items-center gap-2">
                   Professional Summary
                 </label>
                 <textarea
@@ -286,7 +286,7 @@ export default function PortfolioEditorPage() {
               {/* Experience and Services */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#191919] dark:text-white">Years of Clinical Experience</label>
+                  <label className="text-sm font-bold text-base-content">Years of Clinical Experience</label>
                   <div className="relative">
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666666] dark:text-gray-500" size={16} />
                     <input
@@ -299,7 +299,7 @@ export default function PortfolioEditorPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#191919] dark:text-white">Clinical Specialties</label>
+                  <label className="text-sm font-bold text-base-content">Clinical Specialties</label>
                   <input
                     type="text"
                     value={servicesInput}
@@ -314,7 +314,7 @@ export default function PortfolioEditorPage() {
               {/* Contact Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#E0DFDC] dark:border-[#3A3A3A]">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#191919] dark:text-white flex items-center gap-2">
+                  <label className="text-sm font-bold text-base-content flex items-center gap-2">
                     <Mail size={16} className="text-[#0A66C2]" /> Public Inquiry Email
                   </label>
                   <input
@@ -326,7 +326,7 @@ export default function PortfolioEditorPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#191919] dark:text-white flex items-center gap-2">
+                  <label className="text-sm font-bold text-base-content flex items-center gap-2">
                     <Phone size={16} className="text-[#25D366]" /> WhatsApp / Phone
                   </label>
                   <input
@@ -342,7 +342,7 @@ export default function PortfolioEditorPage() {
               {/* Clinic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#191919] dark:text-white flex items-center gap-2">
+                  <label className="text-sm font-bold text-base-content flex items-center gap-2">
                     <MapPin size={16} className="text-[#E74C3C]" /> Clinic Name
                   </label>
                   <input
@@ -354,7 +354,7 @@ export default function PortfolioEditorPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#191919] dark:text-white">Clinic Address</label>
+                  <label className="text-sm font-bold text-base-content">Clinic Address</label>
                   <input
                     type="text"
                     value={clinicAddress}
@@ -388,7 +388,7 @@ export default function PortfolioEditorPage() {
                 <div className="w-8 h-8 rounded-lg bg-[#0A66C2]/10 flex items-center justify-center">
                   <ImageIcon size={16} className="text-[#0A66C2]" />
                 </div>
-                <h2 className="text-base font-bold text-[#191919] dark:text-white">Clinical Portfolio Gallery</h2>
+                <h2 className="text-base font-bold text-base-content">Clinical Portfolio Gallery</h2>
               </div>
               <button
                 onClick={() => setAddCaseModal(true)}
@@ -446,18 +446,18 @@ export default function PortfolioEditorPage() {
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                             </button>
                           </div>
-                          
+
                           {/* Action Buttons */}
                           <div className="flex gap-1">
-                            <button 
-                              onClick={() => setEditCaseModal(c)} 
+                            <button
+                              onClick={() => setEditCaseModal(c)}
                               className="w-9 h-9 sm:w-8 sm:h-8 rounded-lg bg-[#0A66C2] text-white flex items-center justify-center shadow-lg hover:bg-[#0A66C2]/90 transition-all active:scale-90"
                               title="Edit Case"
                             >
                               <Pencil size={16} className="sm:size-[14px]" />
                             </button>
-                            <button 
-                              onClick={() => setConfirmDelete(c._id)} 
+                            <button
+                              onClick={() => setConfirmDelete(c._id)}
                               className="w-9 h-9 sm:w-8 sm:h-8 rounded-lg bg-red-600 text-white flex items-center justify-center shadow-lg hover:bg-red-700 transition-all active:scale-90"
                               title="Delete Case"
                             >
@@ -575,11 +575,45 @@ function AddCaseModal({ onClose }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
-  const [treatmentType, setTreatmentType] = useState('General');
+  const [treatmentTypes, setTreatmentTypes] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
   const [coverImage, setCoverImage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState('');
+  const [customCatInput, setCustomCatInput] = useState('');
+  const [showCustomInput, setShowCustomInput] = useState(false);
+
+  // Custom categories from localStorage (same as LogSessionModal)
+  const getCustomCategories = () => {
+    try { return JSON.parse(localStorage.getItem('gd_custom_categories') || '[]'); }
+    catch { return []; }
+  };
+  const saveCustomCategory = (cat) => {
+    const existing = getCustomCategories();
+    if (!existing.includes(cat)) {
+      localStorage.setItem('gd_custom_categories', JSON.stringify([...existing, cat]));
+    }
+  };
+  const allCategories = [...new Set([...TREATMENT_TYPES, ...getCustomCategories()])];
+
+  const toggleTreatmentType = (type) => {
+    setTreatmentTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    );
+    setError('');
+  };
+
+  const handleAddCustomCategory = () => {
+    const trimmed = customCatInput.trim();
+    if (!trimmed) return;
+    saveCustomCategory(trimmed);
+    if (!treatmentTypes.includes(trimmed)) {
+      setTreatmentTypes((prev) => [...prev, trimmed]);
+    }
+    setCustomCatInput('');
+    setShowCustomInput(false);
+    setError('');
+  };
 
   const toggleImage = (url) => {
     setSelectedImages((prev) => {
@@ -600,10 +634,11 @@ function AddCaseModal({ onClose }) {
   const nextStep = () => {
     setError('');
     if (step === 1) {
-      if (!title.trim()) { setError('Title is required to proceed.'); return; }
+      if (selectedImages.length === 0) { setError('Select at least one image to proceed.'); return; }
       setStep(2);
     } else if (step === 2) {
-      if (selectedImages.length === 0) { setError('Select at least one image to proceed.'); return; }
+      if (!title.trim()) { setError('Title is required to proceed.'); return; }
+      if (treatmentTypes.length === 0) { setError('Select at least one treatment type.'); return; }
       if (!coverImage && selectedImages.length > 0) setCoverImage(selectedImages[0]);
       setStep(3);
     }
@@ -617,7 +652,7 @@ function AddCaseModal({ onClose }) {
       title,
       description,
       category,
-      treatmentType,
+      treatmentType: treatmentTypes.length > 0 ? treatmentTypes : ['General'],
       selectedImages,
       coverImage: coverImage || selectedImages[0],
     }, {
@@ -657,7 +692,7 @@ function AddCaseModal({ onClose }) {
               </div>
             ))}
             <span className="ml-2 text-xs font-bold text-[#666666] uppercase tracking-widest">
-              {step === 1 ? 'Clinical Details' : step === 2 ? 'Media Library' : 'Final Preview'}
+              {step === 1 ? 'Media Library' : step === 2 ? 'Clinical Details' : 'Final Preview'}
             </span>
           </div>
         </div>
@@ -671,61 +706,6 @@ function AddCaseModal({ onClose }) {
           )}
 
           {step === 1 && (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white">Clinical Title *</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Upper Jaw Reconstruction"
-                  className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white">Procedure Summary</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={4}
-                  className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2] resize-none"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white">Trial/Patient Note (Internal)</label>
-                <input
-                  type="text"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  placeholder="e.g. Case #12, VIP Patient"
-                  className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white">Treatment Type *</label>
-                <div className="flex flex-wrap gap-2">
-                  {TREATMENT_TYPES.map((type) => (
-                    <button
-                      key={type}
-                      type="button"
-                      onClick={() => setTreatmentType(type)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${treatmentType === type
-                        ? 'bg-[#0A66C2] text-white border-[#0A66C2] shadow-md shadow-[#0A66C2]/20'
-                        : 'bg-white dark:bg-[#1A1A1A] text-[#666666] border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]'
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {step === 2 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#252525] p-3 rounded-2xl border border-[#E0DFDC] dark:border-[#3A3A3A] shadow-sm">
                 <div className="flex items-center gap-3">
@@ -741,7 +721,7 @@ function AddCaseModal({ onClose }) {
                     placeholder="Search records..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-2 px-11 text-xs focus:outline-none"
+                    className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-2 px-11 text-xs focus:outline-none"
                   />
                 </div>
               </div>
@@ -750,7 +730,7 @@ function AddCaseModal({ onClose }) {
                 {library?.filter(session => session.patientName.toLowerCase().includes(searchQuery.toLowerCase())).map((session) => (
                   <div key={session.sessionId} className="border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-2xl p-4 bg-white dark:bg-[#1A1A1A]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-bold text-[#191919] dark:text-white uppercase tracking-tight">{session.patientName}</span>
+                      <span className="text-xs font-bold text-base-content uppercase tracking-tight">{session.patientName}</span>
                       <span className="text-[10px] font-medium text-[#666666]">{new Date(session.date).toLocaleDateString()}</span>
                     </div>
                     <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
@@ -767,6 +747,132 @@ function AddCaseModal({ onClose }) {
                     </div>
                   </div>
                 ))}
+              </div>
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-5">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-base-content">Clinical Title *</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g. Upper Jaw Reconstruction"
+                  className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-base-content">Procedure Summary</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={4}
+                  className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2] resize-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-base-content">Trial/Patient Note (Internal)</label>
+                <input
+                  type="text"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  placeholder="e.g. Case #12, VIP Patient"
+                  className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-bold text-base-content">Treatment Type *</label>
+
+                {/* Selected tags */}
+                {treatmentTypes.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {treatmentTypes.map((cat) => (
+                      <span
+                        key={cat}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-lg bg-[#0A66C2]/10 text-[#0A66C2] border border-[#0A66C2]/20"
+                      >
+                        {cat}
+                        <button
+                          type="button"
+                          onClick={() => toggleTreatmentType(cat)}
+                          className="hover:text-[#E74C3C] transition-colors ml-0.5"
+                        >
+                          <X size={12} strokeWidth={3} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Category chips */}
+                <div className="flex flex-wrap gap-2">
+                  {allCategories.map((type) => {
+                    const isSelected = treatmentTypes.includes(type);
+                    return (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => toggleTreatmentType(type)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${isSelected
+                          ? 'bg-[#0A66C2] text-white border-[#0A66C2] shadow-md shadow-[#0A66C2]/20'
+                          : 'bg-white dark:bg-[#1A1A1A] text-[#666666] border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]'
+                          }`}
+                      >
+                        {type}
+                      </button>
+                    );
+                  })}
+
+                  {/* Add Custom button */}
+                  {!showCustomInput && (
+                    <button
+                      type="button"
+                      onClick={() => setShowCustomInput(true)}
+                      className="px-4 py-2 rounded-xl text-xs font-bold border border-dashed border-[#0A66C2]/40 text-[#0A66C2]/70 hover:border-[#0A66C2] hover:text-[#0A66C2] hover:bg-[#0A66C2]/5 transition-all flex items-center gap-1"
+                    >
+                      <Plus size={12} />
+                      Custom
+                    </button>
+                  )}
+                </div>
+
+                {/* Custom category input */}
+                {showCustomInput && (
+                  <div className="flex gap-2 mt-1">
+                    <input
+                      type="text"
+                      autoFocus
+                      className="flex-1 bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-2 px-4 text-xs focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
+                      placeholder="Type custom category..."
+                      value={customCatInput}
+                      onChange={(e) => setCustomCatInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') { e.preventDefault(); handleAddCustomCategory(); }
+                        if (e.key === 'Escape') { setShowCustomInput(false); setCustomCatInput(''); }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddCustomCategory}
+                      disabled={!customCatInput.trim()}
+                      className="px-4 py-2 bg-[#0A66C2] text-white rounded-xl text-xs font-bold disabled:opacity-40 transition-all"
+                    >
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setShowCustomInput(false); setCustomCatInput(''); }}
+                      className="p-2 rounded-xl text-[#666666] hover:bg-[#E0DFDC] dark:hover:bg-[#3A3A3A] transition-all"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -905,16 +1011,16 @@ function EditCaseModal({ caseData, onClose }) {
           {step === 1 && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white">Title *</label>
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm" />
+                <label className="text-sm font-bold text-base-content">Title *</label>
+                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white">Description</label>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl p-4 text-sm resize-none" />
+                <label className="text-sm font-bold text-base-content">Description</label>
+                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl p-4 text-sm resize-none focus:outline-none" />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-[#191919] dark:text-white">Treatment Type</label>
+                <label className="text-sm font-bold text-base-content">Treatment Type</label>
                 <div className="flex flex-wrap gap-2">
                   {TREATMENT_TYPES.map((type) => (
                     <button
@@ -924,7 +1030,7 @@ function EditCaseModal({ caseData, onClose }) {
                       className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${treatmentType === type
                         ? 'bg-[#0A66C2] text-white border-[#0A66C2]'
                         : 'bg-white dark:bg-[#1A1A1A] text-[#666666] border-[#E0DFDC] dark:border-[#3A3A3A]'
-                      }`}
+                        }`}
                     >
                       {type}
                     </button>
@@ -947,7 +1053,7 @@ function EditCaseModal({ caseData, onClose }) {
                   placeholder="Filter gallery..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#F3F2EF] dark:bg-[#1A1A1A] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-2 pl-10 pr-4 text-xs"
+                  className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-2 pl-10 pr-4 text-xs"
                 />
               </div>
               <div className="space-y-4">

@@ -507,9 +507,9 @@ export default function PatientProfilePage() {
       {/* Sessions Timeline */}
       <div className="flex items-center gap-2 mb-1">
         <h2 className="text-lg font-bold text-base-content">Session History</h2>
-        {sessions.length > 0 && (
+        {(sessionsData?.total || 0) > 0 && (
           <span className="px-2 py-0.5 text-xs font-black bg-primary/10 text-primary rounded-full">
-            {sessions.length}
+            {sessionsData.total}
           </span>
         )}
       </div>

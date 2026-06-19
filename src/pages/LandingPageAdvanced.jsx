@@ -93,7 +93,7 @@ export default function LandingPage() {
     },
     {
       icon: Globe,
-      title: 'Automated Portfolio',
+      title: 'generate your Portfolio',
       description: 'Instantly generate a public professional portfolio. Showcase your best clinical results to patients and medical partners, and easily share it with anyone as your CV.',
       category: 'Branding'
     },
@@ -115,12 +115,7 @@ export default function LandingPage() {
       description: 'Directly message patients from their card. Pre-fill follow-up notes and appointment reminders with one tap.',
       category: 'Efficiency'
     },
-    {
-      icon: Smartphone,
-      title: 'Progressive Web App',
-      description: 'Install DentStory on your iPhone, Android, or PC.',
-      category: 'Efficiency'
-    }
+
   ];
 
   const highlights = [
@@ -150,8 +145,7 @@ export default function LandingPage() {
     'Smart clinical Task manager',
     'Direct WhatsApp messaging',
     'PWA Mobile Install support',
-    'Automatic Dark/Light mode',
-    'Priority clinical support'
+    ' Dark/Light mode',
   ];
 
   return (

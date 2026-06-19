@@ -59,6 +59,7 @@ export default function DayDetailPage() {
   const [logSessionModalOpen, setLogSessionModalOpen] = useState(false);
   const [logSessionPatientId, setLogSessionPatientId] = useState('');
   const [logSessionLinkedAptId, setLogSessionLinkedAptId] = useState('');
+  const [logSessionClinicId, setLogSessionClinicId] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   // Determine if this day is in the past or future
@@ -306,27 +307,26 @@ export default function DayDetailPage() {
         </div>
       )}
 
-      {/* ── Future Appointments ───────────────── */}
-      {(!isPast || isToday) && (
-        <div className="space-y-3">
-          <h2 className="text-base font-bold text-base-content flex items-center gap-2">
-            <Clock size={18} className="text-primary" />
-            {isToday ? 'Remaining Appointments' : 'Scheduled Appointments'}
-            {activeAppointments.length > 0 && (
-              <span className="text-xs font-semibold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                {activeAppointments.length}
-              </span>
-            )}
-          </h2>
+      {/* ── Appointments ───────────────── */}
+      <div className="space-y-3">
+        <h2 className="text-base font-bold text-base-content flex items-center gap-2">
+          <Clock size={18} className="text-primary" />
+          {isPast ? 'Past Appointments' : isToday ? 'Remaining Appointments' : 'Scheduled Appointments'}
+          {activeAppointments.length > 0 && (
+            <span className="text-xs font-semibold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+              {activeAppointments.length}
+            </span>
+          )}
+        </h2>
 
-          {activeAppointments.length === 0 ? (
-            <Card className="p-6 text-center">
-              <Calendar size={32} className="mx-auto mb-3 text-base-content/20" />
-              <p className="text-sm text-base-content/50">
-                {isToday ? 'No more appointments today.' : 'No appointments scheduled for this day.'}
-              </p>
-            </Card>
-          ) : (
+        {activeAppointments.length === 0 ? (
+          <Card className="p-6 text-center">
+            <Calendar size={32} className="mx-auto mb-3 text-base-content/20" />
+            <p className="text-sm text-base-content/50">
+              {isPast ? 'No appointments were scheduled on this day.' : isToday ? 'No more appointments today.' : 'No appointments scheduled for this day.'}
+            </p>
+          </Card>
+        ) : (
             activeAppointments.map((apt, idx) => (
               <motion.div
                 key={apt._id}
@@ -376,6 +376,7 @@ export default function DayDetailPage() {
                         onClick={() => {
                           setLogSessionPatientId(apt.patient_id?._id);
                           setLogSessionLinkedAptId(apt._id);
+                          setLogSessionClinicId(apt.clinic_id?._id || apt.clinic_id);
                           setLogSessionModalOpen(true);
                         }}
                         className="btn btn-xs btn-primary gap-1"
@@ -417,7 +418,6 @@ export default function DayDetailPage() {
             ))
           )}
         </div>
-      )}
 
       {/* Appointment Modal */}
       <AppointmentModal
@@ -440,9 +440,11 @@ export default function DayDetailPage() {
           setLogSessionModalOpen(false);
           setLogSessionPatientId('');
           setLogSessionLinkedAptId('');
+          setLogSessionClinicId('');
         }}
         initialPatientId={logSessionPatientId}
         linkedAppointmentId={logSessionLinkedAptId}
+        initialClinicId={logSessionClinicId}
       />
 
       {/* Delete Confirmation Modal */}

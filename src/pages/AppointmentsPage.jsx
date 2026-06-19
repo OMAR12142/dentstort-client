@@ -168,6 +168,8 @@ export default function AppointmentsPage() {
     );
   }, [appointments]);
 
+
+
   // ── Calendar callbacks ──────────────────────
   const handleDatesSet = useCallback((dateInfo) => {
     setDateRange({ start: dateInfo.startStr, end: dateInfo.endStr });
