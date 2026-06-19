@@ -322,7 +322,7 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
               <a
-                href="https://dentstory.vercel.app/portfolio/dr-mohamed-farid"
+                href="https://dentstory.site/portfolio/dr-mohamed-farid"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-8 py-4 bg-white text-primary text-base sm:text-lg font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center gap-2 w-full sm:w-auto justify-center"
@@ -333,7 +333,7 @@ export default function LandingPage() {
           </div>
           <div className="flex-1 w-full max-w-sm mx-auto lg:mx-0">
             <a
-              href="https://dentstory.vercel.app/portfolio/dr-mohamed-farid"
+              href="https://dentstory.site/portfolio/dr-mohamed-farid"
               target="_blank"
               rel="noopener noreferrer"
               className="block group relative"
