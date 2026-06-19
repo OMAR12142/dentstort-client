@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
 const envUrl = import.meta.env.VITE_API_URL;
-const safeBaseUrl = (!envUrl || envUrl === 'undefined') ? '' : envUrl;
+const safeBaseUrl = (!envUrl || envUrl === 'undefined' || envUrl === '/') ? '' : envUrl.replace(/\/+$/, '');
 
 const api = axios.create({
   baseURL: safeBaseUrl,
@@ -74,7 +74,7 @@ api.interceptors.response.use(
 
       try {
         const envUrl = import.meta.env.VITE_API_URL;
-        const baseUrl = (!envUrl || envUrl === 'undefined') ? '' : envUrl;
+        const baseUrl = (!envUrl || envUrl === 'undefined' || envUrl === '/') ? '' : envUrl.replace(/\/+$/, '');
         const { data } = await axios.post(
           `${baseUrl}/api/auth/refresh`,
           {},
