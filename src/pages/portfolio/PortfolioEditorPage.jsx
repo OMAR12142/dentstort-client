@@ -947,12 +947,26 @@ function EditCaseModal({ caseData, onClose }) {
         setError('Maximum of 5 images allowed.');
         return prev;
       }
+      setError('');
       const newSelections = isSelected ? prev.filter((u) => u !== url) : [...prev, url];
       if (coverImage === url && isSelected) {
         setCoverImage(newSelections.length > 0 ? newSelections[0] : '');
       }
       return newSelections;
     });
+  };
+
+  const nextStep = () => {
+    setError('');
+    if (step === 1) {
+      if (!title.trim()) { setError('Title is required to proceed.'); return; }
+      if (!treatmentType) { setError('Select a treatment type to proceed.'); return; }
+      setStep(2);
+    } else if (step === 2) {
+      if (selectedImages.length === 0) { setError('Select at least one image to proceed.'); return; }
+      if (!coverImage && selectedImages.length > 0) setCoverImage(selectedImages[0]);
+      setStep(3);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -1090,9 +1104,9 @@ function EditCaseModal({ caseData, onClose }) {
         <div className="p-6 border-t border-[#E0DFDC] dark:border-[#3A3A3A] flex items-center justify-between">
           <button onClick={onClose} className="px-6 py-2.5 font-bold text-xs text-[#666666]">Cancel</button>
           <div className="flex gap-3">
-            {step > 1 && <button onClick={() => setStep(s => s - 1)} className="px-6 py-2.5 bg-gray-100 rounded-xl font-bold text-xs">Back</button>}
+            {step > 1 && <button onClick={() => setStep(s => s - 1)} className="px-6 py-2.5 bg-gray-100 dark:bg-[#3A3A3A] text-[#191919] dark:text-white rounded-xl font-bold text-xs">Back</button>}
             {step < 3 ? (
-              <button onClick={() => setStep(s => s + 1)} className="bg-[#0A66C2] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-[#0A66C2]/20">Next</button>
+              <button onClick={nextStep} className="bg-[#0A66C2] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-[#0A66C2]/20">Next</button>
             ) : (
               <Button onClick={handleSubmit} loading={isPending} className="px-10">Confirm Edits</Button>
             )}

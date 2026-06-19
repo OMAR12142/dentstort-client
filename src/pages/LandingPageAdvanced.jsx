@@ -14,6 +14,7 @@ import SEO from '../components/common/SEO';
 import PublicNavbar from '../components/common/PublicNavbar';
 import PublicFooter from '../components/common/PublicFooter';
 import WhatsAppIcon from '../components/WhatsAppIcon';
+import { usePublicPortfolio } from '../hooks/usePortfolio';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function LandingPage() {
   const isDark = useThemeStore((s) => s.isDark);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showStickyBadge, setShowStickyBadge] = useState(false);
+  const { data: demoPortfolio } = usePublicPortfolio('dr-mohamed-farid');
 
   useEffect(() => {
     const html = document.documentElement;
@@ -285,7 +287,123 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── 2. FEATURE MISSION ── */}
+      {/* ── 2. PORTFOLIO SHOWCASE ── */}
+      <section id="portfolio" className="bg-primary py-8 sm:py-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-full bg-white opacity-[0.03] skew-x-[-20deg] translate-x-32" />
+        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          <div className="flex-1 text-center lg:text-left">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-white/20"
+            >
+              <Sparkles size={14} className="fill-current" />
+              Public Doctor Portfolio
+            </motion.div>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">Your Clinical Identity,<br />Beautifully Showcased.</h2>
+            <p className="text-lg text-white/80 leading-relaxed max-w-xl mb-8 font-medium">
+              Turn your everyday sessions into a public professional storefront. DentStory automatically builds a beautiful, SEO-optimized portfolio from your clinical records to share with patients and peers.
+            </p>
+
+            <div className="flex flex-col gap-4 mb-10 max-w-lg mx-auto lg:mx-0 text-left">
+              {[
+                "One-click public case publishing",
+                "Built-in Before & After galleries",
+                "Shareable custom portfolio link",
+                "Zero coding or design skills needed"
+              ].map((feature, idx) => (
+                <div key={idx} className="flex items-center gap-3 text-white">
+                  <CheckCircle2 size={20} className="text-white shrink-0 opacity-80" />
+                  <span className="font-bold">{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+              <a
+                href="https://dentstory.vercel.app/portfolio/dr-mohamed-farid"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 bg-white text-primary text-base sm:text-lg font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center gap-2 w-full sm:w-auto justify-center"
+              >
+                View Live Example <ArrowRight size={20} />
+              </a>
+            </div>
+          </div>
+          <div className="flex-1 w-full max-w-sm mx-auto lg:mx-0">
+            <a
+              href="https://dentstory.vercel.app/portfolio/dr-mohamed-farid"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group relative"
+            >
+              {/* Glow effect behind card */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-sky-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+
+              <div className="relative bg-white dark:bg-[#1A1A1A] rounded-3xl p-5 shadow-2xl border border-white/20 group-hover:scale-[1.02] transition-all duration-300">
+
+                <div className="aspect-[4/3] rounded-2xl bg-[#F3F2EF] dark:bg-[#252525] overflow-hidden relative mb-5 border border-[#E0DFDC] dark:border-white/10 group-hover:shadow-lg transition-all duration-500">
+                  {demoPortfolio?.dentist?.profilePhoto?.url ? (
+                    <img
+                      src={demoPortfolio.dentist.profilePhoto.url}
+                      alt="Doctor Profile"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent mix-blend-multiply dark:mix-blend-lighten" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-white dark:bg-[#1A1A1A] shadow-md flex items-center justify-center">
+                          <ImageIcon size={28} className="text-primary" />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  <div className="absolute bottom-3 right-3 bg-[#0A66C2] text-white px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1 z-10">
+                    <p className="text-[9px] font-black uppercase tracking-widest">one of doctors portfolio </p>
+                  </div>
+                </div>
+
+                <div className="px-2 pb-2">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div>
+                      <h3 className="text-[#191919] dark:text-white font-black text-xl leading-tight group-hover:text-primary transition-colors">
+                        {demoPortfolio?.dentist?.name ? `Dr. ${demoPortfolio.dentist.name}` : 'Dr. Mohamed Farid'}
+                      </h3>
+                      <p className="text-[#666666] dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-1">
+                        {demoPortfolio?.services?.length > 0 ? demoPortfolio.services[0] : 'Implants & Esthetics'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-[#E0DFDC] dark:border-white/10">
+                    <div className="flex gap-6">
+                      <div>
+                        <p className="text-xs font-black text-[#191919] dark:text-white">{demoPortfolio?.pagination?.totalItems || 24}</p>
+                        <p className="text-[9px] text-[#666666] dark:text-gray-500 uppercase tracking-widest font-bold">Cases</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-[#191919] dark:text-white">{demoPortfolio?.yearsOfExperience || 8}yr</p>
+                        <p className="text-[9px] text-[#666666] dark:text-gray-500 uppercase tracking-widest font-bold">Exp.</p>
+                      </div>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-[#F3F2EF] dark:bg-[#252525] flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                      <ArrowRight size={18} className="text-[#666666] dark:text-gray-400 group-hover:text-white transition-colors" />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 3. FEATURE MISSION ── */}
       <section id="features" className="bg-[#252525] py-16 sm:py-24 border-y border-white/5">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-20">
@@ -312,74 +430,6 @@ export default function LandingPage() {
                 </p>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 3. PORTFOLIO SHOWCASE ── */}
-      <section className="bg-primary py-16 sm:py-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-full bg-white opacity-[0.03] skew-x-[-20deg] translate-x-32" />
-        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-          <div className="flex-1 text-center lg:text-left">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Built-in Professional Portfolio.</h2>
-            <p className="text-lg text-white/80 leading-relaxed max-w-xl mb-8 font-medium">
-              Transform your professional journey into a beautiful public storefront. Showcase implants, cosmetics, and surgical results automatically with one-click case publishing.            </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-            </div>
-          </div>
-          <div className="flex-1 w-full max-w-md">
-            <div className="bg-[#1A1A1A] rounded-[2.5rem] p-3 shadow-2xl rotate-2 border border-white/5">
-              <div className="aspect-[4/5] rounded-[2rem] bg-[#252525] overflow-hidden relative border border-white/10 flex flex-col">
-                {/* Portfolio Header */}
-                <div className="h-20 bg-primary/10 relative">
-                  <div className="absolute -bottom-6 left-6 w-12 h-12 rounded-full bg-white dark:bg-[#1A1A1A] p-0.5 border-2 border-primary/20">
-                    <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs">OS</div>
-                  </div>
-                  <div className="absolute -bottom-2 left-16 bg-emerald-500 text-white text-[6px] font-black px-1.5 py-0.5 rounded-full border-2 border-white dark:border-[#252525] uppercase tracking-tighter">Verified</div>
-                </div>
-
-                <div className="px-6 pt-8 pb-4">
-                  <p className="text-[11px] font-black text-white">Dr. mohamed farid </p>
-                  <p className="text-[8px] text-gray-400 uppercase tracking-widest mt-0.5">Implants & Esthetics</p>
-
-                  {/* Stats Row */}
-                  <div className="flex gap-4 mt-4">
-                    <div>
-                      <p className="text-[10px] font-black text-primary">24</p>
-                      <p className="text-[6px] text-[#666666] uppercase">Cases</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black text-primary">8yr</p>
-                      <p className="text-[6px] text-[#666666] uppercase">Exp.</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Cases Grid */}
-                <div className="flex-1 px-4 pb-4 overflow-hidden">
-                  <div className="grid grid-cols-2 gap-2 h-full">
-                    {[
-                      { title: 'Full Mouth Rehab', cat: 'Surgery' },
-                      { title: 'Veneers Case', cat: 'Cosmetic' },
-                      { title: 'Molar Implant', cat: 'Surgery' },
-                      { title: 'Smile Design', cat: 'Esthetics' }
-                    ].map((c, i) => (
-                      <div key={i} className="bg-[#1A1A1A] rounded-xl overflow-hidden border border-white/5 flex flex-col">
-                        <div className="flex-1 bg-primary/5 flex items-center justify-center">
-                          <ImageIcon size={12} className="opacity-20 text-primary" />
-                        </div>
-                        <div className="p-2">
-                          <p className="text-[7px] font-black text-white truncate">{c.title}</p>
-                          <p className="text-[5px] text-primary uppercase font-bold opacity-70">{c.cat}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
-              </div>
-            </div>
           </div>
         </div>
       </section>

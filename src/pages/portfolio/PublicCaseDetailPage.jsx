@@ -5,20 +5,24 @@ import {
   ArrowLeft, X, ChevronLeft, ChevronRight,
   Share2, Check, Briefcase, User, ZoomIn
 } from 'lucide-react';
-import { usePublicPortfolio } from '../../hooks/usePortfolio';
+import { usePublicPortfolio, usePublicCase } from '../../hooks/usePortfolio';
 import SEO from '../../components/common/SEO';
 
 export default function PublicCaseDetailPage() {
   const { slug, caseId } = useParams();
   const navigate = useNavigate();
-  const { data, isLoading, error } = usePublicPortfolio(slug);
+  
+  // Fetch specific case data independently of pagination
+  const { data: caseRes, isLoading: caseLoading, error: caseError } = usePublicCase(slug, caseId);
+  // Fetch portfolio data for "other cases" context
+  const { data: portfolioRes, isLoading: portLoading } = usePublicPortfolio(slug);
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [profilePhotoOpen, setProfilePhotoOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [copied, setCopied] = useState(false);
 
-  if (isLoading) {
+  if (caseLoading || portLoading) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center bg-[#F3F2EF] dark:bg-[#1A1A1A]">
         <div className="text-center space-y-4">
@@ -29,9 +33,10 @@ export default function PublicCaseDetailPage() {
     );
   }
 
-  const caseData = data?.cases?.find(c => c._id === caseId);
+  const caseData = caseRes?.case;
+  const dentist = caseRes?.dentist;
 
-  if (error || !data || !caseData) {
+  if (caseError || !caseData || !dentist) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-6 px-4 bg-[#F3F2EF] dark:bg-[#1A1A1A]">
         <div className="w-20 h-20 bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-full flex items-center justify-center">
@@ -43,13 +48,12 @@ export default function PublicCaseDetailPage() {
     );
   }
 
-  const dentist = data.dentist;
   const allImagesRaw = caseData.selectedImages || [];
   const allImages = caseData.coverImage
     ? [caseData.coverImage, ...allImagesRaw.filter(img => img !== caseData.coverImage)]
     : allImagesRaw;
 
-  const otherCases = data.cases.filter(c => c._id !== caseId).slice(0, 3);
+  const otherCases = portfolioRes?.cases?.filter(c => c._id !== caseId).slice(0, 3) || [];
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -113,7 +117,7 @@ export default function PublicCaseDetailPage() {
               </div>
               <div className="space-y-0.5">
                 <p className="text-sm font-bold text-[#191919] dark:text-white">Dr. {dentist.name}</p>
-                <p className="text-[10px] font-semibold text-[#666666] dark:text-gray-500 uppercase">{data.clinicName || 'Clinical Case'}</p>
+                <p className="text-[10px] font-semibold text-[#666666] dark:text-gray-500 uppercase">{portfolioRes?.clinicName || 'Clinical Case'}</p>
               </div>
             </div>
           </div>
