@@ -344,22 +344,11 @@ export default function LandingPage() {
               <div className="relative bg-white dark:bg-[#1A1A1A] rounded-3xl p-5 shadow-2xl border border-white/20 group-hover:scale-[1.02] transition-all duration-300">
 
                 <div className="aspect-[4/3] rounded-2xl bg-[#F3F2EF] dark:bg-[#252525] overflow-hidden relative mb-5 border border-[#E0DFDC] dark:border-white/10 group-hover:shadow-lg transition-all duration-500">
-                  {demoPortfolio?.dentist?.profilePhoto?.url ? (
-                    <img
-                      src={demoPortfolio.dentist.profilePhoto.url}
-                      alt="Doctor Profile"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                  ) : (
-                    <>
-                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent mix-blend-multiply dark:mix-blend-lighten" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-white dark:bg-[#1A1A1A] shadow-md flex items-center justify-center">
-                          <ImageIcon size={28} className="text-primary" />
-                        </div>
-                      </div>
-                    </>
-                  )}
+                  <img
+                    src="/doctorfarid.jpeg"
+                    alt="Doctor Profile"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
