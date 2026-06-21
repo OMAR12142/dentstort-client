@@ -69,7 +69,9 @@ export default function RegisterPage() {
           className="w-full max-w-sm lg:w-96 max-h-full overflow-y-auto custom-scrollbar px-2"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
-            <AppLogo size="lg" />
+            <Link to="/" className="hover:opacity-80 transition-opacity" title="Go to Homepage">
+              <AppLogo size="lg" />
+            </Link>
           </div>
           <h2 className="text-xl font-bold text-base-content tracking-tight mb-1">Create Account</h2>
           <p className="text-[11px] text-base-content/70 mb-5">
@@ -96,7 +98,7 @@ export default function RegisterPage() {
                 <input
                   name="name"
                   type="text"
-                  placeholder="Dr. John Doe"
+                  placeholder="Dr.mohamed farid "
                   onChange={() => clearError('name')}
                   className={`${inputBase} ${vErrors.name ? inputError : ''} rounded-xl h-10 bg-base-200/50`}
                 />
@@ -121,7 +123,7 @@ export default function RegisterPage() {
                 <input
                   name="email"
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder="omar@example.com"
                   onChange={() => clearError('email')}
                   className={`${inputBase} ${vErrors.email ? inputError : ''} rounded-xl h-10 bg-base-200/50`}
                 />
@@ -176,7 +178,7 @@ export default function RegisterPage() {
                 <input
                   name="phone"
                   type="tel"
-                  placeholder="+1 (555) 000-0000"
+                  placeholder="+010 198 768 00"
                   className={`${inputBase} rounded-xl h-10 bg-base-200/50`}
                 />
               </div>

@@ -54,7 +54,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const renderNavLinks = (expanded) => (
     <nav className="flex flex-col gap-2 p-3">
       {navItems.map((item) => {
-        const isActive = location.pathname.replace(/\/$/, '') === item.to || (item.to === '/' && location.pathname === '/');
+        const isActive = location.pathname === item.to || location.pathname.startsWith(item.to + '/');
         return (
           <NavLink
             key={item.to}

@@ -60,7 +60,9 @@ export default function LoginPage() {
         >
           {/* Branding */}
           <div className="flex items-center justify-center gap-3 mb-6">
-            <AppLogo size="lg" />
+            <Link to="/" className="hover:opacity-80 transition-opacity" title="Go to Homepage">
+              <AppLogo size="lg" />
+            </Link>
           </div>
 
           <h2 className="text-xl font-bold text-base-content tracking-tight">Welcome Back</h2>

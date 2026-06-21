@@ -77,40 +77,72 @@ export default function PublicCaseShowcase({
             </div>
 
             {/* ── Pagination Controls ── */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-8 pb-4 sm:pb-12">
-                <button
-                  disabled={page === 1}
-                  onClick={() => onPageChange(page - 1)}
-                  className="px-6 py-2 rounded-xl text-xs font-bold transition-all border border-[#E0DFDC] dark:border-[#3A3A3A] hover:bg-white dark:hover:bg-[#252525] disabled:opacity-30 disabled:cursor-not-allowed text-[#191919] dark:text-white"
-                >
-                  Previous
-                </button>
+            {totalPages > 1 && (() => {
+              const handlePageChange = (newPage) => {
+                onPageChange(newPage);
+                const el = document.getElementById('cases-section');
+                if (el) {
+                  // Scroll slightly above the section for better UX
+                  const y = el.getBoundingClientRect().top + window.scrollY - 100;
+                  window.scrollTo({ top: y, behavior: 'smooth' });
+                }
+              };
 
-                <div className="flex items-center gap-1">
-                  {[...Array(totalPages)].map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => onPageChange(i + 1)}
-                      className={`w-10 h-10 rounded-xl text-xs font-bold transition-all ${page === i + 1
-                        ? 'bg-[#0A66C2] text-white shadow-lg shadow-[#0A66C2]/20'
-                        : 'text-[#666666] hover:bg-white dark:hover:bg-[#252525]'
+              const getPageNumbers = () => {
+                const pages = [];
+                if (totalPages <= 5) {
+                  for (let i = 1; i <= totalPages; i++) pages.push(i);
+                } else {
+                  if (page <= 3) {
+                    pages.push(1, 2, 3, 4, '...', totalPages);
+                  } else if (page >= totalPages - 2) {
+                    pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                  } else {
+                    pages.push(1, '...', page - 1, page, page + 1, '...', totalPages);
+                  }
+                }
+                return pages;
+              };
+
+              return (
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-8 pb-4 sm:pb-12">
+                  <button
+                    disabled={page === 1}
+                    onClick={() => handlePageChange(page - 1)}
+                    className="px-4 sm:px-6 py-2 rounded-xl text-xs font-bold transition-all border border-[#E0DFDC] dark:border-[#3A3A3A] hover:bg-white dark:hover:bg-[#252525] disabled:opacity-30 disabled:cursor-not-allowed text-[#191919] dark:text-white"
+                  >
+                    Prev
+                  </button>
+
+                  <div className="flex items-center gap-1 flex-wrap justify-center">
+                    {getPageNumbers().map((p, i) => (
+                      <button
+                        key={i}
+                        disabled={p === '...'}
+                        onClick={() => p !== '...' && handlePageChange(p)}
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl text-xs font-bold transition-all ${
+                          p === '...'
+                            ? 'text-[#666666] cursor-default'
+                            : page === p
+                            ? 'bg-[#0A66C2] text-white shadow-lg shadow-[#0A66C2]/20'
+                            : 'text-[#666666] hover:bg-white dark:hover:bg-[#252525]'
                         }`}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-                </div>
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
 
-                <button
-                  disabled={page === totalPages}
-                  onClick={() => onPageChange(page + 1)}
-                  className="px-6 py-2 rounded-xl text-xs font-bold transition-all bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed text-[#191919] dark:text-white"
-                >
-                  Next
-                </button>
-              </div>
-            )}
+                  <button
+                    disabled={page === totalPages}
+                    onClick={() => handlePageChange(page + 1)}
+                    className="px-4 sm:px-6 py-2 rounded-xl text-xs font-bold transition-all bg-white dark:bg-[#252525] border border-[#E0DFDC] dark:border-[#3A3A3A] hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed text-[#191919] dark:text-white"
+                  >
+                    Next
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         )}
       </section>
