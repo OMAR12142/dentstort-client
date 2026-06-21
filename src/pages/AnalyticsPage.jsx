@@ -256,7 +256,7 @@ export default function AnalyticsPage() {
                       <BarChart3 size={20} />
                     </div>
                     <h2 className="text-lg font-black text-base-content uppercase tracking-widest">
-                      Fiscal Index <span className="opacity-30">Trend</span>
+                    Growth
                     </h2>
                   </div>
                   <div className="flex items-center gap-2">

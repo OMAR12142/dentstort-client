@@ -253,7 +253,7 @@ export default function AdminUsers() {
             {/* ── Premium Pagination Footer ── */}
             <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-neutral-light/50 bg-base-200/20 gap-4">
               <div className="text-[10px] font-black uppercase text-base-content/40 tracking-widest">
-                Showing <span className="text-base-content font-black">{dentists.length}</span> of <span className="text-base-content font-black">{totalDentists}</span> Result Index
+                Showing <span className="text-base-content font-black">{dentists.length}</span> of <span className="text-base-content font-black">{totalDentists}</span> Total Results
               </div>
 
               <div className="flex items-center gap-1">

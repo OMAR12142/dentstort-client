@@ -212,7 +212,7 @@ export default function CareerAnalyticsPage() {
             />
             <StatCard 
               icon={Award}
-              label={filterType === 'all' ? 'Expertise Index' : 'Active Domains'}
+              label={filterType === 'all' ? 'Experience Level' : 'Active Domains'}
               value={treatments.length}
               subtext="Unique Treatment Domains"
               colorClass="text-sky-500"
@@ -317,7 +317,7 @@ export default function CareerAnalyticsPage() {
                     <Target size={20} />
                   </div>
                   <h2 className="text-lg font-black text-base-content uppercase tracking-widest">
-                    Domain Index
+                    Areas of Focus
                   </h2>
                 </div>
 

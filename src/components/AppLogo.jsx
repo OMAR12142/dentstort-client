@@ -23,11 +23,19 @@ export default function AppLogo({ size = 'md', className = '', forceTheme }) {
   const isDark = forceTheme ? (forceTheme === 'dark') : isDarkStore;
 
   return (
-    <img
-      src={isDark ? logoDark : logoLight}
-      alt="DentStory"
-      className={`${sizes[size]} object-contain transition-opacity duration-200 ${className}`}
-      draggable={false}
-    />
+    <div className={`relative flex items-center justify-center ${sizes[size]} ${className}`}>
+      <img
+        src={logoLight}
+        alt="DentStory"
+        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${isDark ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        draggable={false}
+      />
+      <img
+        src={logoDark}
+        alt="DentStory"
+        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${isDark ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        draggable={false}
+      />
+    </div>
   );
 }
