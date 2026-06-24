@@ -67,7 +67,7 @@ export default function LoginPage() {
 
           <h2 className="text-xl font-bold text-base-content tracking-tight">Welcome Back</h2>
           <p className="mt-1 text-[11px] text-base-content/70">
-            Enter your credentials to access your account.
+            Enter your Email and Password .
           </p>
 
           {error && (

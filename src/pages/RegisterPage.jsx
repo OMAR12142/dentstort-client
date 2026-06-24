@@ -75,7 +75,7 @@ export default function RegisterPage() {
           </div>
           <h2 className="text-xl font-bold text-base-content tracking-tight mb-1">Create Account</h2>
           <p className="text-[11px] text-base-content/70 mb-5">
-            Join the elite circle of organized dentists.
+            Join us in dentstory.
           </p>
 
           {error && (
@@ -178,7 +178,7 @@ export default function RegisterPage() {
                 <input
                   name="phone"
                   type="tel"
-                  placeholder="+010 198 768 00"
+                  placeholder="+10 198 768 00"
                   className={`${inputBase} rounded-xl h-10 bg-base-200/50`}
                 />
               </div>

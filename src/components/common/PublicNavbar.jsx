@@ -21,6 +21,7 @@ export default function PublicNavbar() {
 
   const isPortfolioPage = location.pathname.includes('/portfolio/');
   const navLinks = isPortfolioPage ? [] : [
+    { name: 'How it Works', href: '/#how-it-works' },
     { name: 'Features', href: '/#features' },
     { name: 'Doctor Portfolio', href: '/#portfolio' },
     { name: 'Support', href: '/#feedback' },

@@ -220,70 +220,166 @@ export default function LandingPage() {
               {/* USP Highlights */}
             </div>
 
-            {/* Dashboard Preview Overlay */}
+            {/* Premium Dashboard Preview Overlay */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="flex-1 w-full max-w-2xl relative"
+              className="flex-1 w-full max-w-2xl relative mt-12 lg:mt-0"
+              style={{ perspective: 1000 }}
             >
-              <div className="bg-[#252525] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-                <div className="h-8 bg-[#1A1A1A] flex items-center px-4 gap-1.5 border-b border-white/5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-error/40" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-warning/40" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-success/40" />
-                  <span className="text-[10px] ml-2 font-black text-white/30 uppercase tracking-widest">Dashboard</span>
-                </div>
-                <div className="p-4 sm:p-6 space-y-6">
-                  {/* Quick Stats Mockup */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
-                      <p className="text-[10px] font-black text-primary uppercase tracking-wider mb-1">Monthly Earnings</p>
-                      <p className="text-2xl font-black text-primary">EGP 14.2K</p>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10">
-                      <p className="text-[10px] font-black text-emerald-500 uppercase tracking-wider mb-1">Active Patients</p>
-                      <p className="text-2xl font-black text-emerald-500">284</p>
-                    </div>
-                  </div>
-                  {/* Patient List Mockup */}
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Current Clinical Rotation</p>
-                    {[
-                      { name: 'Ahmed Hassan', op: 'Implants', status: 'active' },
-                      { name: 'Sara Mohamed', op: 'Orthodontics', status: 'In Progress' }
-                    ].map((p, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-[#1A1A1A] border border-white/5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">{p.name[0]}</div>
-                          <div>
-                            <p className="text-sm font-bold">{p.name}</p>
-                            <p className="text-[10px] uppercase text-white/50">{p.op}</p>
-                          </div>
-                        </div>
-                        <span className="text-[10px] px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded-lg font-bold">{p.status}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              {/* Floating Badge */}
+              {/* Main glowing backdrop */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 via-transparent to-sky-500/20 blur-[80px] rounded-full pointer-events-none" />
+
               <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ repeat: Infinity, duration: 4 }}
-                className="absolute -bottom-6 -right-6 bg-[#252525] p-5 rounded-3xl shadow-xl border border-white/10 hidden md:flex items-center gap-4"
+                className="relative bg-[#1A1A1A]/90 backdrop-blur-2xl rounded-[2rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
+                whileHover={{ rotateY: -2, rotateX: 2, scale: 1.02 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
-                <div className="w-12 h-12 rounded-2xl bg-sky-500 flex items-center justify-center text-white">
-                  <SmartphoneIcon />
+                {/* Mac-style Window Header */}
+                <div className="h-12 bg-white/5 flex items-center px-5 gap-4 border-b border-white/5 backdrop-blur-md">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                  </div>
+                  <div className="flex-1 flex justify-center">
+                    <div className="flex items-center gap-2 px-6 py-1.5 rounded-full bg-black/40 border border-white/5">
+                      <Lock size={12} className="text-white/40" />
+                      <span className="text-[11px] font-medium text-white/50 tracking-wide">app.dentstory.site</span>
+                    </div>
+                  </div>
+                  <div className="w-12" /> {/* Spacer for centering */}
+                </div>
+
+                <div className="p-6 space-y-6">
+                  {/* Top Stats Area */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:scale-110 group-hover:opacity-30 transition-all duration-500">
+                        <DollarSign size={48} />
+                      </div>
+                      <p className="text-[10px] font-black text-primary/80 uppercase tracking-widest mb-2 relative z-10">Monthly Revenue</p>
+                      <h4 className="text-3xl font-black text-white relative z-10">EGP 24.5K</h4>
+                      <p className="text-xs text-emerald-400 font-medium mt-3 flex items-center gap-1 relative z-10">
+                        <TrendingUp size={12} /> +12.5% vs last month
+                      </p>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/20 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:scale-110 group-hover:opacity-30 transition-all duration-500">
+                        <Users size={48} />
+                      </div>
+                      <p className="text-[10px] font-black text-emerald-500/80 uppercase tracking-widest mb-2 relative z-10">Active Patients</p>
+                      <h4 className="text-3xl font-black text-white relative z-10">1,284</h4>
+                      <p className="text-xs text-emerald-400 font-medium mt-3 flex items-center gap-1 relative z-10">
+                        <TrendingUp size={12} /> +45 new this month
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Patient List Mockup */}
+                  <div className="bg-black/20 rounded-2xl border border-white/5 p-5 backdrop-blur-sm">
+                    <div className="flex items-center justify-between mb-5">
+                      <p className="text-[11px] font-black text-white/50 uppercase tracking-widest flex items-center gap-2">
+                        <CalendarClock size={14} className="text-primary" /> Today's Sessions
+                      </p>
+                      <button className="text-[10px] text-primary font-bold hover:underline tracking-wider uppercase">View All</button>
+                    </div>
+                    <div className="space-y-3">
+                      {[
+                        {
+                          name: 'Ahmed Hassan', op: 'Dental Implants', status: 'In Progress',
+                          avatarBg: 'bg-primary/20', avatarText: 'text-primary', avatarBorder: 'border-primary/30',
+                          statusBg: 'bg-primary/10', statusText: 'text-primary', statusBorder: 'border-primary/20'
+                        },
+                        {
+                          name: 'Sara Mohamed', op: 'Orthodontics', status: 'Completed',
+                          avatarBg: 'bg-emerald-500/20', avatarText: 'text-emerald-500', avatarBorder: 'border-emerald-500/30',
+                          statusBg: 'bg-emerald-500/10', statusText: 'text-emerald-400', statusBorder: 'border-emerald-500/20'
+                        },
+                        {
+                          name: 'Omar Ali', op: 'Root Canal', status: 'Waiting',
+                          avatarBg: 'bg-amber-500/20', avatarText: 'text-amber-500', avatarBorder: 'border-amber-500/30',
+                          statusBg: 'bg-amber-500/10', statusText: 'text-amber-400', statusBorder: 'border-amber-500/20'
+                        }
+                      ].map((p, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-3.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer border border-white/5 group/item">
+                          <div className="flex items-center gap-3.5">
+                            <div className={`w-10 h-10 rounded-full ${p.avatarBg} flex items-center justify-center ${p.avatarText} font-bold text-sm border ${p.avatarBorder}`}>
+                              {p.name.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-white group-hover/item:text-primary transition-colors">{p.name}</p>
+                              <p className="text-[11px] text-white/50 uppercase tracking-wider mt-0.5">{p.op}</p>
+                            </div>
+                          </div>
+                          <span className={`text-[10px] px-3 py-1.5 ${p.statusBg} ${p.statusText} rounded-lg font-black uppercase tracking-wider border ${p.statusBorder}`}>
+                            {p.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+
+              {/* Floating Element 2: Install App Badge */}
+              <motion.div
+                animate={{ y: [10, -10, 10] }}
+                transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+                className="absolute -right-4 lg:-right-8 bottom-12 lg:bottom-16 bg-[#1A1A1A]/90 backdrop-blur-xl p-4 rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/10 hidden sm:flex items-center gap-4 z-10"
+              >
+                <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center text-sky-400 border border-sky-500/20">
+                  <SmartphoneIcon size={24} />
                 </div>
                 <div>
-                  <p className="text-xs font-black uppercase tracking-widest">Install App</p>
-                  <p className="text-[10px] text-white/50">Tap "Add to Home Screen" in browser</p>
+                  <p className="text-xs font-black uppercase tracking-widest text-white mb-1">Install App</p>
+                  <p className="text-[10px] text-white/50 font-medium">Available on iOS & Android</p>
                 </div>
               </motion.div>
             </motion.div>
 
           </div>
+        </div>
+      </section>
+
+      {/* ── 1.5 DEMO VIDEO SECTION ── */}
+      <section id="how-it-works" className="py-16 md:py-24 bg-[#141414] border-y border-white/5 relative overflow-hidden">
+        {/* Ambient Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="max-w-5xl mx-auto px-4 md:px-8 relative z-10">
+          <div className="text-center mb-10">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 bg-white/5 text-gray-300 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-white/10"
+            >
+              How it works
+            </motion.div>
+            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">See DentStory in Action</h2>
+            <p className="text-gray-400 font-medium max-w-2xl mx-auto text-base sm:text-lg">
+              Watch this quick demo to see how easy it is to manage your clinics, patients, portfolio, and financial records all in one place.
+            </p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="relative w-full rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-[#1A1A1A] aspect-video"
+          >
+            <iframe
+              src="https://drive.google.com/file/d/18VKWYI014AHz0I1nglU-74Iygz_Lq1ts/preview"
+              className="absolute top-0 left-0 w-full h-full"
+              allow="autoplay"
+              allowFullScreen
+              title="DentStory Demo Video"
+            ></iframe>
+          </motion.div>
         </div>
       </section>
 
