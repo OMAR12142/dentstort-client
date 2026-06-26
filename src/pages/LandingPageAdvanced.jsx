@@ -217,7 +217,23 @@ export default function LandingPage() {
                 </a>
               </motion.div>
 
-              {/* USP Highlights */}
+              {/* Platform Availability */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3"
+              >
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#252525] border border-white/5 shadow-inner">
+                  <Globe size={14} className="text-sky-400" />
+                  <span className="text-[11px] font-black uppercase tracking-widest text-gray-400">Web App</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#252525] border border-white/5 shadow-inner relative overflow-hidden group cursor-default">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  <SmartphoneIcon size={14} className="text-emerald-400" />
+                  <span className="text-[11px] font-black uppercase tracking-widest text-gray-400">Soon on Google Play</span>
+                </div>
+              </motion.div>
             </div>
 
             {/* Premium Dashboard Preview Overlay */}
@@ -345,12 +361,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── 1.5 DEMO VIDEO SECTION ── */}
-      <section id="how-it-works" className="py-16 md:py-24 bg-[#141414] border-y border-white/5 relative overflow-hidden">
-        {/* Ambient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+      <section id="how-it-works" className="py-20 md:py-32 bg-[#0A0A0A] relative overflow-hidden border-t border-white/5">
+        {/* Ambient Glows */}
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-5xl mx-auto px-4 md:px-8 relative z-10">
-          <div className="text-center mb-10">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-10">
+          <div className="text-center mb-16">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -359,26 +376,67 @@ export default function LandingPage() {
             >
               How it works
             </motion.div>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">See DentStory in Action</h2>
-            <p className="text-gray-400 font-medium max-w-2xl mx-auto text-base sm:text-lg">
+            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-6">
+              See DentStory <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-sky-400">in Action</span>
+            </h2>
+            <p className="text-gray-400 font-medium max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
               Watch this quick demo to see how easy it is to manage your clinics, patients, portfolio, and financial records all in one place.
             </p>
           </div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="relative w-full rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-[#1A1A1A] aspect-video"
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="relative w-full max-w-5xl mx-auto rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(0,198,255,0.15)] bg-[#1A1A1A]"
           >
-            <iframe
-              src="https://drive.google.com/file/d/18VKWYI014AHz0I1nglU-74Iygz_Lq1ts/preview"
-              className="absolute top-0 left-0 w-full h-full"
-              allow="autoplay"
-              allowFullScreen
-              title="DentStory Demo Video"
-            ></iframe>
+            {/* Mac-style Window Header */}
+            <div className="h-10 md:h-12 bg-[#252525] flex items-center px-4 md:px-5 gap-4 border-b border-white/5">
+              <div className="flex gap-1.5 md:gap-2">
+                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500/80" />
+                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-500/80" />
+                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-500/80" />
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="flex items-center gap-2 px-4 md:px-6 py-1 md:py-1.5 rounded-full bg-black/40 border border-white/5">
+                  <Lock size={12} className="text-white/40" />
+                  <span className="text-[10px] md:text-[11px] font-medium text-white/50 tracking-wider">dentstory.site/demo</span>
+                </div>
+              </div>
+              <div className="w-10 md:w-16" /> {/* Spacer for centering */}
+            </div>
+
+            {/* Video Container */}
+            <div className="relative aspect-video bg-[#000]">
+              {/* Overlay loader before iframe loads if needed, but iframe is direct */}
+              <iframe
+                src="https://drive.google.com/file/d/18VKWYI014AHz0I1nglU-74Iygz_Lq1ts/preview"
+                className="absolute top-0 left-0 w-full h-full"
+                allow="autoplay"
+                allowFullScreen
+                title="DentStory Demo Video"
+              ></iframe>
+            </div>
+          </motion.div>
+
+          {/* Mobile Fullscreen Fallback Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="mt-6 flex justify-center md:hidden relative z-20"
+          >
+            <a
+              href="https://drive.google.com/file/d/18VKWYI014AHz0I1nglU-74Iygz_Lq1ts/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-black text-sm transition-all active:scale-95 shadow-[0_0_20px_rgba(0,198,255,0.3)]"
+            >
+              <SmartphoneIcon size={16} />
+              Open Full Video Mode
+            </a>
           </motion.div>
         </div>
       </section>
