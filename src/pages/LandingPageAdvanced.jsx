@@ -465,7 +465,6 @@ export default function LandingPage() {
                 "One-click public case publishing",
                 "Built-in Before & After galleries",
                 "Shareable custom portfolio link",
-                "Zero coding or design skills needed"
               ].map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-3 text-white">
                   <CheckCircle2 size={20} className="text-white shrink-0 opacity-80" />
