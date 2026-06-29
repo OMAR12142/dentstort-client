@@ -133,7 +133,12 @@ export default function LoginPage() {
                   </div>
                 )}
                 <div className="flex justify-end mt-1">
-                  <a href="#" className="text-[10px] font-semibold text-primary hover:text-primary/80 transition-colors">
+                  <a 
+                    href="https://wa.me/201098854397?text=Hello%20Support,%20I%20forgot%20my%20password%20for%20DentStory%20and%20need%20help%20resetting%20it." 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[10px] font-semibold text-primary hover:text-primary/80 transition-colors"
+                  >
                     Forgot Password?
                   </a>
                 </div>

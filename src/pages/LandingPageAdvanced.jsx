@@ -15,6 +15,7 @@ import PublicNavbar from '../components/common/PublicNavbar';
 import PublicFooter from '../components/common/PublicFooter';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import { usePublicPortfolio } from '../hooks/usePortfolio';
+import demoVideo from '../assets/dentstory mobile demo sound-.mp4';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -409,35 +410,16 @@ export default function LandingPage() {
 
             {/* Video Container */}
             <div className="relative aspect-video bg-[#000]">
-              {/* Overlay loader before iframe loads if needed, but iframe is direct */}
-              <iframe
-                src="https://drive.google.com/file/d/18VKWYI014AHz0I1nglU-74Iygz_Lq1ts/preview"
+              <video
+                src={demoVideo}
                 className="absolute top-0 left-0 w-full h-full"
-                allow="autoplay"
-                allowFullScreen
+                controls
                 title="DentStory Demo Video"
-              ></iframe>
+              />
             </div>
           </motion.div>
 
-          {/* Mobile Fullscreen Fallback Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="mt-6 flex justify-center md:hidden relative z-20"
-          >
-            <a
-              href="https://drive.google.com/file/d/18VKWYI014AHz0I1nglU-74Iygz_Lq1ts/view?usp=sharing"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-black text-sm transition-all active:scale-95 shadow-[0_0_20px_rgba(0,198,255,0.3)]"
-            >
-              <SmartphoneIcon size={16} />
-              Open Full Video Mode
-            </a>
-          </motion.div>
+
         </div>
       </section>
 
@@ -638,14 +620,14 @@ export default function LandingPage() {
           </button>
 
           {/* ── Simple Support Hub ── */}
-          <div id="feedback" className=" sm:mt-16 text-center max-w-xl mx-auto px-4">
+          <div id="feedback" className="mt-16 sm:mt-24 text-center max-w-xl mx-auto px-4">
             <h3 className="text-2xl font-black text-white mb-4 "> Support.</h3>
             <p className="text-gray-400 text-sm font-medium mb-10 leading-relaxed">
               Have feedback, need advice, or ran into an issue? Reach out to us.            </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href="https://wa.me/201019876800?text=Hello%20Omar,%20I%20have%20some%20feedback/advice%20regarding%20DentStory."
+                href="https://wa.me/201098854397?text=Hello%20Omar,%20I%20have%20some%20feedback/advice%20regarding%20DentStory."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-emerald-500 text-white text-sm font-black hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto justify-center"

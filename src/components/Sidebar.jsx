@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  LayoutDashboard, CalendarDays, Building2, Users, BarChart3, TrendingUp, ListTodo, Briefcase, ChevronLeft, ChevronRight, X, PlayCircle
+  LayoutDashboard, CalendarDays, Building2, Users, BarChart3, TrendingUp, ListTodo, Briefcase, ChevronLeft, ChevronRight, X, PlayCircle, Headset
 } from 'lucide-react';
 import { useLayoutStore } from '../store/layoutStore';
 import AppLogo from './AppLogo';
@@ -16,7 +16,9 @@ const navItems = [
   { to: '/analytics', icon: BarChart3, label: 'Earnings' },
   { to: '/career-analytics', icon: TrendingUp, label: 'Career' },
   { to: '/portfolio/manage', icon: Briefcase, label: 'Portfolio' },
+  { type: 'divider' },
   { to: '/how-to-use', icon: PlayCircle, label: 'How to Use' },
+  { to: '/support', icon: Headset, label: 'Support' },
 ];
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
@@ -54,7 +56,11 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
 
   const renderNavLinks = (expanded) => (
     <nav className="flex flex-col gap-2 p-3">
-      {navItems.map((item) => {
+      {navItems.map((item, index) => {
+        if (item.type === 'divider') {
+          return <div key={`divider-${index}`} className="my-1 mx-2 border-t border-base-content/10" />;
+        }
+
         if (item.href) {
           return (
             <a

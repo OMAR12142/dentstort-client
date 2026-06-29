@@ -34,6 +34,7 @@ const PublicPortfolioPage = lazy(() => import('./pages/portfolio/PublicPortfolio
 const PublicCaseDetailPage = lazy(() => import('./pages/portfolio/PublicCaseDetailPage'));
 const PortfolioEditorPage = lazy(() => import('./pages/portfolio/PortfolioEditorPage'));
 const HowToUsePage = lazy(() => import('./pages/HowToUsePage'));
+const SupportPage = lazy(() => import('./pages/SupportPage'));
 
 // SEO Component
 import SEO from './components/common/SEO';
@@ -195,6 +196,7 @@ export default function App() {
                   <Route path="/profile/security" element={<ChangePasswordPage />} />
                   <Route path="/portfolio/manage" element={<PortfolioEditorPage />} />
                   <Route path="/how-to-use" element={<HowToUsePage />} />
+                  <Route path="/support" element={<SupportPage />} />
                 </Route>
               </Route>
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { PlayCircle } from 'lucide-react';
 import SEO from '../components/common/SEO';
+import demoVideo from '../assets/dentstory mobile demo sound-.mp4';
 
 export default function HowToUsePage() {
   return (
@@ -30,19 +31,18 @@ export default function HowToUsePage() {
         transition={{ delay: 0.1 }}
         className="relative w-full rounded-3xl overflow-hidden border border-neutral-light shadow-xl bg-base-200 aspect-video"
       >
-        <iframe
-          src="https://drive.google.com/file/d/18VKWYI014AHz0I1nglU-74Iygz_Lq1ts/preview"
+        <video
+          src={demoVideo}
           className="absolute top-0 left-0 w-full h-full"
-          allow="autoplay; fullscreen"
-          allowFullScreen
+          controls
           title="DentStory Video Guide"
-        ></iframe>
+        />
       </motion.div>
       
       {/* Mobile Fullscreen Fallback Button */}
       <div className="mt-4 flex justify-center md:hidden">
         <a
-          href="https://drive.google.com/file/d/18VKWYI014AHz0I1nglU-74Iygz_Lq1ts/view?usp=sharing"
+          href={demoVideo}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm transition-all active:scale-95 shadow-sm"
