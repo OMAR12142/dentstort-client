@@ -462,7 +462,7 @@ export default function LandingPage() {
 
             <div className="flex flex-col gap-4 mb-10 max-w-lg mx-auto lg:mx-0 text-left">
               {[
-                "One-click public case publishing",
+                "One-click for case publishing",
                 "Built-in Before & After galleries",
                 "Shareable custom portfolio link",
               ].map((feature, idx) => (

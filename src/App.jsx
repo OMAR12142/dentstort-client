@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
 import MainLayout from './layouts/MainLayout';
@@ -126,6 +127,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <Toaster position="top-right" reverseOrder={false} />
+      <Analytics />
       
       {/* Shadow Mode Banner */}
       {isShadowMode && (
