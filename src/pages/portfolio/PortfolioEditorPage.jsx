@@ -135,6 +135,23 @@ export default function PortfolioEditorPage() {
           <p className="text-sm text-base-content/60 max-w-md mx-auto mb-6">
             Build a beautiful, shareable page to showcase your clinical work to patients and colleagues. Like Behance, but for dentists.
           </p>
+          
+          <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5 max-w-md mx-auto mb-8 text-left">
+            <h3 className="text-sm font-bold text-primary mb-3 flex items-center gap-2">
+              <AlertCircle size={16} /> How to add photos?
+            </h3>
+            <p className="text-xs text-base-content/70 leading-relaxed mb-3">
+              To build your portfolio, you first need clinical photos from your sessions:
+            </p>
+            <ol className="text-xs text-base-content/70 list-decimal list-inside space-y-2 ml-1 font-medium">
+              <li>Add a patient in the <strong>Patients</strong> tab.</li>
+              <li>Log a treatment session for them.</li>
+              <li>Upload clinical photos during the session.</li>
+            </ol>
+            <p className="text-[11px] text-base-content/60 mt-4 pt-3 border-t border-primary/10">
+              Once you have session photos, you can select and publish them here!
+            </p>
+          </div>
           <Button
             onClick={() => createPortfolio({})}
             loading={isCreating}
@@ -399,17 +416,28 @@ export default function PortfolioEditorPage() {
             </div>
 
             {(!portfolio.publishedCases || portfolio.publishedCases.length === 0) ? (
-              <div className="text-center py-16 bg-base-100 rounded-2xl border-2 border-dashed border-base-content/5">
+              <div className="text-center py-16 px-4 bg-base-100 rounded-2xl border-2 border-dashed border-base-content/5">
                 <div className="w-16 h-16 rounded-full bg-base-200 flex items-center justify-center mx-auto mb-4 shadow-sm">
                   <ImageIcon size={28} className="text-base-content/30" />
                 </div>
-                <h3 className="text-sm font-bold text-base-content mb-1">No Clinical Cases Yet</h3>
-                <p className="text-xs text-base-content/50 mb-6 max-w-xs mx-auto">Start building your clinical brand by publishing your first procedure gallery.</p>
+                <h3 className="text-sm font-bold text-base-content mb-2">No Clinical Cases Yet</h3>
+                
+                <div className="bg-base-200 border border-base-content/10 rounded-xl p-5 max-w-sm mx-auto mb-6 text-left">
+                  <h4 className="text-xs font-bold text-base-content mb-3 flex items-center gap-2">
+                    <AlertCircle size={14} className="text-primary" /> How to add photos?
+                  </h4>
+                  <ol className="text-xs text-base-content/70 list-decimal list-inside space-y-2 ml-1 font-medium">
+                    <li>Go to the <strong>Patients</strong> tab & add a patient</li>
+                    <li>Log a session and upload photos</li>
+                    <li>Return here to publish them as a case!</li>
+                  </ol>
+                </div>
+
                 <button
                   onClick={() => setAddCaseModal(true)}
                   className="text-[#0A66C2] text-xs font-bold hover:underline py-1"
                 >
-                  + Publish a Case Study
+                  + I have session photos, Publish a Case
                 </button>
               </div>
             ) : (
