@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { PlayCircle } from 'lucide-react';
 import SEO from '../components/common/SEO';
-import demoVideo from '../assets/dentstory mobile demo sound-.mp4';
 
 export default function HowToUsePage() {
   return (
@@ -32,7 +31,7 @@ export default function HowToUsePage() {
         className="relative w-full rounded-3xl overflow-hidden border border-neutral-light shadow-xl bg-base-200 aspect-video"
       >
         <video
-          src={demoVideo}
+          src="/dentstory mobile demo sound-.mp4"
           className="absolute top-0 left-0 w-full h-full"
           controls
           title="DentStory Video Guide"
@@ -42,7 +41,7 @@ export default function HowToUsePage() {
       {/* Mobile Fullscreen Fallback Button */}
       <div className="mt-4 flex justify-center md:hidden">
         <a
-          href={demoVideo}
+          href="/dentstory mobile demo sound-.mp4"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm transition-all active:scale-95 shadow-sm"

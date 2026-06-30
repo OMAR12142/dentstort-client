@@ -15,7 +15,6 @@ import PublicNavbar from '../components/common/PublicNavbar';
 import PublicFooter from '../components/common/PublicFooter';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import { usePublicPortfolio } from '../hooks/usePortfolio';
-import demoVideo from '../assets/dentstory mobile demo sound-.mp4';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -411,7 +410,7 @@ export default function LandingPage() {
             {/* Video Container */}
             <div className="relative aspect-video bg-[#000]">
               <video
-                src={demoVideo}
+                src="/dentstory mobile demo sound-.mp4"
                 className="absolute top-0 left-0 w-full h-full"
                 controls
                 title="DentStory Demo Video"
