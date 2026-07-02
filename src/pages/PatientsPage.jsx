@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { usePatients, useDeletePatient } from '../hooks/usePatients';
 import { useClinics } from '../hooks/useClinics';
+import PageHeader from '../components/common/PageHeader';
 import { calculateAge } from '../utils/dateUtils';
 import PatientsListSkeleton from '../components/skeletons/PatientsListSkeleton';
 import ErrorState from '../components/common/ErrorState';
@@ -136,19 +137,11 @@ export default function PatientsPage() {
   return (
     <div className="flex flex-col gap-6 w-full overflow-x-hidden pb-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-base-content">Patients</h1>
-            <span className="px-2.5 py-0.5 bg-primary/10 text-primary rounded-lg text-sm font-semibold">
-              Total Patients: {stats.total}
-            </span>
-          </div>
-          <p className="text-base-content/70 text-sm mt-0.5">
-            Manage and track all your patient records
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Patients"
+        subtitle="Manage and track all your patient records"
+        badgeText={`Total Patients: ${stats.total}`}
+      />
 
       {/* Toolbar */}
       <div className="flex flex-col gap-3 w-full">

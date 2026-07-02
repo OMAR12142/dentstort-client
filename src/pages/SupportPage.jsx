@@ -1,9 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, Mail, Headset } from 'lucide-react';
+import { MessageCircle, Mail, Headset, PlayCircle } from 'lucide-react';
 import SEO from '../components/common/SEO';
+import { useAuthStore } from '../store/authStore';
 
 export default function SupportPage() {
+  const { user, updateUser } = useAuthStore();
+
+  const handleRestartTutorial = () => {
+    updateUser({ ...user, hasCompletedOnboarding: false });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   return (
     <>
       <SEO title="Support | DentStory" />
@@ -17,7 +24,7 @@ export default function SupportPage() {
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
             <Headset size={32} className="text-primary" />
           </div>
-          
+
           <h1 className="text-2xl font-black text-base-content mb-3">How can we help you?</h1>
           <p className="text-base-content/70 font-medium mb-10 max-w-md mx-auto">
             Have questions, feedback, or need technical assistance? Our support team is ready to help you get the most out of DentStory.
@@ -51,6 +58,17 @@ export default function SupportPage() {
                 <p className="text-xs text-base-content/60 font-medium mt-1">omarselema52@gmail.com</p>
               </div>
             </a>
+          </div>
+
+          <div className="mt-8 pt-8 border-t border-neutral-light/50">
+            <h3 className="font-bold text-base-content mb-4 text-sm uppercase tracking-wider text-base-content/50">Need a Refresher?</h3>
+            <button
+              onClick={handleRestartTutorial}
+              className="btn btn-outline hover:bg-primary hover:text-white hover:border-primary transition-colors flex items-center gap-2 mx-auto rounded-xl border-neutral-light"
+            >
+              <PlayCircle size={18} />
+              Restart App Tutorial
+            </button>
           </div>
         </div>
       </motion.div>

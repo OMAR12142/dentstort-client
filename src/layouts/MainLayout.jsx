@@ -7,6 +7,7 @@ import Sidebar from '../components/Sidebar';
 import AnnouncementBanner from '../components/AnnouncementBanner';
 import { useAuthStore } from '../store/authStore';
 import CompleteProfileModal from '../components/CompleteProfileModal';
+import OnboardingTour from '../components/OnboardingTour';
 
 export default function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -21,6 +22,7 @@ export default function MainLayout() {
 
   return (
     <div className="h-screen w-full flex flex-col bg-base-200 text-base-content overflow-hidden font-sans">
+      <OnboardingTour />
       {isSuspended && <SuspensionOverlay />}
 
       {/* Announcements */}

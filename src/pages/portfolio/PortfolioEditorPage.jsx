@@ -135,7 +135,7 @@ export default function PortfolioEditorPage() {
           <p className="text-sm text-base-content/60 max-w-md mx-auto mb-6">
             Build a beautiful, shareable page to showcase your clinical work to patients and colleagues. Like Behance, but for dentists.
           </p>
-          
+
           <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5 max-w-md mx-auto mb-8 text-left">
             <h3 className="text-sm font-bold text-primary mb-3 flex items-center gap-2">
               <AlertCircle size={16} /> How to add photos?
@@ -173,20 +173,20 @@ export default function PortfolioEditorPage() {
       <SEO title="Portfolio Editor" noindex />
 
       {/* ── 1. Identity Dashboard Header ── */}
-      <div className="bg-base-200 border border-base-content/10 shadow-sm rounded-2xl p-6 overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#0A66C2]/5 rounded-full -mr-32 -mt-32 pointer-events-none" />
+      <div className="bg-white dark:bg-base-100 border border-slate-200 dark:border-base-content/10 shadow-sm rounded-2xl p-6 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 pointer-events-none" />
 
         <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#0A66C2]/10 flex items-center justify-center border border-[#0A66C2]/20 shrink-0">
-              <Globe className="text-[#0A66C2]" size={30} />
+            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+              <Globe className="text-primary" size={30} />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl lg:text-2xl font-bold text-base-content tracking-tight">Public Portfolio</h1>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${portfolio.isPublished
-                  ? 'bg-[#057642]/10 text-[#057642] border-[#057642]/20'
-                  : 'bg-[#666666]/10 text-[#666666] border-[#666666]/20'
+                  ? 'bg-success/10 text-success border-success/20'
+                  : 'bg-[#666666]/10 text-base-content/60 border-[#666666]/20'
                   }`}>
                   {portfolio.isPublished ? 'Live' : 'Draft'}
                 </span>
@@ -199,8 +199,8 @@ export default function PortfolioEditorPage() {
             <button
               onClick={() => togglePortfolio()}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all border ${portfolio.isPublished
-                ? 'bg-white dark:bg-[#1A1A1A] text-[#E74C3C] border-[#E74C3C]/30 hover:bg-[#E74C3C]/5'
-                : 'bg-[#0A66C2] text-white border-transparent hover:bg-[#0A66C2]/90 shadow-lg shadow-[#0A66C2]/20'
+                ? 'bg-white dark:bg-base-200 text-error border-error/30 hover:bg-error/5'
+                : 'bg-primary text-white border-transparent hover:bg-primary/90 shadow-lg shadow-primary/20'
                 }`}
             >
               {portfolio.isPublished ? <GlobeLock size={16} /> : <Globe size={16} />}
@@ -214,7 +214,7 @@ export default function PortfolioEditorPage() {
                   href={publicUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-base-100 text-base-content border border-base-content/10 hover:bg-base-content/5 transition-all"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-base-200 text-base-content border border-slate-200 dark:border-base-content/10 hover:bg-slate-200 dark:hover:bg-base-300 transition-all"
                 >
                   <Eye size={16} />
                   Preview
@@ -222,9 +222,9 @@ export default function PortfolioEditorPage() {
               )}
               <button
                 onClick={handleCopyLink}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-base-100 text-base-content/60 border border-base-content/10 hover:bg-base-content/5 transition-all"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-base-100 text-base-content/60 border border-slate-200 dark:border-base-content/10 hover:bg-slate-50 dark:hover:bg-base-200 transition-all"
               >
-                {copied ? <Check size={16} className="text-[#057642]" /> : <Share2 size={16} />}
+                {copied ? <Check size={16} className="text-success" /> : <Share2 size={16} />}
                 {copied ? 'Copied' : 'Share'}
               </button>
             </div>
@@ -233,12 +233,12 @@ export default function PortfolioEditorPage() {
       </div>
 
       {/* ── 2. Navigation Tabs ── */}
-      <div className="flex items-center gap-1 bg-base-200 p-1 rounded-2xl border border-base-content/10 w-fit">
+      <div className="flex items-center gap-1 bg-slate-100 dark:bg-base-100 p-1 rounded-2xl border border-slate-200 dark:border-base-content/10 w-fit">
         <button
           onClick={() => setActiveTab('profile')}
           className={`flex items-center gap-2 px-6 py-2.5 text-sm font-bold rounded-xl transition-all ${activeTab === 'profile'
-            ? 'bg-[#0A66C2] text-white shadow-md'
-            : 'text-[#666666] dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1A1A1A]'
+            ? 'bg-primary text-white shadow-md'
+            : 'text-base-content/60 hover:bg-gray-50 dark:hover:bg-base-200'
             }`}
         >
           <Briefcase size={16} />
@@ -247,14 +247,14 @@ export default function PortfolioEditorPage() {
         <button
           onClick={() => setActiveTab('cases')}
           className={`flex items-center gap-2 px-6 py-2.5 text-sm font-bold rounded-xl transition-all ${activeTab === 'cases'
-            ? 'bg-[#0A66C2] text-white shadow-md'
-            : 'text-[#666666] dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1A1A1A]'
+            ? 'bg-primary text-white shadow-md'
+            : 'text-base-content/60 hover:bg-gray-50 dark:hover:bg-base-200'
             }`}
         >
           <ImageIcon size={16} />
           Cases
           {(portfolio.pagination?.totalItems || portfolio.publishedCases?.length) > 0 && (
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ml-1 ${activeTab === 'cases' ? 'bg-white/20' : 'bg-[#E0DFDC] dark:bg-[#3A3A3A] text-white'}`}>
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ml-1 ${activeTab === 'cases' ? 'bg-white/20' : 'bg-slate-200 dark:bg-base-content/10 text-white'}`}>
               {portfolio.pagination?.totalItems || portfolio.publishedCases.length}
             </span>
           )}
@@ -264,10 +264,10 @@ export default function PortfolioEditorPage() {
       {activeTab === 'profile' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="profile">
           <div className="bg-base-200 border border-base-content/10 rounded-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-[#E0DFDC] dark:border-[#3A3A3A] flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-base-content/10 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#0A66C2]/10 flex items-center justify-center">
-                  <Briefcase size={16} className="text-[#0A66C2]" />
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Briefcase size={16} className="text-primary" />
                 </div>
                 <h2 className="text-base font-bold text-base-content">Profile Identity</h2>
               </div>
@@ -277,7 +277,7 @@ export default function PortfolioEditorPage() {
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0 }}
-                    className="text-[#057642] text-xs font-bold flex items-center gap-1 bg-[#057642]/10 px-3 py-1.5 rounded-full"
+                    className="text-success text-xs font-bold flex items-center gap-1 bg-success/10 px-3 py-1.5 rounded-full"
                   >
                     <CheckCircle2 size={14} /> Saved Successfully
                   </motion.span>
@@ -305,7 +305,7 @@ export default function PortfolioEditorPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-base-content">Years of Clinical Experience</label>
                   <div className="relative">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666666] dark:text-gray-500" size={16} />
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/60" size={16} />
                     <input
                       type="number"
                       value={yearsOfExperience}
@@ -324,15 +324,15 @@ export default function PortfolioEditorPage() {
                     placeholder="e.g. Implants, Cosmetic Dentistry, Orthodontics"
                     className="w-full bg-base-100 border border-base-content/10 rounded-xl py-3 px-4 text-sm text-base-content focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   />
-                  <p className="text-[10px] text-[#666666] font-medium">Separate specialties with commas.</p>
+                  <p className="text-[10px] text-base-content/60 font-medium">Separate specialties with commas.</p>
                 </div>
               </div>
 
               {/* Contact Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#E0DFDC] dark:border-[#3A3A3A]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200 dark:border-base-content/10">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-base-content flex items-center gap-2">
-                    <Mail size={16} className="text-[#0A66C2]" /> Public Inquiry Email
+                    <Mail size={16} className="text-primary" /> Public Inquiry Email
                   </label>
                   <input
                     type="email"
@@ -360,7 +360,7 @@ export default function PortfolioEditorPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-base-content flex items-center gap-2">
-                    <MapPin size={16} className="text-[#E74C3C]" /> Clinic Name
+                    <MapPin size={16} className="text-error" /> Clinic Name
                   </label>
                   <input
                     type="text"
@@ -386,7 +386,7 @@ export default function PortfolioEditorPage() {
                 <button
                   type="submit"
                   disabled={isUpdating}
-                  className="bg-[#0A66C2] text-white px-10 py-3 rounded-xl font-bold text-sm hover:bg-[#0A66C2]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#0A66C2]/20"
+                  className="bg-primary text-white px-10 py-3 rounded-xl font-bold text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-primary/20"
                 >
                   {isUpdating ? <Loader2 className="animate-spin" size={20} /> : 'Apply Profile Changes'}
                 </button>
@@ -400,16 +400,16 @@ export default function PortfolioEditorPage() {
       {activeTab === 'cases' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="cases">
           <div className="bg-base-200 border border-base-content/10 rounded-2xl overflow-hidden">
-            <div className="px-6 py-5 border-b border-[#E0DFDC] dark:border-[#3A3A3A] flex items-center justify-between">
+            <div className="px-6 py-5 border-b border-slate-200 dark:border-base-content/10 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#0A66C2]/10 flex items-center justify-center">
-                  <ImageIcon size={16} className="text-[#0A66C2]" />
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <ImageIcon size={16} className="text-primary" />
                 </div>
                 <h2 className="text-base font-bold text-base-content">Clinical Portfolio Gallery</h2>
               </div>
               <button
                 onClick={() => setAddCaseModal(true)}
-                className="bg-[#0A66C2] text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-[#0A66C2]/90 transition-all flex items-center gap-2"
+                className="bg-primary text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-primary/90 transition-all flex items-center gap-2"
               >
                 <Plus size={16} /> Add Case Study
               </button>
@@ -421,7 +421,7 @@ export default function PortfolioEditorPage() {
                   <ImageIcon size={28} className="text-base-content/30" />
                 </div>
                 <h3 className="text-sm font-bold text-base-content mb-2">No Clinical Cases Yet</h3>
-                
+
                 <div className="bg-base-200 border border-base-content/10 rounded-xl p-5 max-w-sm mx-auto mb-6 text-left">
                   <h4 className="text-xs font-bold text-base-content mb-3 flex items-center gap-2">
                     <AlertCircle size={14} className="text-primary" /> How to add photos?
@@ -435,7 +435,7 @@ export default function PortfolioEditorPage() {
 
                 <button
                   onClick={() => setAddCaseModal(true)}
-                  className="text-[#0A66C2] text-xs font-bold hover:underline py-1"
+                  className="text-primary text-xs font-bold hover:underline py-1"
                 >
                   + I have session photos, Publish a Case
                 </button>
@@ -453,7 +453,7 @@ export default function PortfolioEditorPage() {
                           <img src={c.coverImage} alt={c.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <ImageIcon size={32} className="text-[#666666]/10" />
+                            <ImageIcon size={32} className="text-base-content/10" />
                           </div>
                         )}
                         <div className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-start gap-1 p-1">
@@ -479,7 +479,7 @@ export default function PortfolioEditorPage() {
                           <div className="flex gap-1">
                             <button
                               onClick={() => setEditCaseModal(c)}
-                              className="w-9 h-9 sm:w-8 sm:h-8 rounded-lg bg-[#0A66C2] text-white flex items-center justify-center shadow-lg hover:bg-[#0A66C2]/90 transition-all active:scale-90"
+                              className="w-9 h-9 sm:w-8 sm:h-8 rounded-lg bg-primary text-white flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all active:scale-90"
                               title="Edit Case"
                             >
                               <Pencil size={16} className="sm:size-[14px]" />
@@ -498,11 +498,11 @@ export default function PortfolioEditorPage() {
                         <h3 className="text-sm font-bold text-base-content line-clamp-1 mb-1 group-hover:text-primary transition-colors">{c.title}</h3>
                         <div className="flex items-center justify-between mt-3">
                           {c.category && (
-                            <span className="text-[10px] font-bold text-[#0A66C2] uppercase bg-[#0A66C2]/5 px-2 py-0.5 rounded">
+                            <span className="text-[10px] font-bold text-primary uppercase bg-primary/5 px-2 py-0.5 rounded">
                               {c.category}
                             </span>
                           )}
-                          <span className="text-[10px] text-[#666666] font-medium italic">Published</span>
+                          <span className="text-[10px] text-base-content/60 font-medium italic">Published</span>
                         </div>
                       </div>
                     </div>
@@ -515,7 +515,7 @@ export default function PortfolioEditorPage() {
                     <button
                       disabled={page === 1}
                       onClick={() => setPage(page - 1)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold border border-[#E0DFDC] dark:border-[#3A3A3A] disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-base-content/10 disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       Prev
                     </button>
@@ -524,7 +524,7 @@ export default function PortfolioEditorPage() {
                         <button
                           key={i}
                           onClick={() => setPage(i + 1)}
-                          className={`w-8 h-8 rounded-xl text-[10px] font-bold transition-all ${page === i + 1 ? 'bg-[#0A66C2] text-white shadow-md' : 'text-[#666666] hover:bg-gray-100 dark:hover:bg-[#333]'
+                          className={`w-8 h-8 rounded-xl text-[10px] font-bold transition-all ${page === i + 1 ? 'bg-primary text-white shadow-md' : 'text-base-content/60 hover:bg-gray-100 dark:hover:bg-[#333]'
                             }`}
                         >
                           {i + 1}
@@ -534,7 +534,7 @@ export default function PortfolioEditorPage() {
                     <button
                       disabled={page === portfolio.pagination.totalPages}
                       onClick={() => setPage(page + 1)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold border border-[#E0DFDC] dark:border-[#3A3A3A] disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-base-content/10 disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       Next
                     </button>
@@ -700,12 +700,12 @@ function AddCaseModal({ onClose }) {
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        className="relative bg-white dark:bg-[#252525] rounded-3xl shadow-2xl max-w-2xl w-full z-10 border border-[#E0DFDC] dark:border-[#3A3A3A] max-h-[90vh] flex flex-col overflow-hidden"
+        className="relative bg-white dark:bg-base-100 rounded-3xl shadow-2xl max-w-2xl w-full z-10 border border-slate-200 dark:border-base-content/10 max-h-[90vh] flex flex-col overflow-hidden"
       >
-        <div className="p-6 border-b border-[#E0DFDC] dark:border-[#3A3A3A] bg-gray-50/30 dark:bg-[#1A1A1A]/30">
+        <div className="p-6 border-b border-slate-200 dark:border-base-content/10 bg-gray-50/30 dark:bg-base-200/30">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-xl text-[#191919] dark:text-white tracking-tight">Post New Result</h3>
-            <button onClick={onClose} className="p-2 rounded-xl border border-[#E0DFDC] dark:border-[#3A3A3A] hover:bg-white dark:hover:bg-[#333] transition-colors text-[#191919] dark:text-white">
+            <h3 className="font-bold text-xl text-base-content tracking-tight">Post New Result</h3>
+            <button onClick={onClose} className="p-2 rounded-xl border border-slate-200 dark:border-base-content/10 hover:bg-white dark:hover:bg-[#333] transition-colors text-base-content">
               <X size={20} />
             </button>
           </div>
@@ -713,13 +713,13 @@ function AddCaseModal({ onClose }) {
           <div className="flex items-center gap-2">
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center gap-2">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${step >= s ? 'bg-[#0A66C2] text-white' : 'bg-[#E0DFDC] dark:bg-[#3A3A3A] text-[#666666]'}`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${step >= s ? 'bg-primary text-white shadow-md shadow-primary/30' : 'bg-slate-200 dark:bg-base-content/10 text-base-content/50'}`}>
                   {s}
                 </div>
-                {s < 3 && <div className={`w-8 h-0.5 rounded ${step > s ? 'bg-[#0A66C2]' : 'bg-[#E0DFDC] dark:bg-[#3A3A3A]'}`} />}
+                {s < 3 && <div className={`w-8 h-0.5 rounded transition-all ${step > s ? 'bg-primary' : 'bg-slate-200 dark:bg-base-content/10'}`} />}
               </div>
             ))}
-            <span className="ml-2 text-xs font-bold text-[#666666] uppercase tracking-widest">
+            <span className="ml-2 text-xs font-bold text-base-content/60 uppercase tracking-widest">
               {step === 1 ? 'Media Library' : step === 2 ? 'Clinical Details' : 'Final Preview'}
             </span>
           </div>
@@ -727,7 +727,7 @@ function AddCaseModal({ onClose }) {
 
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {error && (
-            <div className="p-4 rounded-xl bg-[#E74C3C]/10 border border-[#E74C3C]/20 flex items-center gap-3 text-[#E74C3C] text-sm font-bold">
+            <div className="p-4 rounded-xl bg-error/10 border border-error/20 flex items-center gap-3 text-error text-sm font-bold">
               <AlertCircle size={18} className="shrink-0" />
               {error}
             </div>
@@ -735,38 +735,38 @@ function AddCaseModal({ onClose }) {
 
           {step === 1 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#252525] p-3 rounded-2xl border border-[#E0DFDC] dark:border-[#3A3A3A] shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-base-100 p-3 rounded-2xl border border-slate-200 dark:border-base-content/10 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${selectedImages.length === 5 ? 'bg-[#E74C3C]/10 text-[#E74C3C] border-[#E74C3C]/30' : 'bg-[#0A66C2]/10 text-[#0A66C2] border-[#0A66C2]/30'}`}>
+                  <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${selectedImages.length === 5 ? 'bg-error/10 text-error border-error/30' : 'bg-primary/10 text-primary border-primary/30'}`}>
                     {selectedImages.length} / 5 Selected
                   </div>
-                  <p className="text-[10px] font-bold text-[#666666] dark:text-gray-400 uppercase tracking-tight">Maximum allowed per case</p>
+                  <p className="text-[10px] font-bold text-base-content/60 uppercase tracking-tight">Maximum allowed per case</p>
                 </div>
                 <div className="relative flex-1 max-w-xs">
-                  <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666666]" />
+                  <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/60" />
                   <input
                     type="text"
                     placeholder="Search records..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-2 px-11 text-xs focus:outline-none"
+                    className="w-full bg-base-100 text-base-content border border-slate-200 dark:border-base-content/10 rounded-xl py-2 px-11 text-xs focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="space-y-4">
                 {library?.filter(session => session.patientName.toLowerCase().includes(searchQuery.toLowerCase())).map((session) => (
-                  <div key={session.sessionId} className="border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-2xl p-4 bg-white dark:bg-[#1A1A1A]">
+                  <div key={session.sessionId} className="border border-slate-200 dark:border-base-content/10 rounded-2xl p-4 bg-white dark:bg-base-200">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-xs font-bold text-base-content uppercase tracking-tight">{session.patientName}</span>
-                      <span className="text-[10px] font-medium text-[#666666]">{new Date(session.date).toLocaleDateString()}</span>
+                      <span className="text-[10px] font-medium text-base-content/60">{new Date(session.date).toLocaleDateString()}</span>
                     </div>
                     <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
                       {session.images.map((img, i) => (
-                        <div key={i} onClick={() => toggleImage(img)} className={`aspect-square rounded-xl overflow-hidden cursor-pointer relative border-2 ${selectedImages.includes(img) ? 'border-[#0A66C2] shadow-lg scale-95' : 'border-transparent hover:border-[#0A66C2]/40'}`}>
+                        <div key={i} onClick={() => toggleImage(img)} className={`aspect-square rounded-xl overflow-hidden cursor-pointer relative border-2 ${selectedImages.includes(img) ? 'border-primary shadow-lg scale-95' : 'border-transparent hover:border-primary/40'}`}>
                           <img src={img} className="w-full h-full object-cover" alt="" />
                           {selectedImages.includes(img) && (
-                            <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-[#0A66C2] text-white flex items-center justify-center">
+                            <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center">
                               <Check size={12} strokeWidth={4} />
                             </div>
                           )}
@@ -788,7 +788,7 @@ function AddCaseModal({ onClose }) {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Upper Jaw Reconstruction"
-                  className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
+                  className="w-full bg-base-100 text-base-content border border-slate-200 dark:border-base-content/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-primary"
                 />
               </div>
 
@@ -798,7 +798,7 @@ function AddCaseModal({ onClose }) {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2] resize-none"
+                  className="w-full bg-base-100 text-base-content border border-slate-200 dark:border-base-content/10 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-primary resize-none"
                 />
               </div>
 
@@ -809,7 +809,7 @@ function AddCaseModal({ onClose }) {
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="e.g. Case #12, VIP Patient"
-                  className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
+                  className="w-full bg-base-100 text-base-content border border-slate-200 dark:border-base-content/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-primary"
                 />
               </div>
 
@@ -822,13 +822,13 @@ function AddCaseModal({ onClose }) {
                     {treatmentTypes.map((cat) => (
                       <span
                         key={cat}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-lg bg-[#0A66C2]/10 text-[#0A66C2] border border-[#0A66C2]/20"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-lg bg-primary/10 text-primary border border-primary/20"
                       >
                         {cat}
                         <button
                           type="button"
                           onClick={() => toggleTreatmentType(cat)}
-                          className="hover:text-[#E74C3C] transition-colors ml-0.5"
+                          className="hover:text-error transition-colors ml-0.5"
                         >
                           <X size={12} strokeWidth={3} />
                         </button>
@@ -847,8 +847,8 @@ function AddCaseModal({ onClose }) {
                         type="button"
                         onClick={() => toggleTreatmentType(type)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${isSelected
-                          ? 'bg-[#0A66C2] text-white border-[#0A66C2] shadow-md shadow-[#0A66C2]/20'
-                          : 'bg-white dark:bg-[#1A1A1A] text-[#666666] border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]'
+                          ? 'bg-primary text-white border-primary shadow-md shadow-primary/20'
+                          : 'bg-white dark:bg-base-200 text-base-content/60 border-slate-200 dark:border-base-content/10 hover:border-primary'
                           }`}
                       >
                         {type}
@@ -861,7 +861,7 @@ function AddCaseModal({ onClose }) {
                     <button
                       type="button"
                       onClick={() => setShowCustomInput(true)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold border border-dashed border-[#0A66C2]/40 text-[#0A66C2]/70 hover:border-[#0A66C2] hover:text-[#0A66C2] hover:bg-[#0A66C2]/5 transition-all flex items-center gap-1"
+                      className="px-4 py-2 rounded-xl text-xs font-bold border border-dashed border-primary/40 text-primary/70 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all flex items-center gap-1"
                     >
                       <Plus size={12} />
                       Custom
@@ -875,7 +875,7 @@ function AddCaseModal({ onClose }) {
                     <input
                       type="text"
                       autoFocus
-                      className="flex-1 bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-2 px-4 text-xs focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-[#0A66C2]"
+                      className="flex-1 bg-base-100 text-base-content border border-slate-200 dark:border-base-content/10 rounded-xl py-2 px-4 text-xs focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 focus:border-primary"
                       placeholder="Type custom category..."
                       value={customCatInput}
                       onChange={(e) => setCustomCatInput(e.target.value)}
@@ -888,14 +888,14 @@ function AddCaseModal({ onClose }) {
                       type="button"
                       onClick={handleAddCustomCategory}
                       disabled={!customCatInput.trim()}
-                      className="px-4 py-2 bg-[#0A66C2] text-white rounded-xl text-xs font-bold disabled:opacity-40 transition-all"
+                      className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold disabled:opacity-40 transition-all"
                     >
                       Add
                     </button>
                     <button
                       type="button"
                       onClick={() => { setShowCustomInput(false); setCustomCatInput(''); }}
-                      className="p-2 rounded-xl text-[#666666] hover:bg-[#E0DFDC] dark:hover:bg-[#3A3A3A] transition-all"
+                      className="p-2 rounded-xl text-base-content/60 hover:bg-[#E0DFDC] dark:hover:bg-base-200 transition-all"
                     >
                       <X size={14} />
                     </button>
@@ -907,15 +907,15 @@ function AddCaseModal({ onClose }) {
 
           {step === 3 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-              <div className="bg-[#F3F2EF] dark:bg-[#1A1A1A] rounded-2xl p-6 border border-[#E0DFDC] dark:border-[#3A3A3A]">
-                <h4 className="font-bold text-xl text-[#191919] dark:text-white mb-2">{title}</h4>
-                <p className="text-sm text-[#666666] dark:text-gray-400 leading-relaxed italic">{description || 'No description provided.'}</p>
+              <div className="bg-base-100 rounded-2xl p-6 border border-slate-200 dark:border-base-content/10">
+                <h4 className="font-bold text-xl text-base-content mb-2">{title}</h4>
+                <p className="text-sm text-base-content/60 leading-relaxed italic">{description || 'No description provided.'}</p>
               </div>
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
                 {selectedImages.map((img, i) => (
-                  <div key={i} onClick={() => setCoverImage(img)} className={`cursor-pointer aspect-square rounded-2xl overflow-hidden relative border-2 ${coverImage === img ? 'border-[#0A66C2] shadow-xl scale-95' : 'border-transparent opacity-60 hover:opacity-100 transition-all'}`}>
+                  <div key={i} onClick={() => setCoverImage(img)} className={`cursor-pointer aspect-square rounded-2xl overflow-hidden relative border-2 ${coverImage === img ? 'border-primary shadow-xl scale-95' : 'border-transparent opacity-60 hover:opacity-100 transition-all'}`}>
                     <img src={img} className="w-full h-full object-cover" alt="" />
-                    {coverImage === img && <span className="absolute bottom-2 right-2 px-2 py-0.5 bg-[#0A66C2] text-white text-[8px] font-bold rounded-lg uppercase tracking-widest">Main</span>}
+                    {coverImage === img && <span className="absolute bottom-2 right-2 px-2 py-0.5 bg-primary text-white text-[8px] font-bold rounded-lg uppercase tracking-widest">Main</span>}
                   </div>
                 ))}
               </div>
@@ -923,18 +923,18 @@ function AddCaseModal({ onClose }) {
           )}
         </div>
 
-        <div className="p-6 border-t border-[#E0DFDC] dark:border-[#3A3A3A] bg-gray-50/30 dark:bg-[#1A1A1A]/30 flex items-center justify-between flex-row-reverse">
+        <div className="p-6 border-t border-slate-200 dark:border-base-content/10 bg-gray-50/30 dark:bg-base-200/30 flex items-center justify-between flex-row-reverse">
           {step < 3 ? (
-            <Button onClick={nextStep} className="px-8 shadow-xl shadow-[#0A66C2]/20">
+            <Button onClick={nextStep} className="px-8 shadow-xl shadow-primary/20">
               Next Stage <ChevronRight size={18} />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} loading={isPending} className="px-10 shadow-xl shadow-[#0A66C2]/20">
+            <Button onClick={handleSubmit} loading={isPending} className="px-10 shadow-xl shadow-primary/20">
               Publish Clinical Case
             </Button>
           )}
           {step > 1 && (
-            <button onClick={() => setStep(s => s - 1)} className="px-5 py-2 font-bold text-xs text-[#666666] hover:bg-white dark:hover:bg-[#333] rounded-xl border border-[#E0DFDC] dark:border-[#3A3A3A] transition-all">Back</button>
+            <button onClick={() => setStep(s => s - 1)} className="px-5 py-2 font-bold text-xs text-base-content/60 hover:bg-white dark:hover:bg-[#333] rounded-xl border border-slate-200 dark:border-base-content/10 transition-all">Back</button>
           )}
         </div>
       </motion.div>
@@ -1026,25 +1026,25 @@ function EditCaseModal({ caseData, onClose }) {
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        className="relative bg-white dark:bg-[#252525] rounded-3xl shadow-2xl max-w-2xl w-full z-10 border border-[#E0DFDC] dark:border-[#3A3A3A] max-h-[90vh] flex flex-col overflow-hidden"
+        className="relative bg-white dark:bg-base-100 rounded-3xl shadow-2xl max-w-2xl w-full z-10 border border-slate-200 dark:border-base-content/10 max-h-[90vh] flex flex-col overflow-hidden"
       >
-        <div className="p-6 border-b border-[#E0DFDC] dark:border-[#3A3A3A] bg-gray-50/30 dark:bg-[#1A1A1A]/30">
+        <div className="p-6 border-b border-slate-200 dark:border-base-content/10 bg-gray-50/30 dark:bg-base-200/30">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-xl text-[#191919] dark:text-white tracking-tight">Edit Case Study</h3>
-            <button onClick={onClose} className="p-2 rounded-xl border border-[#E0DFDC] dark:border-[#3A3A3A] hover:bg-white dark:hover:bg-[#333] transition-colors text-[#191919] dark:text-white">
+            <h3 className="font-bold text-xl text-base-content tracking-tight">Edit Case Study</h3>
+            <button onClick={onClose} className="p-2 rounded-xl border border-slate-200 dark:border-base-content/10 hover:bg-white dark:hover:bg-[#333] transition-colors text-base-content">
               <X size={20} />
             </button>
           </div>
           <div className="flex gap-4">
-            <button onClick={() => setStep(1)} className={`text-xs font-bold uppercase tracking-widest pb-1 border-b-2 transition-all ${step === 1 ? 'border-[#0A66C2] text-[#0A66C2]' : 'border-transparent text-[#666666]'}`}>1. Details</button>
-            <button onClick={() => setStep(2)} className={`text-xs font-bold uppercase tracking-widest pb-1 border-b-2 transition-all ${step === 2 ? 'border-[#0A66C2] text-[#0A66C2]' : 'border-transparent text-[#666666]'}`}>2. Images</button>
-            <button onClick={() => setStep(3)} className={`text-xs font-bold uppercase tracking-widest pb-1 border-b-2 transition-all ${step === 3 ? 'border-[#0A66C2] text-[#0A66C2]' : 'border-transparent text-[#666666]'}`}>3. Finalize</button>
+            <button onClick={() => setStep(1)} className={`text-xs font-bold uppercase tracking-widest pb-1 border-b-2 transition-all ${step === 1 ? 'border-primary text-primary' : 'border-transparent text-base-content/60'}`}>1. Details</button>
+            <button onClick={() => setStep(2)} className={`text-xs font-bold uppercase tracking-widest pb-1 border-b-2 transition-all ${step === 2 ? 'border-primary text-primary' : 'border-transparent text-base-content/60'}`}>2. Images</button>
+            <button onClick={() => setStep(3)} className={`text-xs font-bold uppercase tracking-widest pb-1 border-b-2 transition-all ${step === 3 ? 'border-primary text-primary' : 'border-transparent text-base-content/60'}`}>3. Finalize</button>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {error && (
-            <div className="p-4 rounded-xl bg-[#E74C3C]/10 border border-[#E74C3C]/20 text-[#E74C3C] text-sm font-bold flex items-center gap-3">
+            <div className="p-4 rounded-xl bg-error/10 border border-error/20 text-error text-sm font-bold flex items-center gap-3">
               <AlertCircle size={18} className="shrink-0" />
               {error}
             </div>
@@ -1054,11 +1054,11 @@ function EditCaseModal({ caseData, onClose }) {
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-base-content">Title *</label>
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-3 px-4 text-sm focus:outline-none" />
+                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-base-100 text-base-content border border-slate-200 dark:border-base-content/10 rounded-xl py-3 px-4 text-sm focus:outline-none" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold text-base-content">Description</label>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl p-4 text-sm resize-none focus:outline-none" />
+                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full bg-base-100 text-base-content border border-slate-200 dark:border-base-content/10 rounded-xl p-4 text-sm resize-none focus:outline-none" />
               </div>
 
               <div className="space-y-2">
@@ -1070,8 +1070,8 @@ function EditCaseModal({ caseData, onClose }) {
                       type="button"
                       onClick={() => setTreatmentType(type)}
                       className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${treatmentType === type
-                        ? 'bg-[#0A66C2] text-white border-[#0A66C2]'
-                        : 'bg-white dark:bg-[#1A1A1A] text-[#666666] border-[#E0DFDC] dark:border-[#3A3A3A]'
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-white dark:bg-base-200 text-base-content/60 border-slate-200 dark:border-base-content/10'
                         }`}
                     >
                       {type}
@@ -1084,27 +1084,27 @@ function EditCaseModal({ caseData, onClose }) {
 
           {step === 2 && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-[#E0DFDC] dark:border-[#3A3A3A]">
-                <span className="text-[10px] font-black uppercase text-[#666666] dark:text-gray-400 tracking-widest">Selected: {selectedImages.length} / 5</span>
-                <span className="text-[9px] font-bold text-[#E74C3C] uppercase tracking-tighter">Limit: 5 Photos</span>
+              <div className="flex items-center justify-between bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-slate-200 dark:border-base-content/10">
+                <span className="text-[10px] font-black uppercase text-base-content/60 tracking-widest">Selected: {selectedImages.length} / 5</span>
+                <span className="text-[9px] font-bold text-error uppercase tracking-tighter">Limit: 5 Photos</span>
               </div>
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#666666]" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60" />
                 <input
                   type="text"
                   placeholder="Filter gallery..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-base-100 text-base-content border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl py-2 pl-10 pr-4 text-xs"
+                  className="w-full bg-base-100 text-base-content border border-slate-200 dark:border-base-content/10 rounded-xl py-2 pl-10 pr-4 text-xs"
                 />
               </div>
               <div className="space-y-4">
                 {library?.filter(s => s.patientName.toLowerCase().includes(searchQuery.toLowerCase())).map(session => (
-                  <div key={session.sessionId} className="border border-[#E0DFDC] dark:border-[#3A3A3A] rounded-xl p-3">
-                    <p className="text-xs font-bold mb-2 text-[#666666]">{session.patientName}</p>
+                  <div key={session.sessionId} className="border border-slate-200 dark:border-base-content/10 rounded-xl p-3">
+                    <p className="text-xs font-bold mb-2 text-base-content/60">{session.patientName}</p>
                     <div className="grid grid-cols-5 gap-2">
                       {session.images.map((img, idx) => (
-                        <div key={idx} onClick={() => toggleImage(img)} className={`aspect-square rounded-lg overflow-hidden cursor-pointer border-2 ${selectedImages.includes(img) ? 'border-[#0A66C2]' : 'border-transparent'}`}>
+                        <div key={idx} onClick={() => toggleImage(img)} className={`aspect-square rounded-lg overflow-hidden cursor-pointer border-2 ${selectedImages.includes(img) ? 'border-primary' : 'border-transparent'}`}>
                           <img src={img} className="w-full h-full object-cover" />
                         </div>
                       ))}
@@ -1117,10 +1117,10 @@ function EditCaseModal({ caseData, onClose }) {
 
           {step === 3 && (
             <div className="space-y-6">
-              <p className="text-xs font-bold text-[#666666] uppercase">Pick Display Cover</p>
+              <p className="text-xs font-bold text-base-content/60 uppercase">Pick Display Cover</p>
               <div className="grid grid-cols-4 gap-3">
                 {selectedImages.map((img, idx) => (
-                  <div key={idx} onClick={() => setCoverImage(img)} className={`cursor-pointer aspect-square rounded-xl overflow-hidden relative border-2 ${coverImage === img ? 'border-[#0A66C2]' : 'border-transparent'}`}>
+                  <div key={idx} onClick={() => setCoverImage(img)} className={`cursor-pointer aspect-square rounded-xl overflow-hidden relative border-2 ${coverImage === img ? 'border-primary' : 'border-transparent'}`}>
                     <img src={img} className="w-full h-full object-cover" />
                   </div>
                 ))}
@@ -1129,12 +1129,12 @@ function EditCaseModal({ caseData, onClose }) {
           )}
         </div>
 
-        <div className="p-6 border-t border-[#E0DFDC] dark:border-[#3A3A3A] flex items-center justify-between">
-          <button onClick={onClose} className="px-6 py-2.5 font-bold text-xs text-[#666666]">Cancel</button>
+        <div className="p-6 border-t border-slate-200 dark:border-base-content/10 flex items-center justify-between">
+          <button onClick={onClose} className="px-6 py-2.5 font-bold text-xs text-base-content/60">Cancel</button>
           <div className="flex gap-3">
-            {step > 1 && <button onClick={() => setStep(s => s - 1)} className="px-6 py-2.5 bg-gray-100 dark:bg-[#3A3A3A] text-[#191919] dark:text-white rounded-xl font-bold text-xs">Back</button>}
+            {step > 1 && <button onClick={() => setStep(s => s - 1)} className="px-6 py-2.5 bg-gray-100 dark:bg-base-200 text-base-content rounded-xl font-bold text-xs">Back</button>}
             {step < 3 ? (
-              <button onClick={nextStep} className="bg-[#0A66C2] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-[#0A66C2]/20">Next</button>
+              <button onClick={nextStep} className="bg-primary text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-primary/20">Next</button>
             ) : (
               <Button onClick={handleSubmit} loading={isPending} className="px-10">Confirm Edits</Button>
             )}

@@ -204,17 +204,17 @@ export default function CareerAnalyticsPage() {
           <div className="grid grid-cols-2 gap-6">
             <StatCard 
               icon={Stethoscope}
-              label={filterType === 'all' ? 'Life-Time Volume' : 'Period Case Volume'}
+              label={filterType === 'all' ? 'Total Treatments' : 'Period Treatments'}
               value={totalTreatments}
-              subtext="Total Clinical Sessions"
+              subtext="Completed Sessions"
               colorClass="text-emerald-500"
               animationDelay={0}
             />
             <StatCard 
               icon={Award}
-              label={filterType === 'all' ? 'Experience Level' : 'Active Domains'}
+              label={filterType === 'all' ? 'Treatment Types' : 'Active Treatments'}
               value={treatments.length}
-              subtext="Unique Treatment Domains"
+              subtext="Different Categories"
               colorClass="text-sky-500"
               animationDelay={0.1}
             />

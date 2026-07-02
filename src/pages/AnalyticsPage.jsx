@@ -9,18 +9,25 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  Building2, 
-  Calendar, 
-  ArrowUpRight, 
+import {
+  DollarSign,
+  TrendingUp,
+  Building2,
+  Calendar,
+  ArrowUpRight,
   Filter,
   CheckCircle2,
   BarChart3,
-  PieChart
+  PieChart,
+  Receipt,
+  TrendingDown,
+  Download,
+  FileText,
+  FileSpreadsheet
 } from 'lucide-react';
 import { useEarningsHistory } from '../hooks/useAnalytics';
+import { generatePdfReport, generateCsvReport } from '../utils/exportReport';
+import PageHeader from '../components/common/PageHeader';
 import { CardSkeleton } from '../components/Skeleton';
 import Card from '../components/Card';
 
@@ -69,6 +76,11 @@ const ModernTooltip = ({ active, payload, label }) => {
             + {payload.find(p => p.dataKey === 'fixed_salary').value.toLocaleString()} <span className="text-[10px] font-bold opacity-50 uppercase tracking-widest">Fixed</span>
           </p>
         )}
+        {payload.find(p => p.dataKey === 'expenses') && payload.find(p => p.dataKey === 'expenses').value > 0 && (
+          <p className="text-sm font-black text-red-500 flex items-center gap-2">
+            − {payload.find(p => p.dataKey === 'expenses').value.toLocaleString()} <span className="text-[10px] font-bold opacity-50 uppercase tracking-widest">Expenses</span>
+          </p>
+        )}
         <p className="text-[11px] font-bold text-base-content/60 flex items-center gap-1.5 mt-1 pt-1 border-t border-neutral-light/30">
           <CheckCircle2 size={12} className="text-success" />
           {payload[0].payload.sessions} Sessions recorded
@@ -81,12 +93,14 @@ const ModernTooltip = ({ active, payload, label }) => {
 export default function AnalyticsPage() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
+  const firstDay = new Date(currentYear, currentMonth - 1, 1).toISOString().split('T')[0];
+  const lastDay = new Date(currentYear, currentMonth, 0).toISOString().split('T')[0];
 
   const [filterType, setFilterType] = useState('yearly');
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(firstDay);
+  const [endDate, setEndDate] = useState(lastDay);
   const [chartView, setChartView] = useState('both');
 
   // Compute combined filters for the hook
@@ -107,6 +121,8 @@ export default function AnalyticsPage() {
   const yearlyTrend = data?.yearlyTrend || [];
   const monthlyBreakdown = data?.monthlyBreakdown || [];
   const summary = data?.summary || {};
+  const totalExpenses = summary.totalExpenses || 0;
+  const netProfit = (summary.totalYearlyEarnings || 0) - totalExpenses;
 
   const yearOptions = useMemo(() => {
     const years = [];
@@ -122,6 +138,7 @@ export default function AnalyticsPage() {
     return monthlyBreakdown.filter(clinic => {
       if (chartView === 'commissions') return clinic.commission > 0;
       if (chartView === 'fixed') return clinic.fixed_salary > 0;
+      if (chartView === 'expenses') return (clinic.expenses || 0) > 0;
       return clinic.earnings > 0;
     });
   }, [monthlyBreakdown, chartView]);
@@ -130,6 +147,7 @@ export default function AnalyticsPage() {
     return filteredBreakdown.reduce((sum, c) => {
       if (chartView === 'commissions') return sum + c.commission;
       if (chartView === 'fixed') return sum + c.fixed_salary;
+      if (chartView === 'expenses') return sum + (c.expenses || 0);
       return sum + c.earnings;
     }, 0);
   }, [filteredBreakdown, chartView]);
@@ -143,106 +161,150 @@ export default function AnalyticsPage() {
 
   return (
     <div className="max-w-full overflow-x-hidden space-y-8 animate-in fade-in duration-500">
-      {/* Premium Header & Dynamic Subtitle */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-2 border-b border-neutral-light/30">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-8 bg-primary rounded-full transition-all duration-300" />
-            <h1 className="text-3xl sm:text-4xl font-black text-base-content tracking-tight uppercase italic transition-all duration-300">
-              Earnings Overview
-            </h1>
-          </div>
-          <p className="text-base-content/50 text-sm font-medium ml-5 flex items-center gap-2">
+      <PageHeader
+        title="Earnings Overview"
+        subtitle={
+          <>
             Viewing: <span className="text-primary font-bold">{getPeriodLabel()}</span>
             {isFetching && <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 rounded-full bg-primary" />}
-          </p>
-        </div>
-
-        {/* Multi-stage Filter Toolbar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-base-200/50 p-2 rounded-2xl border border-neutral-light/50 backdrop-blur-sm">
-          <div className="px-3 py-1.5 flex items-center gap-2 text-[10px] font-black uppercase text-base-content/40 tracking-widest sm:border-r border-neutral-light/30">
-            <Filter size={12} />
-            Range
-          </div>
-          
-          <div className="flex flex-wrap gap-2 items-center">
-            {/* Primary Filter Type */}
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="select select-sm select-ghost font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer bg-base-100/50"
-            >
-              <option value="yearly">Fixed Period</option>
-              <option value="all">All-Time</option>
-              <option value="custom">Custom Range</option>
-            </select>
-
-            {/* Contextual Secondary Controls */}
-            {filterType === 'yearly' && (
-              <div className="flex gap-1 animate-in slide-in-from-right-4 duration-300">
-                <select
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-                  className="select select-sm bg-transparent border-0 font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer"
-                >
-                  {yearOptions.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-                <select
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(parseInt(e.target.value, 10))}
-                  className="select select-sm bg-transparent border-0 font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer"
-                >
-                  {MONTH_NAMES.map((month, idx) => (
-                    <option key={idx} value={idx + 1}>{month}</option>
-                  ))}
-                </select>
+          </>
+        }
+        actionComponent={
+          <>
+            {/* Download Dropdown */}
+            {!isLoading && data && monthlyBreakdown.length > 0 && (
+              <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="btn btn-sm bg-primary/10 text-primary border-none hover:bg-primary/20 w-full sm:w-auto h-10 px-4">
+                  <Download size={16} />
+                  <span className="font-bold text-xs uppercase tracking-wider hidden sm:inline">Export Report</span>
+                </div>
+                <ul tabIndex={0} className="dropdown-content z-[100] menu p-2 shadow-xl bg-base-100 rounded-2xl w-48 mt-2 border border-neutral-light/30">
+                  <li className="menu-title px-3 py-1">
+                    <span className="text-[10px] font-black uppercase text-base-content/40 tracking-widest">Select Format</span>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => generatePdfReport(getPeriodLabel(), summary, monthlyBreakdown, summary.totalPatients, summary.totalYearlySessions)}
+                      className="flex items-center gap-2 hover:bg-base-200 text-sm font-medium p-3 rounded-xl"
+                    >
+                      <FileText size={16} className="text-red-500" /> PDF Document
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => generateCsvReport(getPeriodLabel(), summary, monthlyBreakdown, summary.totalPatients, summary.totalYearlySessions)}
+                      className="flex items-center gap-2 hover:bg-base-200 text-sm font-medium p-3 rounded-xl"
+                    >
+                      <FileSpreadsheet size={16} className="text-emerald-500" /> CSV Spreadsheet
+                    </button>
+                  </li>
+                </ul>
               </div>
             )}
 
-            {filterType === 'custom' && (
-              <div className="flex gap-2 items-center animate-in slide-in-from-right-4 duration-300">
-                <input 
-                  type="date" 
-                  value={startDate} 
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="input input-xs bg-base-100 border-neutral-light/30 font-bold uppercase text-[9px] w-28" 
-                />
-                <span className="text-[10px] font-black opacity-30 text-base-content">to</span>
-                <input 
-                  type="date" 
-                  value={endDate} 
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="input input-xs bg-base-100 border-neutral-light/30 font-bold uppercase text-[9px] w-28" 
-                />
+            {/* Multi-stage Filter Toolbar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-base-200/50 p-2 rounded-2xl border border-neutral-light/50 backdrop-blur-sm">
+              <div className="px-3 py-1.5 flex items-center gap-2 text-[10px] font-black uppercase text-base-content/40 tracking-widest sm:border-r border-neutral-light/30">
+                <Filter size={12} />
+                Range
               </div>
-            )}
-          </div>
-        </div>
-      </div>
+
+              <div className="flex flex-wrap gap-2 items-center">
+                {/* Primary Filter Type */}
+                <select
+                  value={filterType}
+                  onChange={(e) => setFilterType(e.target.value)}
+                  className="select select-sm select-ghost font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer bg-base-100/50"
+                >
+                  <option value="yearly">Fixed Period</option>
+                  <option value="all">All-Time</option>
+                  <option value="custom">Custom Range</option>
+                </select>
+
+                {/* Contextual Secondary Controls */}
+                {filterType === 'yearly' && (
+                  <div className="flex gap-1 animate-in slide-in-from-right-4 duration-300">
+                    <select
+                      value={selectedYear}
+                      onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
+                      className="select select-sm bg-transparent border-0 font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer"
+                    >
+                      {yearOptions.map((year) => (
+                        <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={selectedMonth}
+                      onChange={(e) => setSelectedMonth(parseInt(e.target.value, 10))}
+                      className="select select-sm bg-transparent border-0 font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer"
+                    >
+                      {MONTH_NAMES.map((month, idx) => (
+                        <option key={idx} value={idx + 1}>{month}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {filterType === 'custom' && (
+                  <div className="flex gap-2 items-center animate-in slide-in-from-right-4 duration-300">
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="input input-xs bg-base-100 border-neutral-light/30 font-bold uppercase text-[9px] w-28"
+                    />
+                    <span className="text-[10px] font-black opacity-30 text-base-content">to</span>
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="input input-xs bg-base-100 border-neutral-light/30 font-bold uppercase text-[9px] w-28"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        }
+      />
 
       {isLoading ? (
         <CardSkeleton count={3} />
       ) : (
         <div className="space-y-8">
           {/* Summary Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <StatCard 
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard
               icon={DollarSign}
-              label={filterType === 'yearly' ? `Gross Earnings ${selectedYear}` : 'Cumulative Payout'}
+              label={filterType === 'yearly' ? `Gross Earnings ${selectedYear}` : 'Total Earnings'}
               value={`${summary.totalYearlyEarnings?.toLocaleString()} EGP`}
               subtext="Commissions + Fixed Salaries"
               colorClass="text-emerald-500"
               animationDelay={0}
             />
-            <StatCard 
+            <StatCard
               icon={TrendingUp}
-              label={filterType === 'yearly' ? `Total Sessions ${selectedYear}` : 'Cumulative Volume'}
+              label={filterType === 'yearly' ? `Total Sessions ${selectedYear}` : 'Total Sessions'}
               value={summary.totalYearlySessions}
               subtext="Documented patient sessions"
               colorClass="text-sky-500"
               animationDelay={0.1}
+            />
+            <StatCard
+              icon={Receipt}
+              label="Total Expenses"
+              value={`${totalExpenses.toLocaleString()} EGP`}
+              subtext="Materials + Salaries + Other"
+              colorClass="text-red-500"
+              animationDelay={0.2}
+            />
+            <StatCard
+              icon={TrendingDown}
+              label="Net Profit"
+              value={`${netProfit.toLocaleString()} EGP`}
+              subtext="Earnings − Expenses"
+              colorClass={netProfit >= 0 ? 'text-emerald-500' : 'text-red-500'}
+              animationDelay={0.3}
             />
           </div>
 
@@ -256,7 +318,7 @@ export default function AnalyticsPage() {
                       <BarChart3 size={20} />
                     </div>
                     <h2 className="text-lg font-black text-base-content uppercase tracking-widest">
-                    Growth
+                      Growth
                     </h2>
                   </div>
                   <div className="flex items-center gap-2">
@@ -268,6 +330,7 @@ export default function AnalyticsPage() {
                       <option value="both">Both</option>
                       <option value="commissions">Commissions Only</option>
                       <option value="fixed">Fixed Salary Only</option>
+                      <option value="expenses">Expenses Only</option>
                     </select>
                     <div className="flex items-center gap-1 px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest hidden sm:flex">
                       <ArrowUpRight size={12} />
@@ -287,50 +350,65 @@ export default function AnalyticsPage() {
                       <AreaChart data={yearlyTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <defs>
                           <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.2}/>
-                            <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                            <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.2} />
+                            <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0} />
                           </linearGradient>
                           <linearGradient id="colorFixedSalary" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                            <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                          </linearGradient>
+                          <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
+                            <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" strokeOpacity={0.05} vertical={false} />
-                        <XAxis 
-                          dataKey="month" 
-                          axisLine={false} 
-                          tickLine={false} 
+                        <XAxis
+                          dataKey="month"
+                          axisLine={false}
+                          tickLine={false}
                           tick={{ fontSize: 10, fontWeight: 900, fill: '#64748b', textTransform: 'uppercase' }}
                           dy={10}
                         />
-                        <YAxis 
-                          axisLine={false} 
-                          tickLine={false} 
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
                           tick={{ fontSize: 10, fontWeight: 900, fill: '#64748b' }}
                           tickFormatter={(val) => `${val / 1000}k`}
                         />
                         <Tooltip content={<ModernTooltip />} cursor={{ stroke: '#0EA5E9', strokeWidth: 2, strokeDasharray: '5 5' }} />
                         {(chartView === 'both' || chartView === 'commissions') && (
-                          <Area 
-                            type="monotone" 
-                            dataKey="earnings" 
+                          <Area
+                            type="monotone"
+                            dataKey="earnings"
                             stackId="1"
-                            stroke="#0EA5E9" 
-                            strokeWidth={4} 
-                            fillOpacity={1} 
-                            fill="url(#colorEarnings)" 
+                            stroke="#0EA5E9"
+                            strokeWidth={4}
+                            fillOpacity={1}
+                            fill="url(#colorEarnings)"
                             animationDuration={1500}
                           />
                         )}
                         {(chartView === 'both' || chartView === 'fixed') && (
-                          <Area 
-                            type="monotone" 
-                            dataKey="fixed_salary" 
+                          <Area
+                            type="monotone"
+                            dataKey="fixed_salary"
                             stackId="1"
-                            stroke="#10b981" 
-                            strokeWidth={4} 
-                            fillOpacity={1} 
-                            fill="url(#colorFixedSalary)" 
+                            stroke="#10b981"
+                            strokeWidth={4}
+                            fillOpacity={1}
+                            fill="url(#colorFixedSalary)"
+                            animationDuration={1500}
+                          />
+                        )}
+                        {(chartView === 'both' || chartView === 'expenses') && (
+                          <Area
+                            type="monotone"
+                            dataKey="expenses"
+                            stroke="#ef4444"
+                            strokeWidth={3}
+                            fillOpacity={1}
+                            fill="url(#colorExpenses)"
                             animationDuration={1500}
                           />
                         )}
@@ -372,13 +450,13 @@ export default function AnalyticsPage() {
                     {/* Clinic List */}
                     <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
                       {filteredBreakdown.map((clinic, idx) => {
-                        const displayValue = chartView === 'commissions' ? clinic.commission 
-                          : chartView === 'fixed' ? clinic.fixed_salary 
-                          : clinic.earnings;
+                        const displayValue = chartView === 'commissions' ? clinic.commission
+                          : chartView === 'fixed' ? clinic.fixed_salary
+                            : clinic.earnings;
                         const percentage = filteredBreakdownTotal > 0 ? ((displayValue / filteredBreakdownTotal) * 100).toFixed(0) : 0;
-                        
+
                         return (
-                          <motion.div 
+                          <motion.div
                             key={clinic.clinicId || idx}
                             initial={{ opacity: 0, x: -8 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -393,7 +471,7 @@ export default function AnalyticsPage() {
                             </div>
                             {/* Progress bar */}
                             <div className="w-full bg-base-200 rounded-full h-1.5">
-                              <motion.div 
+                              <motion.div
                                 className="h-1.5 rounded-full bg-gradient-to-r from-primary to-emerald-400"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${percentage}%` }}
@@ -407,6 +485,9 @@ export default function AnalyticsPage() {
                                   <>
                                     <span className="text-[8px] font-bold text-sky-500">{clinic.commission.toLocaleString()} comm</span>
                                     <span className="text-[8px] font-bold text-emerald-500">{clinic.fixed_salary.toLocaleString()} fixed</span>
+                                    {(clinic.expenses || 0) > 0 && (
+                                      <span className="text-[8px] font-bold text-red-500">-{clinic.expenses.toLocaleString()} exp</span>
+                                    )}
                                   </>
                                 )}
                                 <span className="text-[9px] font-black text-primary">{percentage}%</span>

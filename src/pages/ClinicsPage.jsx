@@ -6,6 +6,7 @@ import { useFixedSalaries, useCreateFixedSalary, useUpdateFixedSalary, useDelete
 import { CardSkeleton } from '../components/Skeleton';
 import Card from '../components/Card';
 import AddClinicModal from '../components/AddClinicModal';
+import PageHeader from '../components/common/PageHeader';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -46,24 +47,22 @@ export default function ClinicsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-base-content">Clinics</h1>
-          <p className="text-base-content/70 text-sm mt-0.5">
-            Manage the clinics you work at.
-          </p>
-        </div>
-        <button
-          onClick={() => {
-            setClinicToEdit(null);
-            setShowAdd(true);
-          }}
-          className="btn btn-sm rounded-lg text-white border-0 gap-1 bg-primary w-full sm:w-auto"
-        >
-          <Plus size={16} />
-          Add Clinic
-        </button>
-      </div>
+      <PageHeader
+        title="Clinics"
+        subtitle="Manage the clinics you work at"
+        actionComponent={
+          <button
+            onClick={() => {
+              setClinicToEdit(null);
+              setShowAdd(true);
+            }}
+            className="btn bg-primary hover:bg-primary/90 text-white font-bold border-0 shadow-sm rounded-xl px-5 h-10 min-h-0"
+          >
+            <Plus size={16} />
+            Add Clinic
+          </button>
+        }
+      />
 
       {/* Today's Shifts */}
       {!isLoading && clinics.length > 0 && (

@@ -5,7 +5,7 @@ import React from 'react';
  */
 export default function PublicPortfolioSkeleton() {
   return (
-    <div className="bg-[#F3F2EF] dark:bg-[#1A1A1A] min-h-screen pb-2 font-sans animate-pulse">
+    <div className="bg-base-100 min-h-screen pb-2 font-sans animate-pulse">
       {/* Banner Skeleton */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
         <div className="w-full h-40 sm:h-64 bg-gray-200 dark:bg-gray-800 rounded-br-[80px] sm:rounded-br-[160px] sm:rounded-tl-[40px]" />

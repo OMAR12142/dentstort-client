@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  LayoutDashboard, CalendarDays, Building2, Users, BarChart3, TrendingUp, ListTodo, Briefcase, ChevronLeft, ChevronRight, X, PlayCircle, Headset
+  LayoutDashboard, CalendarDays, Building2, Users, BarChart3, TrendingUp, ListTodo, Briefcase, ChevronLeft, ChevronRight, X, PlayCircle, Headset, Receipt
 } from 'lucide-react';
 import { useLayoutStore } from '../store/layoutStore';
 import AppLogo from './AppLogo';
@@ -14,12 +14,23 @@ const navItems = [
   { to: '/patients', icon: Users, label: 'Patients' },
   { to: '/tasks', icon: ListTodo, label: 'Tasks' },
   { to: '/analytics', icon: BarChart3, label: 'Earnings' },
+  { to: '/expenses', icon: Receipt, label: 'Expenses' },
   { to: '/career-analytics', icon: TrendingUp, label: 'Career' },
   { to: '/portfolio/manage', icon: Briefcase, label: 'Portfolio' },
   { type: 'divider' },
   { to: '/how-to-use', icon: PlayCircle, label: 'How to Use' },
   { to: '/support', icon: Headset, label: 'Support' },
 ];
+
+const getTourId = (path) => {
+  if (!path) return null;
+  if (path === '/clinics') return 'clinics';
+  if (path === '/patients') return 'add-patient';
+  if (path === '/appointments') return 'agenda';
+  if (path.includes('portfolio')) return 'portfolio';
+  if (path === '/analytics') return 'analytics';
+  return null;
+};
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const { isSidebarExpanded, toggleSidebar } = useLayoutStore();
@@ -91,6 +102,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
             to={item.to}
             end={item.to === '/'}
             title={!expanded ? item.label : undefined}
+            data-tour={getTourId(item.to)}
             className={navItemClass(isActive, expanded)}
           >
             {isActive && (

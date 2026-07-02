@@ -11,9 +11,9 @@ export default function PublicCaseCard({ caseData, slug, i }) {
     <div key={caseData._id}>
       <Link
         to={`/portfolio/${slug}/case/${caseData._id}`}
-        className="group block bg-white dark:bg-[#252525] rounded-3xl overflow-hidden border border-[#E0DFDC] dark:border-[#3A3A3A] hover:border-[#0A66C2]/40 shadow-sm hover:shadow-2xl transition-all duration-500"
+        className="group block bg-white dark:bg-base-100 rounded-3xl overflow-hidden border border-slate-200 dark:border-base-content/10 hover:border-primary/40 shadow-sm hover:shadow-2xl transition-all duration-500"
       >
-        <div className="aspect-[4/3] relative overflow-hidden bg-[#F3F2EF] dark:bg-[#1A1A1A]">
+        <div className="aspect-[4/3] relative overflow-hidden bg-base-100">
           {caseData.coverImage ? (
             <img 
               src={caseData.coverImage} 
@@ -22,12 +22,12 @@ export default function PublicCaseCard({ caseData, slug, i }) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Briefcase size={40} className="text-[#666666]/10" />
+              <Briefcase size={40} className="text-base-content/10" />
             </div>
           )}
           <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex flex-wrap gap-1 sm:gap-2">
             {(Array.isArray(caseData.treatmentType) ? caseData.treatmentType : [caseData.treatmentType || 'General']).map((type) => (
-              <span key={type} className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm text-[#0A66C2] text-[8px] sm:text-[10px] font-bold uppercase rounded-md sm:rounded-lg shadow-sm border border-[#E0DFDC] dark:border-[#3A3A3A] shrink-0">
+              <span key={type} className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-white/90 dark:bg-base-200/90 backdrop-blur-sm text-primary text-[8px] sm:text-[10px] font-bold uppercase rounded-md sm:rounded-lg shadow-sm border border-slate-200 dark:border-base-content/10 shrink-0">
                 {type}
               </span>
             ))}
@@ -39,11 +39,11 @@ export default function PublicCaseCard({ caseData, slug, i }) {
           </div>
         </div>
         <div className="p-3 sm:p-6">
-          <h3 className="font-bold text-sm sm:text-xl text-[#191919] dark:text-white group-hover:text-[#0A66C2] transition-colors line-clamp-1 mb-2 sm:mb-4">
+          <h3 className="font-bold text-sm sm:text-xl text-base-content group-hover:text-primary transition-colors line-clamp-1 mb-2 sm:mb-4">
             {caseData.title}
           </h3>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-[#666666] dark:text-gray-400 group-hover:text-[#0A66C2] transition-colors">
+            <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-base-content/60 group-hover:text-primary transition-colors">
               <span className="hidden xs:inline">View Case Study</span> 
               <ArrowRight size={12} className="group-hover:translate-x-2 transition-transform" />
             </div>

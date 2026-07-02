@@ -35,6 +35,8 @@ const PublicCaseDetailPage = lazy(() => import('./pages/portfolio/PublicCaseDeta
 const PortfolioEditorPage = lazy(() => import('./pages/portfolio/PortfolioEditorPage'));
 const HowToUsePage = lazy(() => import('./pages/HowToUsePage'));
 const SupportPage = lazy(() => import('./pages/SupportPage'));
+const ExpensesPage = lazy(() => import('./pages/ExpensesPage'));
+const ExpenseRecordsPage = lazy(() => import('./pages/ExpenseRecordsPage'));
 
 // SEO Component
 import SEO from './components/common/SEO';
@@ -191,6 +193,8 @@ export default function App() {
                   <Route path="/clinics" element={<ClinicsPage />} />
                   <Route path="/tasks" element={<TasksPage />} />
                   <Route path="/analytics" element={<AnalyticsPage />} />
+                  <Route path="/expenses" element={<ExpensesPage />} />
+                  <Route path="/expenses/records" element={<ExpenseRecordsPage />} />
                   <Route path="/career-analytics" element={<CareerAnalyticsPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/profile/security" element={<ChangePasswordPage />} />

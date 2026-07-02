@@ -11,6 +11,7 @@ import {
   useAppointments,
   useCreateAppointment,
 } from '../hooks/useAppointments';
+import PageHeader from '../components/common/PageHeader';
 import { useClinics } from '../hooks/useClinics';
 import { useCreatePatient } from '../hooks/usePatients';
 import AppointmentModal from '../components/AppointmentModal';
@@ -250,36 +251,31 @@ export default function AppointmentsPage() {
   return (
     <div className="space-y-5 sm:space-y-6 pb-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-base-content flex items-center gap-2">
-            <CalendarDays size={24} className="text-primary" />
-            Appointments
-          </h1>
-          <p className="text-xs sm:text-sm text-base-content/70 mt-0.5">
-            Tap any day to see details · Your scheduling overview
-          </p>
-        </div>
+      <PageHeader
+        title="Appointments"
+        subtitle="Tap any day to see details · Your scheduling overview"
+        icon={CalendarDays}
+        actionComponent={
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {clinics.length > 1 && (
+              <select
+                value={clinicFilter}
+                onChange={(e) => setClinicFilter(e.target.value)}
+                className="select select-bordered bg-base-100 select-sm text-sm min-w-[140px] shadow-sm rounded-xl"
+              >
+                <option value="">All Clinics</option>
+                {clinics.map((c) => (
+                  <option key={c._id} value={c._id}>{c.name}</option>
+                ))}
+              </select>
+            )}
 
-        <div className="flex items-center gap-3">
-          {clinics.length > 1 && (
-            <select
-              value={clinicFilter}
-              onChange={(e) => setClinicFilter(e.target.value)}
-              className="select select-bordered select-sm text-sm min-w-[140px]"
-            >
-              <option value="">All Clinics</option>
-              {clinics.map((c) => (
-                <option key={c._id} value={c._id}>{c.name}</option>
-              ))}
-            </select>
-          )}
-
-          <button onClick={openNewModal} className="btn btn-primary btn-sm gap-2">
-            <Plus size={16} /> New Appointment
-          </button>
-        </div>
-      </div>
+            <button onClick={openNewModal} className="btn bg-primary hover:bg-primary/90 text-white font-bold border-0 shadow-sm rounded-xl px-5 h-10 min-h-0">
+              <Plus size={16} /> New Appointment
+            </button>
+          </div>
+        }
+      />
 
       {/* Status Legend */}
       <div className="flex flex-wrap gap-4">

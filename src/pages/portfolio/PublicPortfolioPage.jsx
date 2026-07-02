@@ -67,7 +67,7 @@ export default function PublicPortfolioPage() {
   } = data;
 
   return (
-    <div className="bg-[#F3F2EF] dark:bg-[#1A1A1A] min-h-screen pb-2 font-sans transition-colors duration-300">
+    <div className="bg-base-100 min-h-screen pb-2 font-sans transition-colors duration-300">
       <SEO
         title={`Dr. ${dentist.name} — Dental Portfolio`}
         description={bio ? bio.substring(0, 150) : `View Dr. ${dentist.name}'s professional clinical portfolio.`}

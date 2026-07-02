@@ -12,7 +12,7 @@ const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().min(1, 'Email is required').email('Enter a valid email address'),
   password: z.string().min(1, 'Password is required').min(6, 'Password must be at least 6 characters'),
-  phone: z.string().optional(),
+  phone: z.string().min(1, 'Mobile number is required'),
 });
 
 export default function RegisterPage() {
@@ -168,9 +168,11 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Phone (optional) */}
+            {/* Phone */}
             <div>
-              <label className="block text-[10px] font-semibold text-base-content/80 mb-1">Phone Number</label>
+              <label className="block text-[10px] font-semibold text-base-content/80 mb-1">
+                Phone Number <span className="text-error">*</span>
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Phone size={13} className="text-base-content/40" />
@@ -179,9 +181,16 @@ export default function RegisterPage() {
                   name="phone"
                   type="tel"
                   placeholder="+10 198 768 00"
-                  className={`${inputBase} rounded-xl h-10 bg-base-200/50`}
+                  onChange={() => clearError('phone')}
+                  className={`${inputBase} ${vErrors.phone ? inputError : ''} rounded-xl h-10 bg-base-200/50`}
                 />
               </div>
+              {vErrors.phone && (
+                <div className="flex items-center gap-1 text-[9px] text-error mt-0.5 font-medium">
+                  <AlertCircle size={10} />
+                  {vErrors.phone}
+                </div>
+              )}
             </div>
 
             <button

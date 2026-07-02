@@ -1,5 +1,10 @@
 import { create } from 'zustand';
 
+const getOnboardingStorageKey = (userId) => {
+  if (!userId) return 'dentstory_onboarding_status';
+  return `dentstory_onboarding_status:${userId}`;
+};
+
 export const useAuthStore = create((set) => ({
   user: JSON.parse(localStorage.getItem('gd_user') || 'null'),
   accessToken: localStorage.getItem('gd_token') || null,
@@ -46,6 +51,13 @@ export const useAuthStore = create((set) => ({
   },
 
   logout: () => {
+    const currentUser = JSON.parse(localStorage.getItem('gd_user') || 'null');
+    const currentUserId = currentUser?._id || currentUser?.id || currentUser?.email;
+
+    if (currentUserId) {
+      localStorage.removeItem(getOnboardingStorageKey(currentUserId));
+    }
+
     localStorage.removeItem('gd_user');
     localStorage.removeItem('gd_token');
     localStorage.removeItem('gd_admin_user');

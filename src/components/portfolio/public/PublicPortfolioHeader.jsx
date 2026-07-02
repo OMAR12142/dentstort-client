@@ -6,7 +6,7 @@ import { User, Award } from 'lucide-react';
  */
 export default function PublicPortfolioHeader({ dentist, yearsOfExperience, onPhotoClick }) {
   return (
-    <div className="bg-white dark:bg-[#252525] border-b border-[#E0DFDC] dark:border-[#3A3A3A] pb-4 mb-2 shadow-sm relative overflow-hidden">
+    <div className="bg-white dark:bg-base-100 border-b border-slate-200 dark:border-base-content/10 pb-4 mb-2 shadow-sm relative overflow-hidden">
 
       {/* Banner with Primary Brand Color */}
       <div className="w-full max-w-7xl mx-auto sm:px-4 lg:px-8 mt-0 sm:mt-4">
@@ -16,7 +16,7 @@ export default function PublicPortfolioHeader({ dentist, yearsOfExperience, onPh
           <div className="absolute inset-0 bg-gradient-to-br from-[#0A66C2] via-[#001D3D] to-[#000814] opacity-80" />
 
           {/* Architectural Glows */}
-          <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-[#0A66C2]/20 rounded-full blur-[120px]" />
+          <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-primary/20 rounded-full blur-[120px]" />
           <div className="absolute bottom-[-20%] left-[-10%] w-[300px] h-[300px] bg-blue-400/10 rounded-full blur-[100px]" />
 
           {/* Logo Mark Typography Background */}
@@ -43,20 +43,20 @@ export default function PublicPortfolioHeader({ dentist, yearsOfExperience, onPh
             {/* Overlapping Avatar */}
             <div
               onClick={onPhotoClick}
-              className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden border-[6px] border-white dark:border-[#252525] bg-white dark:bg-[#252525] shadow-xl shrink-0 transition-transform hover:scale-105 duration-500 cursor-pointer"
+              className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden border-[6px] border-white dark:border-[#252525] bg-white dark:bg-base-100 shadow-xl shrink-0 transition-transform hover:scale-105 duration-500 cursor-pointer"
             >
               {dentist.profilePhoto?.url ? (
                 <img src={dentist.profilePhoto.url} alt={dentist.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-[#0A66C2]/10">
-                  <User size={40} className="text-[#0A66C2]/40" />
+                <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                  <User size={40} className="text-primary/40" />
                 </div>
               )}
             </div>
 
             {/* Mini Identity */}
             <div className="pb-2 space-y-1">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#191919] dark:text-white tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-base-content tracking-tight">
                 Dr. {dentist.name}
               </h1>
             </div>
@@ -65,7 +65,7 @@ export default function PublicPortfolioHeader({ dentist, yearsOfExperience, onPh
           {/* Quick Stats/Badges */}
           <div className="shrink-0 flex items-center justify-center md:pb-4 gap-3">
             {yearsOfExperience > 0 && (
-              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#057642]/10 text-[#057642] border border-[#057642]/20 flex items-center gap-1.5 dark:bg-[#057642]/20">
+              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-success/10 text-success border border-success/20 flex items-center gap-1.5 dark:bg-success/20">
                 <Award size={12} /> {yearsOfExperience} years experience
               </span>
             )}

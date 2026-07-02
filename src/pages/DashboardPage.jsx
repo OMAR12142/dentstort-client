@@ -15,6 +15,8 @@ import {
   Zap,
   MapPin,
   Plus,
+  Receipt,
+  TrendingDown,
 } from 'lucide-react';
 import { useClinics } from '../hooks/useClinics';
 import { useDashboardStats } from '../hooks/useAnalytics';
@@ -23,6 +25,9 @@ import { useTodaysAppointments } from '../hooks/useAppointments';
 import { useTasks } from '../hooks/useTasks';
 import DashboardSkeleton from '../components/skeletons/DashboardSkeleton';
 import ErrorState from '../components/common/ErrorState';
+import SEO from '../components/common/SEO';
+import PageHeader from '../components/common/PageHeader';
+import { useAuthStore } from '../store/authStore';
 import Card from '../components/Card';
 import PatientModal from '../components/PatientModal';
 import LogSessionModal from '../components/LogSessionModal';
@@ -56,6 +61,13 @@ export default function DashboardPage() {
   const { data: patientsData, isLoading: loadP, isError: isErrorP, error: errorP, refetch: refetchP } = usePatients({ page: 1, limit: 5 });
   const { data: appointmentsData, isLoading: loadA, isError: isErrorA, error: errorA, refetch: refetchA } = useTodaysAppointments();
   const { data: tasksData, isLoading: loadT, isError: isErrorT, error: errorT, refetch: refetchT } = useTasks();
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
   const { data: clinicsData, isLoading: loadC, isError: isErrorC, refetch: refetchC } = useClinics();
   const [showAddPatient, setShowAddPatient] = useState(false);
   const [logSessionModalOpen, setLogSessionModalOpen] = useState(false);
@@ -68,7 +80,9 @@ export default function DashboardPage() {
   const patientsAdded = stats?.stats?.patientsAdded || 0;
   const activePatients = stats?.stats?.activePatients || 0;
   const monthlyFixedSalary = stats?.stats?.monthly_fixed_salary || 0;
+  const totalExpenses = stats?.stats?.totalExpenses || 0;
   const totalIncome = totalEarnings + monthlyFixedSalary;
+  const netProfit = totalIncome - totalExpenses;
   const earnings = stats?.earnings || [];
 
   const totalPatients = patientsData?.totalPatients || 0;
@@ -142,108 +156,138 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      {/* Header with Timeframe Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-base-content">Dashboard</h1>
-          <p className="text-xs sm:text-sm text-base-content/70 mt-0.5">
-            Welcome back — here's your overview.
-          </p>
-        </div>
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500">
+      <PageHeader
+        title={`${getGreeting()}, Doctor`}
+        subtitle={
+          <>
+            Here's what's happening {timeframe === 'all' ? 'across all time' : `this ${timeframe === 'monthly' ? 'month' : 'year'}.`}
+            {isFetchingStats && <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 rounded-full bg-primary" />}
+          </>
+        }
+        actionComponent={
+          <div className="join bg-base-100 p-1 rounded-xl border border-neutral-light shadow-sm w-full sm:w-auto">
+            {timeframeOptions.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setTimeframe(option.value)}
+                disabled={isFetching}
+                className={`btn btn-sm join-item border-none font-medium transition-all rounded-lg ${
+                  timeframe === option.value
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'btn-ghost text-base-content/60 hover:text-base-content hover:bg-base-200 disabled:opacity-50'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
-        {/* Timeframe Selector - LinkedIn Flat Style */}
-        <div className="join bg-base-200/50 p-1 rounded-lg border border-neutral-light w-full sm:w-auto">
-          {timeframeOptions.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => setTimeframe(option.value)}
-              disabled={isFetching}
-              className={`btn btn-sm join-item border-none font-medium transition-all ${
-                timeframe === option.value
-                  ? 'bg-base-100 shadow-sm text-primary'
-                  : 'btn-ghost text-secondary hover:bg-transparent disabled:opacity-50'
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Summary Cards - 2x2 on mobile, 4 columns on desktop */}
-      <motion.div
-        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
-        animate={{ opacity: isFetching ? 0.6 : 1 }}
-        transition={{ duration: 0.2 }}
-      >
+      {/* Main Dashboard Layout Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+        
+        {/* Left Column - Main Analytics & Shifts (Takes 2 cols on lg, 3 cols on xl) */}
+        <div className="lg:col-span-2 xl:col-span-3 space-y-6 sm:space-y-8">
+          
+          {/* Summary Cards */}
+          <motion.div
+            className="grid grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6"
+            animate={{ opacity: isFetching ? 0.6 : 1 }}
+            transition={{ duration: 0.2 }}
+          >
         {/* Card 1 - Earnings */}
-        <Card className="hover:border-success/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-success/10 flex items-center justify-center text-success transition-transform group-hover:scale-110">
-              <DollarSign size={20} strokeWidth={2.5} />
+        <Card className="hover:border-success/40 transition-all duration-300 p-3 sm:p-4 relative overflow-hidden group bg-gradient-to-br from-success/5 to-transparent border border-success/10 backdrop-blur-xl">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <div className="w-8 h-8 rounded-xl bg-success/20 flex items-center justify-center text-success transition-transform group-hover:scale-110 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+              <DollarSign size={16} strokeWidth={2.5} />
             </div>
-            <span className="text-[10px] sm:text-xs font-black text-success bg-success/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
+            <span className="text-[10px] font-black text-success bg-success/10 px-2 py-1 rounded-lg whitespace-nowrap uppercase tracking-wider border border-success/20">
               {getTimeframeLabel(timeframe)}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
-            {totalIncome.toLocaleString()} <span className="text-sm font-normal opacity-50 uppercase tracking-tighter">EGP</span>
+          <p className="text-xl lg:text-2xl font-black text-base-content break-words drop-shadow-sm">
+            {totalIncome.toLocaleString()} <span className="text-xs font-bold text-success uppercase tracking-tighter">EGP</span>
           </p>
-          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">{getTimeframeLabel(timeframe)} Total Income</p>
+          <p className="text-[10px] font-bold text-base-content/50 mt-2 uppercase tracking-widest">{getTimeframeLabel(timeframe)} Total Income</p>
+          
+          {/* Decorative background element */}
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-success/10 rounded-full blur-2xl group-hover:bg-success/20 transition-colors duration-500" />
         </Card>
 
         {/* Card 1.5 - Fixed Salary */}
-        <Card className="hover:border-success/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-success/10 flex items-center justify-center text-success transition-transform group-hover:scale-110">
-              <DollarSign size={20} strokeWidth={2.5} />
+        <Card className="hover:border-success/40 transition-all duration-300 p-3 sm:p-4 relative overflow-hidden group bg-gradient-to-br from-success/5 to-transparent border border-success/10 backdrop-blur-xl">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <div className="w-8 h-8 rounded-xl bg-success/20 flex items-center justify-center text-success transition-transform group-hover:scale-110 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+              <DollarSign size={16} strokeWidth={2.5} />
             </div>
-            <span className="text-[10px] sm:text-xs font-black text-success bg-success/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
+            <span className="text-[10px] font-black text-success bg-success/10 px-2 py-1 rounded-lg whitespace-nowrap uppercase tracking-wider border border-success/20">
               Fixed
             </span>
           </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
-            {monthlyFixedSalary.toLocaleString()} <span className="text-sm font-normal opacity-50 uppercase tracking-tighter">EGP</span>
+          <p className="text-xl lg:text-2xl font-black text-base-content break-words drop-shadow-sm">
+            {monthlyFixedSalary.toLocaleString()} <span className="text-xs font-bold text-success uppercase tracking-tighter">EGP</span>
           </p>
-          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Fixed Salary</p>
+          <p className="text-[10px] font-bold text-base-content/50 mt-2 uppercase tracking-widest">Fixed Salary</p>
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-success/10 rounded-full blur-2xl group-hover:bg-success/20 transition-colors duration-500" />
         </Card>
 
-        {/* Card 2 - Patients Added */}
-        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
-              <UserPlus size={20} strokeWidth={2.5} />
-            </div>
-            <span className="text-[10px] sm:text-xs font-black text-primary bg-primary/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
-              New
-            </span>
-          </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
-            {patientsAdded}
-          </p>
-          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Patients {getTimeframeLabel(timeframe).toLowerCase()}</p>
-        </Card>
 
         {/* Card 3 - Sessions */}
-        <Card className="hover:border-primary/40 transition-colors p-4 sm:p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
-              <CalendarClock size={20} strokeWidth={2.5} />
+        <Card className="hover:border-primary/40 transition-all duration-300 p-3 sm:p-4 relative overflow-hidden group bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 backdrop-blur-xl">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <div className="w-8 h-8 rounded-xl bg-primary/20 flex items-center justify-center text-primary transition-transform group-hover:scale-110 shadow-[0_0_15px_rgba(var(--p),0.2)]">
+              <CalendarClock size={16} strokeWidth={2.5} />
             </div>
-            <span className="text-[10px] sm:text-xs font-black text-primary bg-primary/10 px-2.5 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wider">
+            <span className="text-[10px] font-black text-primary bg-primary/10 px-2 py-1 rounded-lg whitespace-nowrap uppercase tracking-wider border border-primary/20">
               History
             </span>
           </div>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-base-content break-words">
+          <p className="text-xl lg:text-2xl font-black text-base-content break-words drop-shadow-sm">
             {totalSessions}
           </p>
-          <p className="text-[10px] sm:text-xs font-bold text-base-content/40 mt-2 uppercase tracking-widest">Sessions {getTimeframeLabel(timeframe).toLowerCase()}</p>
+          <p className="text-[10px] font-bold text-base-content/50 mt-2 uppercase tracking-widest">Sessions {getTimeframeLabel(timeframe).toLowerCase()}</p>
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors duration-500" />
         </Card>
 
-      </motion.div>
+        {/* Card - Expenses */}
+        <Card className="hover:border-error/40 transition-all duration-300 p-3 sm:p-4 relative overflow-hidden group bg-gradient-to-br from-error/5 to-transparent border border-error/10 backdrop-blur-xl">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <div className="w-8 h-8 rounded-xl bg-error/20 flex items-center justify-center text-error transition-transform group-hover:scale-110 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+              <Receipt size={16} strokeWidth={2.5} />
+            </div>
+            <span className="text-[10px] font-black text-error bg-error/10 px-2 py-1 rounded-lg whitespace-nowrap uppercase tracking-wider border border-error/20">
+              Spent
+            </span>
+          </div>
+          <p className="text-xl lg:text-2xl font-black text-base-content break-words drop-shadow-sm">
+            {totalExpenses.toLocaleString()} <span className="text-xs font-bold text-error uppercase tracking-tighter">EGP</span>
+          </p>
+          <p className="text-[10px] font-bold text-base-content/50 mt-2 uppercase tracking-widest">Expenses {getTimeframeLabel(timeframe).toLowerCase()}</p>
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-error/10 rounded-full blur-2xl group-hover:bg-error/20 transition-colors duration-500" />
+        </Card>
 
-      {/* Today's Shifts section */}
+        {/* Card - Net Profit */}
+        <Card className={`transition-all duration-300 p-3 sm:p-4 relative overflow-hidden group border backdrop-blur-xl col-span-2 xl:col-span-1 ${netProfit >= 0 ? 'bg-gradient-to-br from-success/5 to-transparent border-success/10 hover:border-success/40' : 'bg-gradient-to-br from-error/5 to-transparent border-error/10 hover:border-error/40'}`}>
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-[0_0_15px_rgba(var(--p),0.1)] ${netProfit >= 0 ? 'bg-success/20 text-success' : 'bg-error/20 text-error'}`}>
+              <TrendingDown size={16} strokeWidth={2.5} className={netProfit >= 0 ? 'rotate-180' : ''} />
+            </div>
+            <span className={`text-[10px] font-black px-2 py-1 rounded-lg whitespace-nowrap uppercase tracking-wider border ${netProfit >= 0 ? 'text-success bg-success/10 border-success/20' : 'text-error bg-error/10 border-error/20'}`}>
+              Net
+            </span>
+          </div>
+          <p className="text-xl lg:text-2xl font-black text-base-content break-words drop-shadow-sm">
+            {netProfit.toLocaleString()} <span className={`text-xs font-bold uppercase tracking-tighter ${netProfit >= 0 ? 'text-success' : 'text-error'}`}>EGP</span>
+          </p>
+          <p className="text-[10px] font-bold text-base-content/50 mt-2 uppercase tracking-widest">Net Profit</p>
+          <div className={`absolute -bottom-6 -right-6 w-24 h-24 rounded-full blur-2xl transition-colors duration-500 ${netProfit >= 0 ? 'bg-success/10 group-hover:bg-success/20' : 'bg-error/10 group-hover:bg-error/20'}`} />
+        </Card>
+
+          </motion.div>
+
+          {/* Today's Shifts section */}
       {!isLoading && clinics.length > 0 && (
         <Card className="p-4 sm:p-5 border border-primary/20 bg-primary/5 dark:bg-primary/5">
           <div className="flex items-center gap-3 mb-4">
@@ -294,6 +338,53 @@ export default function DashboardPage() {
         </Card>
       )}
 
+      {/* Earnings by Clinic */}
+      {earnings?.length > 0 && (
+        <Card className="p-5 sm:p-6 border-neutral-light/50 bg-base-100/50 backdrop-blur-md">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <DollarSign size={20} className="text-primary" />
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-base-content tracking-tight uppercase">Clinic Earnings</h2>
+              <p className="text-[10px] font-bold text-base-content/40 uppercase tracking-widest">{getTimeframeLabel(timeframe)} Overview</p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            {earnings.map((e, idx) => {
+              const pct = totalEarnings ? (e.totalDentistCut / totalEarnings) * 100 : 0;
+              return (
+                <motion.div
+                  key={e.clinic_id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="group"
+                >
+                  <div className="flex justify-between text-xs sm:text-sm mb-1.5">
+                    <span className="font-bold text-base-content flex-1 min-w-0 pr-2">{e.clinicName}</span>
+                    <span className="text-base-content font-black">{e.totalDentistCut.toLocaleString()} <span className="text-[10px] opacity-40 uppercase tracking-widest">EGP</span></span>
+                  </div>
+                  <div className="w-full bg-base-200/50 rounded-full h-2 overflow-hidden border border-neutral-light/20">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.6, delay: 0.2 }}
+                      className="h-full rounded-full bg-primary"
+                    />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+    </div> {/* End Left Column */}
+
+    {/* Right Column - Agenda & Tasks (Takes 1 col on lg, 1 col on xl) */}
+    <div className="space-y-6 sm:space-y-8">
+      
       {/* Today's Appointments */}
       <Card className="p-4 sm:p-5">
         <div className="flex items-center gap-3 mb-4">
@@ -448,39 +539,12 @@ export default function DashboardPage() {
           </div>
         )}
       </Card>
+      
+    </div> {/* End Right Column */}
+  </div> {/* End Dashboard Grid */}
 
-      {/* Earnings by Clinic */}
-      {earnings?.length > 0 && (
-        <Card className="p-4 sm:p-5">
-          <h2 className="text-base sm:text-lg font-bold text-base-content mb-3 sm:mb-4">Earnings by Clinic ({getTimeframeLabel(timeframe)})</h2>
-          <div className="space-y-3 sm:space-y-4">
-            {earnings.map((e, idx) => {
-              const pct = totalEarnings ? (e.totalDentistCut / totalEarnings) * 100 : 0;
-              return (
-                <motion.div
-                  key={e.clinic_id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                >
-                  <div className="flex justify-between text-xs sm:text-sm mb-1">
-                    <span className="font-medium text-base-content break-words flex-1 min-w-0 pr-2">{e.clinicName}</span>
-                    <span className="text-base-content/70 whitespace-nowrap">{e.totalDentistCut.toLocaleString()} EGP</span>
-                  </div>
-                  <div className="w-full bg-base-100 rounded-full h-1.5 sm:h-2">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${pct}%` }}
-                      transition={{ duration: 0.6, delay: 0.4 }}
-                      className="h-1.5 sm:h-2 rounded-full bg-primary"
-                    />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </Card>
-      )}
+  {/* FABs */}
+
 
       {/* FABs - تحسين للموبايل */}
       {/* FABs - جنب بعض في الموبايل */}
