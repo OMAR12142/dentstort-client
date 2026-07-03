@@ -173,12 +173,12 @@ export default function AnalyticsPage() {
           <>
             {/* Download Dropdown */}
             {!isLoading && data && monthlyBreakdown.length > 0 && (
-              <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn btn-sm bg-primary/10 text-primary border-none hover:bg-primary/20 w-full sm:w-auto h-10 px-4">
+              <div className="dropdown dropdown-end w-full sm:w-auto">
+                <div tabIndex={0} role="button" className="btn btn-sm bg-primary/10 text-primary border-none hover:bg-primary/20 w-full sm:w-auto h-11 px-4 flex items-center justify-center gap-2 rounded-xl">
                   <Download size={16} />
-                  <span className="font-bold text-xs uppercase tracking-wider hidden sm:inline">Export Report</span>
+                  <span className="font-bold text-xs uppercase tracking-wider">Export Report</span>
                 </div>
-                <ul tabIndex={0} className="dropdown-content z-[100] menu p-2 shadow-xl bg-base-100 rounded-2xl w-48 mt-2 border border-neutral-light/30">
+                <ul tabIndex={0} className="dropdown-content z-[100] menu p-2 shadow-2xl bg-base-100 rounded-2xl w-full sm:w-56 mt-2 border border-slate-200 dark:border-base-content/10">
                   <li className="menu-title px-3 py-1">
                     <span className="text-[10px] font-black uppercase text-base-content/40 tracking-widest">Select Format</span>
                   </li>
@@ -201,72 +201,72 @@ export default function AnalyticsPage() {
                 </ul>
               </div>
             )}
-
-            {/* Multi-stage Filter Toolbar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-base-200/50 p-2 rounded-2xl border border-neutral-light/50 backdrop-blur-sm">
-              <div className="px-3 py-1.5 flex items-center gap-2 text-[10px] font-black uppercase text-base-content/40 tracking-widest sm:border-r border-neutral-light/30">
-                <Filter size={12} />
-                Range
-              </div>
-
-              <div className="flex flex-wrap gap-2 items-center">
-                {/* Primary Filter Type */}
-                <select
-                  value={filterType}
-                  onChange={(e) => setFilterType(e.target.value)}
-                  className="select select-sm select-ghost font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer bg-base-100/50"
-                >
-                  <option value="yearly">Fixed Period</option>
-                  <option value="all">All-Time</option>
-                  <option value="custom">Custom Range</option>
-                </select>
-
-                {/* Contextual Secondary Controls */}
-                {filterType === 'yearly' && (
-                  <div className="flex gap-1 animate-in slide-in-from-right-4 duration-300">
-                    <select
-                      value={selectedYear}
-                      onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-                      className="select select-sm bg-transparent border-0 font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer"
-                    >
-                      {yearOptions.map((year) => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
-                    <select
-                      value={selectedMonth}
-                      onChange={(e) => setSelectedMonth(parseInt(e.target.value, 10))}
-                      className="select select-sm bg-transparent border-0 font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer"
-                    >
-                      {MONTH_NAMES.map((month, idx) => (
-                        <option key={idx} value={idx + 1}>{month}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {filterType === 'custom' && (
-                  <div className="flex gap-2 items-center animate-in slide-in-from-right-4 duration-300">
-                    <input
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="input input-xs bg-base-100 border-neutral-light/30 font-bold uppercase text-[9px] w-28"
-                    />
-                    <span className="text-[10px] font-black opacity-30 text-base-content">to</span>
-                    <input
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="input input-xs bg-base-100 border-neutral-light/30 font-bold uppercase text-[9px] w-28"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
           </>
         }
       />
+
+      {/* Multi-stage Filter Toolbar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-base-200/50 p-2 rounded-2xl border border-neutral-light/50 backdrop-blur-sm w-full">
+        <div className="px-3 py-1.5 flex items-center gap-2 text-[10px] font-black uppercase text-base-content/40 tracking-widest sm:border-r border-neutral-light/30">
+          <Filter size={12} />
+          Range
+        </div>
+
+        <div className="flex flex-wrap gap-2 items-center">
+          {/* Primary Filter Type */}
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="select select-sm select-ghost font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer bg-base-100/50"
+          >
+            <option value="yearly">Fixed Period</option>
+            <option value="all">All-Time</option>
+            <option value="custom">Custom Range</option>
+          </select>
+
+          {/* Contextual Secondary Controls */}
+          {filterType === 'yearly' && (
+            <div className="flex gap-1 animate-in slide-in-from-right-4 duration-300">
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
+                className="select select-sm bg-transparent border-0 font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer"
+              >
+                {yearOptions.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(parseInt(e.target.value, 10))}
+                className="select select-sm bg-transparent border-0 font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer"
+              >
+                {MONTH_NAMES.map((month, idx) => (
+                  <option key={idx} value={idx + 1}>{month}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {filterType === 'custom' && (
+            <div className="flex gap-2 items-center animate-in slide-in-from-right-4 duration-300">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="input input-xs bg-base-100 border-neutral-light/30 font-bold uppercase text-[9px] w-28"
+              />
+              <span className="text-[10px] font-black opacity-30 text-base-content">to</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="input input-xs bg-base-100 border-neutral-light/30 font-bold uppercase text-[9px] w-28"
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
       {isLoading ? (
         <CardSkeleton count={3} />

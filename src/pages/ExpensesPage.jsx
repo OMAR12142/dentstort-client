@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useExpenseSummary, useCreateExpense, useUpdateExpense, useDeleteExpense, useExpenses } from '../hooks/useExpenses';
 import { useClinics } from '../hooks/useClinics';
+import MobileFAB from '../components/MobileFAB';
 import Card from '../components/Card';
 import SEO from '../components/common/SEO';
 
@@ -136,7 +137,7 @@ export default function ExpensesPage() {
         <div className="flex flex-wrap gap-2 items-center">
           <select
             value={timeframe}
-            onChange={(e) => { setTimeframe(e.target.value); setPage(1); }}
+            onChange={(e) => { setTimeframe(e.target.value); }}
             className="select select-sm font-black text-xs uppercase tracking-widest focus:ring-0 cursor-pointer bg-slate-100 hover:bg-slate-200 dark:bg-base-200 dark:hover:bg-base-300 transition-colors border-none"
           >
             {TIMEFRAME_OPTIONS.map((opt) => (
@@ -146,7 +147,7 @@ export default function ExpensesPage() {
 
           <select
             value={filterClinic}
-            onChange={(e) => { setFilterClinic(e.target.value); setPage(1); }}
+            onChange={(e) => { setFilterClinic(e.target.value); }}
             className="select select-sm font-bold text-xs focus:ring-0 cursor-pointer bg-slate-100 hover:bg-slate-200 dark:bg-base-200 dark:hover:bg-base-300 transition-colors border-none"
           >
             <option value="">All Clinics</option>
@@ -157,7 +158,7 @@ export default function ExpensesPage() {
 
           <select
             value={filterCategory}
-            onChange={(e) => { setFilterCategory(e.target.value); setPage(1); }}
+            onChange={(e) => { setFilterCategory(e.target.value); }}
             className="select select-sm font-bold text-xs focus:ring-0 cursor-pointer bg-slate-100 hover:bg-slate-200 dark:bg-base-200 dark:hover:bg-base-300 transition-colors border-none"
           >
             <option value="">All Categories</option>
@@ -357,15 +358,13 @@ export default function ExpensesPage() {
           </div>
         )}
       </AnimatePresence>
-      {/* ── Mobile FAB ── */}
-      <div className="sm:hidden fixed bottom-20 right-4 z-40">
-        <button
-          onClick={() => setAddModal(true)}
-          className="w-14 h-14 rounded-full bg-error text-white shadow-xl shadow-error/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
-        >
-          <Plus size={24} />
-        </button>
-      </div>
+
+      <MobileFAB 
+        icon={Plus} 
+        onClick={() => setAddModal(true)} 
+        label="Add Expense" 
+        colorClass="bg-error text-white shadow-error/20"
+      />
     </div>
   );
 }

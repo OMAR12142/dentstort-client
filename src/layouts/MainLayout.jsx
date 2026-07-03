@@ -8,6 +8,7 @@ import AnnouncementBanner from '../components/AnnouncementBanner';
 import { useAuthStore } from '../store/authStore';
 import CompleteProfileModal from '../components/CompleteProfileModal';
 import OnboardingTour from '../components/OnboardingTour';
+import BottomNav from '../components/BottomNav';
 
 export default function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -38,7 +39,7 @@ export default function MainLayout() {
         <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
         {/* Page Content Scrollable Area */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 relative">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 relative pb-20 lg:pb-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -58,6 +59,9 @@ export default function MainLayout() {
         open={!!showPhonePrompt}
         onClose={() => setHasDismissedPhonePrompt(true)}
       />
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

@@ -34,6 +34,7 @@ import Card from '../components/Card';
 import PatientModal from '../components/PatientModal';
 import PatientDetailsModal from '../components/PatientDetailsModal';
 import WhatsAppIcon from '../components/WhatsAppIcon';
+import MobileFAB from '../components/MobileFAB';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -599,6 +600,13 @@ export default function PatientsPage() {
         open={!!viewingPatient}
         onClose={() => setViewingPatient(null)}
         patient={viewingPatient}
+      />
+      
+      <MobileFAB 
+        icon={Plus} 
+        onClick={() => setShowAdd(true)} 
+        label="Add Patient" 
+        colorClass="bg-primary text-white shadow-primary/20"
       />
     </div>
   );

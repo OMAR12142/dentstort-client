@@ -418,33 +418,33 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.05 }}
-                className="flex items-center justify-between gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-base-100/50 hover:bg-base-100 transition-colors group"
+                className="flex flex-col gap-3 p-3 rounded-xl bg-base-100/50 hover:bg-base-100 transition-colors group border border-transparent hover:border-neutral-light/50"
               >
-                <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary shrink-0" />
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 mt-1.5 rounded-full bg-primary shrink-0" />
                   <div className="min-w-0 flex-1">
                     <Link to={`/patients/${apt.patient_id?._id}`} className="block hover:text-primary transition-colors">
-                      <p className="font-bold text-sm sm:text-[15px] text-base-content break-words leading-tight">
+                      <p className="font-bold text-[15px] text-base-content break-words leading-tight">
                         {apt.patient_id?.name || 'Unknown Patient'}
                       </p>
                     </Link>
-                    <p className="text-[10px] sm:text-xs text-base-content/50 flex items-center gap-1.5 mt-1 font-medium italic">
-                      <Clock size={11} className="shrink-0" />
+                    <p className="text-xs text-base-content/50 flex items-center gap-1.5 mt-1 font-medium">
+                      <Clock size={12} className="shrink-0 text-base-content/40" />
                       {apt.startTime} · {apt.clinic_id?.name || ''}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center justify-end gap-2 pl-5">
                   <button
                     onClick={() => {
                       setLogSessionPatientId(apt.patient_id?._id);
                       setLogSessionLinkedAptId(apt._id);
                       setLogSessionModalOpen(true);
                     }}
-                    className="btn btn-xs btn-primary gap-1"
+                    className="btn btn-sm bg-primary/10 hover:bg-primary/20 text-primary border-none flex-1 gap-2 shadow-sm"
                   >
-                    <Plus size={12} /> Log Session
+                    <Plus size={14} /> Log Session
                   </button>
 
                   {apt.patient_id?.phone && (
@@ -452,7 +452,7 @@ export default function DashboardPage() {
                       href={getWhatsAppLink(apt.patient_id.phone)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-base-content/30 hover:text-[#25D366] hover:bg-[#25D366]/10 rounded-xl transition-all duration-200 shrink-0 border border-transparent hover:border-[#25D366]/20"
+                      className="btn btn-sm btn-ghost hover:bg-[#25D366]/10 hover:text-[#25D366] text-base-content/30 shrink-0 px-2"
                       title="Chat on WhatsApp"
                       aria-label="Chat on WhatsApp"
                     >

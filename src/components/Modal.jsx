@@ -23,7 +23,7 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -35,11 +35,11 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
 
           {/* Panel */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            exit={{ opacity: 0, scale: 0.95, y: 50 }}
             transition={{ type: 'spring', duration: 0.35, bounce: 0.15 }}
-            className={`relative bg-base-200 rounded-lg shadow-none w-full ${widths[size]} max-h-[90vh] overflow-y-auto`}
+            className={`relative bg-base-200 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full ${widths[size]} max-h-[90vh] sm:max-h-[85vh] overflow-y-auto`}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-light">

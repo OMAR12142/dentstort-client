@@ -690,17 +690,17 @@ function AddCaseModal({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-[#191919]/60 backdrop-blur-sm cursor-pointer"
       />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        initial={{ opacity: 0, scale: 0.95, y: 50 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        className="relative bg-white dark:bg-base-100 rounded-3xl shadow-2xl max-w-2xl w-full z-10 border border-slate-200 dark:border-base-content/10 max-h-[90vh] flex flex-col overflow-hidden"
+        exit={{ opacity: 0, scale: 0.95, y: 50 }}
+        className="relative bg-white dark:bg-base-100 rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-2xl w-full z-10 border border-slate-200 dark:border-base-content/10 max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden"
       >
         <div className="p-6 border-b border-slate-200 dark:border-base-content/10 bg-gray-50/30 dark:bg-base-200/30">
           <div className="flex items-center justify-between mb-4">
@@ -1016,17 +1016,17 @@ function EditCaseModal({ caseData, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-[#191919]/60 backdrop-blur-sm cursor-pointer"
       />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        initial={{ opacity: 0, scale: 0.95, y: 50 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        className="relative bg-white dark:bg-base-100 rounded-3xl shadow-2xl max-w-2xl w-full z-10 border border-slate-200 dark:border-base-content/10 max-h-[90vh] flex flex-col overflow-hidden"
+        exit={{ opacity: 0, scale: 0.95, y: 50 }}
+        className="relative bg-white dark:bg-base-100 rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-2xl w-full z-10 border border-slate-200 dark:border-base-content/10 max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden"
       >
         <div className="p-6 border-b border-slate-200 dark:border-base-content/10 bg-gray-50/30 dark:bg-base-200/30">
           <div className="flex items-center justify-between mb-4">
