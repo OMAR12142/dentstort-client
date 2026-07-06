@@ -22,3 +22,6 @@ export const updatePatientApi = ({ id, data }) =>
 
 export const deletePatientApi = (id) =>
   api.delete(`/api/patients/${id}`).then((r) => r.data);
+
+export const bulkImportPatientsApi = (patientsArray) =>
+  api.post('/api/patients/bulk', patientsArray).then((r) => r.data);

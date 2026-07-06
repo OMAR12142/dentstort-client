@@ -5,6 +5,7 @@ import {
   createPatientApi,
   updatePatientApi,
   deletePatientApi,
+  bulkImportPatientsApi,
 } from '../api/patients';
 
 export const usePatients = ({ page = 1, limit = 10, clinic_id = '', search = '', status = '', sortBy = '', dateFrom = '', dateTo = '' } = {}) =>
@@ -49,5 +50,15 @@ export const useDeletePatient = () => {
       alert(error.response?.data?.message || error.message || 'Failed to delete patient');
       console.error('Delete Patient Error:', error);
     }
+  });
+};
+
+export const useBulkImportPatients = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: bulkImportPatientsApi,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['patients'] });
+    },
   });
 };

@@ -5,7 +5,7 @@ import {
   Users, BookOpenText, Building2, MessageCircle, BarChart3, CalendarClock,
   Mail, ArrowRight, Menu, X, Shield, Zap, TrendingUp, CheckCircle2,
   Stethoscope, ImageIcon, ListTodo, Heart, Globe, Sparkles, Smartphone,
-  DollarSign, Lock, SmartphoneIcon
+  DollarSign, Lock, SmartphoneIcon, Download
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
@@ -15,6 +15,8 @@ import PublicNavbar from '../components/common/PublicNavbar';
 import PublicFooter from '../components/common/PublicFooter';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import { usePublicPortfolio } from '../hooks/usePortfolio';
+import IosInstallModal from '../components/IosInstallModal';
+import toast from 'react-hot-toast';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -23,6 +25,8 @@ export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showStickyBadge, setShowStickyBadge] = useState(false);
   const { data: demoPortfolio } = usePublicPortfolio('dr-mohamed-farid');
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showIosGuide, setShowIosGuide] = useState(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -45,6 +49,39 @@ export default function LandingPage() {
       if (!hasDarkClass) html.classList.remove('dark');
     };
   }, []);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallPWA = async () => {
+    if (!deferredPrompt) {
+      // Check if user is on iOS
+      const isIos = /ipad|iphone|ipod/.test(navigator.userAgent.toLowerCase()) && !window.MSStream;
+      if (isIos) {
+        setShowIosGuide(true);
+      } else {
+        toast('App is already installed, or your browser requires manual installation (Share > Add to Home Screen).', {
+          icon: '📱',
+        });
+      }
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   // Structured Data for SEO
   const jsonLd = {
@@ -209,12 +246,13 @@ export default function LandingPage() {
                 >
                   {token ? 'Go to Dashboard' : 'Start Your Dental Story'}
                 </button>
-                <a
-                  href="#features"
-                  className="px-8 py-3.5 sm:py-4 bg-[#252525] border border-white/10 text-white text-base sm:text-lg font-black rounded-2xl hover:bg-white/5 transition-all w-full sm:w-auto text-center"
+                <button
+                  onClick={handleInstallPWA}
+                  className="px-8 py-3.5 sm:py-4 bg-[#252525] border border-white/10 text-white text-base sm:text-lg font-black rounded-2xl hover:bg-white/5 transition-all w-full sm:w-auto text-center flex items-center justify-center gap-2"
                 >
-                  Explore Features
-                </a>
+                  <Download size={18} />
+                  Download Now
+                </button>
               </motion.div>
 
               {/* Platform Availability */}
@@ -666,6 +704,8 @@ export default function LandingPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* IOS Install Guide Modal */}
+      <IosInstallModal open={showIosGuide} onClose={() => setShowIosGuide(false)} />
     </div>
   );
 }

@@ -35,6 +35,7 @@ import PatientModal from '../components/PatientModal';
 import PatientDetailsModal from '../components/PatientDetailsModal';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import MobileFAB from '../components/MobileFAB';
+import BulkImportModal from '../components/BulkImportModal';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -50,6 +51,7 @@ export default function PatientsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
   const [viewingPatient, setViewingPatient] = useState(null);
   const [viewMode, setViewMode] = useState('card');
@@ -255,13 +257,22 @@ export default function PatientsPage() {
               </button>
             </div>
 
-            <button
-              onClick={() => setShowAdd(true)}
-              className="btn btn-primary text-white border-0 gap-2 rounded-lg px-6 w-full sm:w-auto shadow-sm font-semibold"
-            >
-              <Plus size={20} />
-              <span>Add Patient</span>
-            </button>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => setShowImportModal(true)}
+                className="btn bg-base-100 text-base-content border-neutral-light/50 hover:bg-base-200 gap-2 rounded-lg px-4 shadow-sm font-semibold flex-1 sm:flex-none"
+              >
+                <FileText size={18} />
+                <span className="hidden sm:inline">Import</span>
+              </button>
+              <button
+                onClick={() => setShowAdd(true)}
+                className="btn btn-primary text-white border-0 gap-2 rounded-lg px-6 flex-1 sm:flex-none shadow-sm font-semibold"
+              >
+                <Plus size={20} />
+                <span>Add Patient</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -588,6 +599,11 @@ export default function PatientsPage() {
         open={showAdd}
         onClose={() => setShowAdd(false)}
         patientToEdit={null}
+      />
+      {/* Bulk Import Modal */}
+      <BulkImportModal 
+        open={showImportModal} 
+        onClose={() => setShowImportModal(false)} 
       />
       {/* Edit Patient */}
       <PatientModal
