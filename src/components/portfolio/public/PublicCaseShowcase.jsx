@@ -1,9 +1,11 @@
-import React from 'react';
-import { Briefcase } from 'lucide-react';
+import React, { useState } from 'react';
+import { Briefcase, ArrowLeftRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import PublicCaseCard from './PublicCaseCard';
 
 /**
- * PublicCaseShowcase — Manages the treatment filters, cases grid, and pagination.
+ * PublicCaseShowcase — Manages treatment filters, Before & After quick filter,
+ * cases grid, and pagination with natural LTR/RTL ordering.
  */
 export default function PublicCaseShowcase({
   cases,
@@ -13,66 +15,133 @@ export default function PublicCaseShowcase({
   treatmentTypes,
   pagination,
   page,
-  onPageChange
+  onPageChange,
 }) {
-  const filteredCases = cases.filter(c => {
-    if (selectedFilter === 'All') return true;
-    if (Array.isArray(c.treatmentType)) {
-      return c.treatmentType.includes(selectedFilter);
+  const { t } = useTranslation('portfolio');
+  const [beforeAfterOnly, setBeforeAfterOnly] = useState(false);
+
+  // Always guarantee 'All' is first in reading order (LTR & RTL)
+  const orderedTreatmentTypes = [
+    'All',
+    ...treatmentTypes.filter((type) => type && type !== 'All'),
+  ];
+
+  const filteredCases = (cases || []).filter((c) => {
+    const matchesTreatment =
+      selectedFilter === 'All'
+        ? true
+        : Array.isArray(c.treatmentType)
+          ? c.treatmentType.includes(selectedFilter)
+          : c.treatmentType === selectedFilter;
+
+    if (!matchesTreatment) return false;
+
+    if (beforeAfterOnly) {
+      return (
+        Boolean(c.beforeImage) &&
+        Boolean(c.afterImage) &&
+        c.beforeImage !== c.afterImage
+      );
     }
-    return c.treatmentType === selectedFilter;
+
+    return true;
   });
+
   const totalItems = pagination?.totalItems || 0;
   const totalPages = pagination?.totalPages || 1;
 
+  const handleResetFilters = () => {
+    setBeforeAfterOnly(false);
+    setSelectedFilter('All');
+  };
+
   return (
-    <div id="cases-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4 sm:py-12 border-t border-slate-200 dark:border-base-content/10">
+    <div id="cases-section" className="pt-1 pb-4">
       <section>
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between mb-10 gap-4">
-          <div className="space-y-1">
-            <h2 className="text-3xl font-bold text-base-content tracking-tight">Case Showcase</h2>
-            <p className="text-sm text-base-content/60 dark:text-gray-400 font-medium italic">Documented journey</p>
+        {/* ── Compact Section Header Bar ── */}
+        <header className="flex flex-wrap items-end justify-between gap-3 pb-4 mb-4 border-b border-neutral-light">
+          <div className="space-y-0.5">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-base-content tracking-tight">
+              {t('public.caseShowcase')}
+            </h2>
+            <p className="text-xs sm:text-sm text-base-content/60 font-medium">
+              {t('public.documentedJourney')}
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-bold rounded-full uppercase border border-primary/20">
-              {totalItems} Total Cases
+          <div className="flex items-center gap-2.5">
+            <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20">
+              {t('public.totalCases', { count: totalItems })}
             </span>
             {totalPages > 1 && (
-              <span className="text-[10px] font-bold text-base-content/60 tracking-wider uppercase">
-                Page {page} of {totalPages}
+              <span className="text-xs font-bold text-base-content/60">
+                {t('public.pageOf', { page, total: totalPages })}
               </span>
             )}
           </div>
         </header>
 
-        {/* ── Treatment Filter Bar ── */}
-        <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-3 mb-10 sm:mb-12">
-          {treatmentTypes.map((type) => (
-            <button
-              key={type}
-              onClick={() => setSelectedFilter(type)}
-              className={`flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 pb-1 pt-1 sm:gap-2.5 px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-bold transition-all border ${selectedFilter === type
-                ? 'bg-primary text-white border-primary shadow-xl shadow-primary/20'
-                : 'bg-white dark:bg-base-100 text-base-content/60 border-slate-200 dark:border-base-content/10 hover:border-primary'
+        {/* ── Treatment Filter Bar ('All' first + Before & After Quick Filter) ── */}
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-5">
+          {orderedTreatmentTypes.map((type) => {
+            const isActive = selectedFilter === type;
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setSelectedFilter(type)}
+                className={`px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                  isActive
+                    ? 'bg-primary text-primary-content border-primary shadow-sm shadow-primary/20'
+                    : 'bg-base-200 text-base-content/75 border-neutral-light hover:border-primary/50 hover:text-primary'
                 }`}
-            >
-              <span className="truncate w-full text-center sm:text-left">{type}</span>
-            </button>
-          ))}
+              >
+                {type === 'All' ? t('public.all') : type}
+              </button>
+            );
+          })}
+
+          {/* Dedicated Before & After Quick Filter Toggle */}
+          <button
+            type="button"
+            onClick={() => {
+              setBeforeAfterOnly((prev) => !prev);
+              if (page !== 1) onPageChange(1);
+            }}
+            aria-pressed={beforeAfterOnly}
+            className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+              beforeAfterOnly
+                ? 'bg-amber-500 text-white border-amber-500 shadow-sm shadow-amber-500/20'
+                : 'bg-base-200 text-base-content/80 border-neutral-light hover:border-amber-500/50 hover:text-amber-600 dark:hover:text-amber-400'
+            }`}
+          >
+            <ArrowLeftRight size={13} />
+            <span>{t('public.beforeAfter')}</span>
+          </button>
         </div>
 
         {filteredCases.length === 0 ? (
-          <div className="text-center py-24 bg-white dark:bg-base-100 rounded-3xl border-2 border-dashed border-slate-200 dark:border-base-content/10">
-            <Briefcase size={48} className="mx-auto text-base-content/20 mb-6" />
-            <p className="font-bold text-base-content/40 uppercase text-sm tracking-widest">
-              No {selectedFilter !== 'All' ? selectedFilter : ''} cases available
+          <div className="text-center py-14 px-4 bg-base-200 rounded-2xl border-2 border-dashed border-neutral-light space-y-3">
+            <Briefcase size={38} className="mx-auto text-base-content/25" />
+            <p className="font-bold text-base-content/60 text-sm">
+              {selectedFilter !== 'All' || beforeAfterOnly
+                ? t('public.noMatchingCases')
+                : t('public.noCases')}
             </p>
+            {(selectedFilter !== 'All' || beforeAfterOnly) && (
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-primary text-primary-content hover:bg-primary/90 transition-colors cursor-pointer"
+              >
+                {t('public.showAllCases')}
+              </button>
+            )}
           </div>
         ) : (
-          <div className="space-y-16">
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-              {filteredCases.map((c, i) => (
-                <PublicCaseCard key={c._id} caseData={c} slug={slug} i={i} />
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredCases.map((c) => (
+                <PublicCaseCard key={c._id} caseData={c} slug={slug} />
               ))}
             </div>
 
@@ -82,7 +151,6 @@ export default function PublicCaseShowcase({
                 onPageChange(newPage);
                 const el = document.getElementById('cases-section');
                 if (el) {
-                  // Scroll slightly above the section for better UX
                   const y = el.getBoundingClientRect().top + window.scrollY - 100;
                   window.scrollTo({ top: y, behavior: 'smooth' });
                 }
@@ -105,27 +173,29 @@ export default function PublicCaseShowcase({
               };
 
               return (
-                <div className="flex flex-wrap items-center justify-center gap-2 pt-8 pb-4 sm:pb-12">
+                <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-4 pb-4">
                   <button
+                    type="button"
                     disabled={page === 1}
                     onClick={() => handlePageChange(page - 1)}
-                    className="px-4 sm:px-6 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 dark:border-base-content/10 hover:bg-white dark:hover:bg-[#252525] disabled:opacity-30 disabled:cursor-not-allowed text-base-content"
+                    className="px-3.5 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all bg-base-200 border border-neutral-light hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed text-base-content cursor-pointer"
                   >
-                    Prev
+                    {t('public.prev')}
                   </button>
 
                   <div className="flex items-center gap-1 flex-wrap justify-center">
                     {getPageNumbers().map((p, i) => (
                       <button
                         key={i}
+                        type="button"
                         disabled={p === '...'}
                         onClick={() => p !== '...' && handlePageChange(p)}
-                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl text-xs font-bold transition-all ${
+                        className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-xs font-bold transition-all ${
                           p === '...'
                             ? 'text-base-content/60 cursor-default'
                             : page === p
-                            ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                            : 'text-base-content/60 hover:bg-white dark:hover:bg-[#252525]'
+                              ? 'bg-primary text-primary-content shadow-md shadow-primary/20'
+                              : 'text-base-content/70 hover:bg-base-200 cursor-pointer'
                         }`}
                       >
                         {p}
@@ -134,11 +204,12 @@ export default function PublicCaseShowcase({
                   </div>
 
                   <button
+                    type="button"
                     disabled={page === totalPages}
                     onClick={() => handlePageChange(page + 1)}
-                    className="px-4 sm:px-6 py-2 rounded-xl text-xs font-bold transition-all bg-white dark:bg-base-100 border border-slate-200 dark:border-base-content/10 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed text-base-content"
+                    className="px-3.5 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all bg-base-200 border border-neutral-light hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed text-base-content cursor-pointer"
                   >
-                    Next
+                    {t('public.next')}
                   </button>
                 </div>
               );

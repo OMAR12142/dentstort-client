@@ -1,0 +1,96 @@
+{
+  "title": "Appointments",
+  "subtitle": "Tap any day to see details · Your scheduling overview",
+  "allClinics": "All Clinics",
+  "addAppointment": "Add Appointment",
+  "editAppointment": "Edit Appointment",
+  "bookAppointment": "Book Appointment",
+  "noAppointments": "No appointments found",
+  "todayAppointments": "Today's Appointments",
+  "upcomingAppointments": "Upcoming Appointments",
+  "actions": {
+    "newAppointment": "New Appointment",
+    "searchPatients": "Search patients...",
+    "addNewPatient": "Add new patient",
+    "createAndSelect": "Create & Select",
+    "selectClinic": "Select clinic"
+  },
+  "legend": {
+    "future": "Future Appointments",
+    "today": "Today"
+  },
+  "fields": {
+    "patient": "Patient",
+    "newPatient": "New Patient",
+    "patientNameRequired": "Patient name *",
+    "phoneOptional": "Phone (optional)",
+    "clinic": "Clinic",
+    "date": "Date",
+    "start": "Start",
+    "end": "End",
+    "type": "Type",
+    "status": "Status",
+    "notes": "Notes",
+    "preVisitNotes": "Pre-visit notes (optional)"
+  },
+  "messages": {
+    "noPatientsFound": "No patients found"
+  },
+  "dayDetail": {
+    "title": "Appointments for",
+    "noAppointments": "No appointments on this day",
+    "backToCalendar": "Back to Calendar"
+  },
+  "form": {
+    "patient": "Patient",
+    "selectPatient": "Select a patient",
+    "searchPatient": "Search patient...",
+    "clinic": "Clinic",
+    "selectClinic": "Select a clinic",
+    "date": "Date",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "type": "Appointment Type",
+    "status": "Status",
+    "notes": "Notes",
+    "notesPlaceholder": "Add notes about this appointment...",
+    "submit": "Create Appointment",
+    "update": "Update Appointment",
+    "submitting": "Creating...",
+    "updating": "Updating..."
+  },
+  "types": {
+    "consultation": "Consultation",
+    "follow-up": "Follow-up",
+    "procedure": "Procedure",
+    "emergency": "Emergency",
+    "other": "Other"
+  },
+  "statuses": {
+    "scheduled": "Scheduled",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "no-show": "No Show"
+  },
+  "delete": {
+    "title": "Delete Appointment",
+    "confirm": "Are you sure you want to delete this appointment?",
+    "success": "Appointment deleted successfully"
+  },
+  "toast": {
+    "created": "Appointment created successfully",
+    "updated": "Appointment updated successfully",
+    "deleted": "Appointment deleted successfully",
+    "statusUpdated": "Appointment status updated",
+    "createError": "Failed to create appointment",
+    "updateError": "Failed to update appointment"
+  },
+  "calendar": {
+    "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "list": "List"
+  }
+}

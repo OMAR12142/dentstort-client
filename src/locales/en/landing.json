@@ -1,0 +1,127 @@
+{
+  "seo": {
+    "title": "Management Software for Dentists",
+    "description": "The all-in-one SaaS platform for modern dentists. Manage patient records, clinical sessions, and earnings with ease."
+  },
+  "hero": {
+    "badge": "Helping 100+ Dentists to Grow",
+    "titlePrefix": "Your Entire Dental Story,",
+    "titleSuffix": "In One Place.",
+    "subtitle": "DentStory is the all-in-one clinical SaaS designed for Dentists. Manage patients, analyze revenue, and showcase your portfolio.",
+    "ctaDashboard": "Go to Dashboard",
+    "ctaRegister": "Start Your Dental Story",
+    "downloadApp": "Download Now",
+    "webApp": "Web App",
+    "soonGooglePlay": "Soon on Google Play",
+    "installPwaToast": "App is already installed, or your browser requires manual installation (Share > Add to Home Screen).",
+    "preview": {
+      "monthlyRevenue": "Monthly Revenue",
+      "revenueGrowth": "+12.5% vs last month",
+      "activePatients": "Active Patients",
+      "patientsGrowth": "+45 new this month",
+      "todaysSessions": "Today's Sessions",
+      "viewAll": "View All",
+      "statusInProgress": "In Progress",
+      "statusCompleted": "Completed",
+      "statusWaiting": "Waiting",
+      "opImplants": "Dental Implants",
+      "opOrtho": "Orthodontics",
+      "opRootCanal": "Root Canal",
+      "patientAhmed": "Ahmed Hassan",
+      "patientSara": "Sara Mohamed",
+      "patientOmar": "Omar Ali",
+      "installBadgeTitle": "Install App",
+      "installBadgeSubtitle": "Available on iOS & Android"
+    }
+  },
+  "howItWorks": {
+    "badge": "How it works",
+    "title": "See DentStory",
+    "titleGradient": "in Action",
+    "subtitle": "Watch this quick demo to see how easy it is to manage your clinics, patients, portfolio, and financial records all in one place.",
+    "videoTitle": "DentStory Demo Video"
+  },
+  "portfolioShowcase": {
+    "badge": "Public Doctor Portfolio",
+    "titleLine1": "Your Clinical Identity,",
+    "titleLine2": "Beautifully Showcased.",
+    "subtitle": "Turn your everyday sessions into a public professional storefront. DentStory automatically builds a beautiful, SEO-optimized portfolio from your clinical records to share with patients and peers.",
+    "feature1": "One-click for case publishing",
+    "feature2": "Built-in Before & After galleries",
+    "feature3": "Shareable custom portfolio link",
+    "ctaViewLive": "View Live Example",
+    "doctorCardBadge": "One of doctors portfolio",
+    "defaultDoctorName": "Dr. Mohamed Farid",
+    "defaultDoctorService": "Implants & Esthetics",
+    "casesLabel": "Cases",
+    "expLabel": "Exp."
+  },
+  "features": {
+    "title": "DentStory features.",
+    "subtitle": "Every feature in DentStory is designed to solve a friction point in the surgical and clinical workflow. Zero fluff, maximum performance.",
+    "patientDirectory": {
+      "title": "Smart Patient Directory",
+      "desc": "Centralized patient records with medical alerts, insurance tracking, and instant search. Your entire practice, organized.",
+      "cat": "Clinical Core"
+    },
+    "procedureLogging": {
+      "title": "Session & Procedure Logging",
+      "desc": "Log treatment categories, clinical notes, and session costs in seconds. No more messy notebooks or lost records.",
+      "cat": "Clinical Core"
+    },
+    "mediaLibrary": {
+      "title": "Clinical Media Library",
+      "desc": "Securely upload X-rays and clinical photos directly to patient sessions. Build a visual timeline of every patient case.",
+      "cat": "Clinical Core"
+    },
+    "portfolioGen": {
+      "title": "Generate your Portfolio",
+      "desc": "Instantly generate a public professional portfolio. Showcase your best clinical results to patients and medical partners, and easily share it with anyone as your CV.",
+      "cat": "Branding"
+    },
+    "revenueAnalytics": {
+      "title": "Revenue Analytics",
+      "desc": "Visualize your monthly earnings, patient growth, and top treatments with interactive financial dashboards.",
+      "cat": "Business"
+    },
+    "multiClinic": {
+      "title": "Multi-Clinic Switching",
+      "desc": "Manage multiple clinics with unique commission and independent revenue tracking in one workspace.",
+      "cat": "Business"
+    },
+    "whatsappSync": {
+      "title": "WhatsApp Quick-Sync",
+      "desc": "Directly message patients from their card. Pre-fill follow-up notes and appointment reminders with one tap.",
+      "cat": "Efficiency"
+    }
+  },
+  "pricing": {
+    "badge": "Our Commitment",
+    "title": "Free. \nfor Early Users. \nJoin Now..",
+    "subtitle": "DentStory is built by a dentist for the surgical family. We don't believe in limits or high access fees for critical clinical data.",
+    "noHiddenFees": "0 Hidden Fees • $0 Access Cost",
+    "whatsIncluded": "What's included?",
+    "f1": "Unlimited patients and clinics",
+    "f2": "Full clinical session history",
+    "f3": "Secure media & X-ray storage",
+    "f4": "Personal Clinical Portfolio page",
+    "f5": "Finance & Revenue dashboards",
+    "f6": "Smart clinical Task manager",
+    "f7": "Direct WhatsApp messaging",
+    "f8": "PWA Mobile Install support",
+    "f9": "Dark/Light mode",
+    "ctaStart": "Start Your Dental Story",
+    "quickNote": "Takes 30 seconds • No Card needed"
+  },
+  "finalMission": {
+    "title": "Ready to take your career to the next level?",
+    "subtitle": "Join the clinical family today. Streamline your sessions, track your growth, and showcase your expertise in one beautiful workspace.",
+    "ctaGetStarted": "Get Started for Free",
+    "supportTitle": "Support.",
+    "supportSubtitle": "Have feedback, need advice, or ran into an issue? Reach out to us.",
+    "whatsapp": "WhatsApp",
+    "gmail": "Gmail",
+    "stickyPwaTitle": "Install App",
+    "stickyPwaSubtitle": "Tap \"Add to Home Screen\" in browser"
+  }
+}

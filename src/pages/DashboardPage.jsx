@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
   DollarSign,
@@ -33,16 +34,12 @@ import PatientModal from '../components/PatientModal';
 import LogSessionModal from '../components/LogSessionModal';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 
-const timeframeOptions = [
-  { value: 'monthly', label: 'This Month' },
-  { value: 'yearly', label: 'This Year' },
-  { value: 'all', label: 'All Time' },
+// Timeframe options — labels resolved at render time via t()
+const timeframeKeys = [
+  { value: 'monthly', labelKey: 'timeframe.thisMonth' },
+  { value: 'yearly', labelKey: 'timeframe.thisYear' },
+  { value: 'all', labelKey: 'timeframe.allTime' },
 ];
-
-const getTimeframeLabel = (timeframe) => {
-  const option = timeframeOptions.find((opt) => opt.value === timeframe);
-  return option?.label || 'This Month';
-};
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -56,6 +53,8 @@ const formatTime = (timeStr) => {
 };
 
 export default function DashboardPage() {
+  const { t, i18n } = useTranslation('dashboard');
+  const isRtl = i18n.language === 'ar';
   const [timeframe, setTimeframe] = useState('monthly');
   const { data: stats, isLoading: loadStats, isFetching: isFetchingStats, isError: isErrorStats, error: errorStats, refetch: refetchStats } = useDashboardStats(timeframe);
   const { data: patientsData, isLoading: loadP, isError: isErrorP, error: errorP, refetch: refetchP } = usePatients({ page: 1, limit: 5 });
@@ -64,9 +63,14 @@ export default function DashboardPage() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) return t('greeting', 'Good Morning') + ' ☀️';
+    if (hour < 18) return t('greeting', 'Good Morning') + ' 🌤️';
+    return t('greeting', 'Good Morning') + ' 🌙';
+  };
+
+  const getTimeframeLabel = (tf) => {
+    const option = timeframeKeys.find((opt) => opt.value === tf);
+    return option ? t(option.labelKey) : t('timeframe.thisMonth');
   };
   const { data: clinicsData, isLoading: loadC, isError: isErrorC, refetch: refetchC } = useClinics();
   const [showAddPatient, setShowAddPatient] = useState(false);
@@ -158,16 +162,16 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500">
       <PageHeader
-        title={`${getGreeting()}, Doctor`}
+        title={`${getGreeting()}`}
         subtitle={
           <>
-            Here's what's happening {timeframe === 'all' ? 'across all time' : `this ${timeframe === 'monthly' ? 'month' : 'year'}.`}
+            {t('title', "Here's what's happening")}
             {isFetchingStats && <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 rounded-full bg-primary" />}
           </>
         }
         actionComponent={
           <div className="join bg-base-100 p-1 rounded-xl border border-neutral-light shadow-sm w-full sm:w-auto">
-            {timeframeOptions.map((option) => (
+            {timeframeKeys.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setTimeframe(option.value)}
@@ -178,7 +182,7 @@ export default function DashboardPage() {
                     : 'btn-ghost text-base-content/60 hover:text-base-content hover:bg-base-200 disabled:opacity-50'
                 }`}
               >
-                {option.label}
+                {t(option.labelKey)}
               </button>
             ))}
           </div>

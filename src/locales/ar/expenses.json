@@ -1,0 +1,122 @@
+{
+  "title": "المصروفات",
+  "recordsTitle": "سجل المصروفات",
+  "recordsSubtitle": "سجل كامل بجميع مصروفاتك، مرتب حسب الشهر.",
+  "allCategories": "كل الفئات",
+  "addExpense": "إضافة مصروف",
+  "editExpense": "تعديل المصروف",
+  "noExpenses": "لا توجد مصروفات",
+  "noExpensesDesc": "ابدأ بتتبع مصروفات عيادتك",
+  "summary": {
+    "title": "ملخص المصروفات",
+    "totalExpenses": "إجمالي المصروفات",
+    "byCategory": "حسب الفئة",
+    "byClinic": "حسب العيادة",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي",
+    "thisYear": "هذه السنة"
+  },
+  "form": {
+    "clinic": "العيادة",
+    "selectClinic": "اختر العيادة",
+    "category": "الفئة",
+    "selectCategory": "اختر الفئة",
+    "amount": "المبلغ",
+    "amountPlaceholder": "0",
+    "description": "الوصف",
+    "descriptionPlaceholder": "لأي شيء كان هذا المصروف؟",
+    "optional": "(اختياري)",
+    "date": "التاريخ",
+    "submit": "إضافة مصروف",
+    "update": "تحديث المصروف",
+    "submitting": "جاري الإضافة...",
+    "updating": "جاري التحديث..."
+  },
+  "categories": {
+    "Material": "مواد",
+    "Salaries": "رواتب",
+    "Lab": "معمل",
+    "Other": "أخرى"
+  },
+  "fixedSalary": {
+    "title": "الرواتب الثابتة",
+    "addSalary": "إضافة راتب ثابت",
+    "editSalary": "تعديل الراتب الثابت",
+    "clinic": "العيادة",
+    "amount": "مبلغ الراتب",
+    "salaryDay": "يوم الراتب",
+    "salaryDayHelp": "يوم من الشهر (1-28)",
+    "noSalaries": "لا توجد رواتب ثابتة",
+    "toast": {
+      "created": "تم إنشاء الراتب الثابت بنجاح",
+      "updated": "تم تحديث الراتب الثابت بنجاح",
+      "deleted": "تم حذف الراتب الثابت بنجاح"
+    }
+  },
+  "delete": {
+    "title": "حذف المصروف",
+    "confirm": "هل أنت متأكد من حذف هذا المصروف؟",
+    "success": "تم حذف المصروف بنجاح"
+  },
+  "toast": {
+    "created": "تم إضافة المصروف بنجاح",
+    "updated": "تم تحديث المصروف بنجاح",
+    "deleted": "تم حذف المصروف بنجاح",
+    "createError": "فشل في إضافة المصروف",
+    "updateError": "فشل في تحديث المصروف"
+  },
+  "table": {
+    "date": "التاريخ",
+    "category": "الفئة",
+    "description": "الوصف",
+    "amount": "المبلغ",
+    "clinic": "العيادة",
+    "actions": "الإجراءات"
+  },
+  "stats": {
+    "records": "سجلات",
+    "months": "الأشهر",
+    "showing": "عرض {{shown}} من {{total}}"
+  },
+  "search": {
+    "placeholder": "بحث في المصروفات...",
+    "noMatch": "لا توجد سجلات مطابقة",
+    "noMatchDesc": "لم نتمكن من إيجاد مصروفات تطابق \"{{query}}\". تحقق من الفلاتير أو مصطلح البحث.",
+    "noRecords": "لا توجد سجلات",
+    "noRecordsDesc": "سجل المصروفات فارغ حالياً. ابدأ بتسجيل المصروفات لتراها منظمة هنا.",
+    "addFirst": "أضف أول مصروف"
+  },
+  "pagination": {
+    "prev": "السابق",
+    "next": "التالي"
+  },
+  "record": "سجل",
+  "records": "سجلات",
+  "filters": "عوامل التصفية",
+  "recentExpenses": "أحدث المصروفات",
+  "recentTotal": "{{count}} إجمالي",
+  "emptyState": {
+    "title": "تتبع أثرك المالي",
+    "desc": "قم بتسجيل موادك، رواتبك، وتكاليف التشغيل للحصول على هوامش ربح دقيقة ورؤى مالية.",
+    "logFirst": "سجل أول مصروف"
+  },
+  "timeframe": {
+    "monthly": "هذا الشهر",
+    "yearly": "هذه السنة",
+    "all": "كل الوقت"
+  },
+  "filter": {
+    "allClinics": "كل العيادات",
+    "allCategories": "كل الفئات"
+  },
+  "actions": {
+    "viewRecords": "عرض جميع السجلات",
+    "addExpense": "إضافة مصروف",
+    "removeExpense": "حذف المصروف؟",
+    "edit": "تعديل",
+    "delete": "حذف"
+  },
+  "messages": {
+    "removeWarning": "ستتم إزالة هذا المصروف من سجلاتك."
+  }
+}

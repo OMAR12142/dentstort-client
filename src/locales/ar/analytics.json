@@ -1,0 +1,139 @@
+{
+  "title": "الأرباح والتحليلات",
+  "careerTitle": "تحليلات المسيرة المهنية",
+  "months": {
+    "1": "يناير",
+    "2": "فبراير",
+    "3": "مارس",
+    "4": "أبريل",
+    "5": "مايو",
+    "6": "يونيو",
+    "7": "يوليو",
+    "8": "أغسطس",
+    "9": "سبتمبر",
+    "10": "أكتوبر",
+    "11": "نوفمبر",
+    "12": "ديسمبر"
+  },
+  "labels": {
+    "viewing": "عرض:",
+    "range": "النطاق",
+    "to": "إلى"
+  },
+  "timeframes": {
+    "fixedPeriod": "فترة محددة",
+    "allTime": "كل الأوقات",
+    "customRange": "نطاق مخصص",
+    "fullCareer": "كامل المسيرة",
+    "annualView": "عرض سنوي"
+  },
+  "stats": {
+    "grossEarnings": "إجمالي الأرباح",
+    "totalEarnings": "إجمالي الأرباح",
+    "totalSessions": "إجمالي الجلسات",
+    "totalExpenses": "إجمالي المصروفات",
+    "netProfit": "صافي الربح"
+  },
+  "subtext": {
+    "grossEarnings": "العمولات + الرواتب الثابتة",
+    "totalSessions": "جلسات المرضى الموثقة",
+    "totalExpenses": "خامات + رواتب + أخرى",
+    "netProfit": "الأرباح − المصروفات",
+    "fixed": "ثابت",
+    "expenses": "مصروفات",
+    "sessionsRecorded": "جلسات مسجلة",
+    "sessionsCount": "{{count}} جلسة"
+  },
+  "sections": {
+    "growth": "النمو",
+    "rangeMetrics": "مؤشرات النطاق",
+    "clinic": "العيادة",
+    "earnings": "الأرباح",
+    "cases": "حالة"
+  },
+  "filters": {
+    "clinic": "العيادة",
+    "allClinics": "كل العيادات",
+    "timeframe": "الفترة الزمنية",
+    "insurance": "التأمين",
+    "both": "الكل",
+    "commissionsOnly": "العمولات فقط",
+    "fixedSalaryOnly": "الراتب الثابت فقط",
+    "expensesOnly": "المصروفات فقط"
+  },
+  "actions": {
+    "exportReport": "تصدير تقرير",
+    "selectFormat": "اختر الصيغة"
+  },
+  "emptyState": {
+    "noActivity": "لم يتم رصد أي نشاط في هذه الفترة",
+    "noEarnings": "لا توجد بيانات أرباح لهذه الفترة",
+    "noTreatments": "لا توجد علاجات مسجلة لهذه الفترة",
+    "selectPeriod": "اختر فترة بها نشاط لتحديد التخصص."
+  },
+  "dashboardStats": {
+    "totalRevenue": "إجمالي الإيرادات",
+    "yourEarnings": "أرباحك",
+    "totalSessions": "إجمالي الجلسات",
+    "avgPerSession": "متوسط لكل جلسة",
+    "collectionRate": "نسبة التحصيل",
+    "outstanding": "الرصيد المعلق"
+  },
+  "monthlyEarnings": {
+    "title": "الأرباح الشهرية",
+    "totalCost": "إجمالي الإيرادات",
+    "amountPaid": "المبلغ المحصل",
+    "dentistCut": "أرباحك",
+    "remaining": "المعلق"
+  },
+  "earningsHistory": {
+    "title": "سجل الأرباح",
+    "trend": "الاتجاه",
+    "noData": "لا توجد بيانات أرباح بعد"
+  },
+  "treatments": {
+    "title": "توزيع العلاجات",
+    "noData": "لا توجد بيانات علاجات بعد"
+  },
+  "charts": {
+    "revenue": "الإيرادات",
+    "earnings": "الأرباح",
+    "sessions": "الجلسات",
+    "patients": "المرضى",
+    "noData": "لا توجد بيانات للعرض"
+  },
+  "career": {
+    "totalPatients": "إجمالي المرضى",
+    "totalSessions": "إجمالي الجلسات",
+    "totalEarnings": "إجمالي الأرباح",
+    "avgRating": "متوسط التقييم",
+    "topCategories": "أكثر فئات العلاج",
+    "monthlyGrowth": "النمو الشهري",
+    "patientRetention": "الاحتفاظ بالمرضى",
+    "clinicPerformance": "أداء العيادات"
+  },
+  "benchmarkedAgainst": "معيار المقارنة:",
+  "periodLabels": {
+    "allTime": "كامل التاريخ المهني",
+    "customRange": "نطاق مخصص: {{start}} إلى {{end}}",
+    "annualReview": "مراجعة سنوية: {{year}}"
+  },
+  "careerStats": {
+    "totalTreatments": "إجمالي العلاجات",
+    "periodTreatments": "علاجات الفترة",
+    "treatmentTypes": "أنواع العلاج",
+    "activeTreatments": "العلاجات النشطة",
+    "completedSessions": "جلسات مكتملة",
+    "differentCategories": "فئات مختلفة"
+  },
+  "expertiseDistribution": "توزيع الخبرة",
+  "rangeIndexed": "مفهرس النطاق",
+  "expertiseSpotlight": "أبرز تخصص",
+  "representingVolume": "يمثّل <1>{{pct}}%</1> من حجم العمل السريري في هذا النطاق.",
+  "analyzeDomainBenchmarks": "تحليل معايير التخصص",
+  "areasOfFocus": "مجالات التركيز",
+  "weight": "وزن",
+  "period": "الفترة",
+  "to": "إلى",
+  "sessions": "جلسة"
+}

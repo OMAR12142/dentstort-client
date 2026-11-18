@@ -29,14 +29,6 @@ export default function LandingPage() {
   const [showIosGuide, setShowIosGuide] = useState(false);
 
   useEffect(() => {
-    const html = document.documentElement;
-    const originalTheme = html.getAttribute('data-theme');
-    const hasDarkClass = html.classList.contains('dark');
-
-    // Force Dark Theme for Landing Page
-    html.setAttribute('data-theme', 'dark');
-    html.classList.add('dark');
-
     const handleScroll = () => {
       setShowStickyBadge(window.scrollY > 600);
     };
@@ -44,9 +36,6 @@ export default function LandingPage() {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      // Restore user's preference when leaving
-      if (originalTheme) html.setAttribute('data-theme', originalTheme);
-      if (!hasDarkClass) html.classList.remove('dark');
     };
   }, []);
 
@@ -188,7 +177,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A] transition-colors duration-300 font-sans text-white">
+    <div className="min-h-screen bg-base-100 transition-colors duration-300 font-sans text-base-content">
       <SEO
         title="Management Software for Dentists"
         description="The all-in-one SaaS platform for modern dentists. Manage patient records, clinical sessions, and earnings with ease."
@@ -220,7 +209,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-[1.1] tracking-tight"
+                className="text-4xl sm:text-6xl lg:text-7xl font-black text-base-content mb-6 leading-[1.1] tracking-tight"
               >
                 Your Entire Dental Story, <span className="text-primary">In One Place.</span>
               </motion.h1>
@@ -229,7 +218,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-base sm:text-xl text-gray-300 leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 font-medium"
+                className="text-base sm:text-xl text-base-content/70 leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 font-medium"
               >
                 DentStory is the all-in-one clinical SaaS designed for Dentists. Manage patients, analyze revenue, and showcase your portfolio.
               </motion.p>
@@ -242,13 +231,13 @@ export default function LandingPage() {
               >
                 <button
                   onClick={handleCTA}
-                  className="px-8 py-3.5 sm:py-4 bg-primary text-white text-base sm:text-lg font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto"
+                  className="px-8 py-3.5 sm:py-4 bg-primary text-primary-content text-base sm:text-lg font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all w-full sm:w-auto"
                 >
                   {token ? 'Go to Dashboard' : 'Start Your Dental Story'}
                 </button>
                 <button
                   onClick={handleInstallPWA}
-                  className="px-8 py-3.5 sm:py-4 bg-[#252525] border border-white/10 text-white text-base sm:text-lg font-black rounded-2xl hover:bg-white/5 transition-all w-full sm:w-auto text-center flex items-center justify-center gap-2"
+                  className="px-8 py-3.5 sm:py-4 bg-base-200 border border-neutral-light text-base-content text-base sm:text-lg font-black rounded-2xl hover:bg-base-content/5 transition-all w-full sm:w-auto text-center flex items-center justify-center gap-2"
                 >
                   <Download size={18} />
                   Download Now
@@ -262,14 +251,14 @@ export default function LandingPage() {
                 transition={{ delay: 0.4 }}
                 className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3"
               >
-                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#252525] border border-white/5 shadow-inner">
-                  <Globe size={14} className="text-sky-400" />
-                  <span className="text-[11px] font-black uppercase tracking-widest text-gray-400">Web App</span>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-base-200 border border-neutral-light shadow-inner">
+                  <Globe size={14} className="text-sky-500 dark:text-sky-400" />
+                  <span className="text-[11px] font-black uppercase tracking-widest text-base-content/60">Web App</span>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#252525] border border-white/5 shadow-inner relative overflow-hidden group cursor-default">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                  <SmartphoneIcon size={14} className="text-emerald-400" />
-                  <span className="text-[11px] font-black uppercase tracking-widest text-gray-400">Soon on Google Play</span>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-base-200 border border-neutral-light shadow-inner relative overflow-hidden group cursor-default">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-base-content/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  <SmartphoneIcon size={14} className="text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-[11px] font-black uppercase tracking-widest text-base-content/60">Soon on Google Play</span>
                 </div>
               </motion.div>
             </div>
@@ -286,21 +275,21 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 via-transparent to-sky-500/20 blur-[80px] rounded-full pointer-events-none" />
 
               <motion.div
-                className="relative bg-[#1A1A1A]/90 backdrop-blur-2xl rounded-[2rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
+                className="relative bg-base-200/95 backdrop-blur-2xl rounded-[2rem] border border-neutral-light shadow-2xl overflow-hidden"
                 whileHover={{ rotateY: -2, rotateX: 2, scale: 1.02 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
                 {/* Mac-style Window Header */}
-                <div className="h-12 bg-white/5 flex items-center px-5 gap-4 border-b border-white/5 backdrop-blur-md">
+                <div className="h-12 bg-base-100/80 flex items-center px-5 gap-4 border-b border-neutral-light backdrop-blur-md">
                   <div className="flex gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-500/80" />
                     <div className="w-3 h-3 rounded-full bg-amber-500/80" />
                     <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
                   </div>
                   <div className="flex-1 flex justify-center">
-                    <div className="flex items-center gap-2 px-6 py-1.5 rounded-full bg-black/40 border border-white/5">
-                      <Lock size={12} className="text-white/40" />
-                      <span className="text-[11px] font-medium text-white/50 tracking-wide">app.dentstory.site</span>
+                    <div className="flex items-center gap-2 px-6 py-1.5 rounded-full bg-base-200 border border-neutral-light">
+                      <Lock size={12} className="text-base-content/40" />
+                      <span className="text-[11px] font-medium text-base-content/60 tracking-wide">app.dentstory.site</span>
                     </div>
                   </div>
                   <div className="w-12" /> {/* Spacer for centering */}
@@ -310,31 +299,31 @@ export default function LandingPage() {
                   {/* Top Stats Area */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:scale-110 group-hover:opacity-30 transition-all duration-500">
+                      <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:scale-110 group-hover:opacity-30 transition-all duration-500 text-primary">
                         <DollarSign size={48} />
                       </div>
-                      <p className="text-[10px] font-black text-primary/80 uppercase tracking-widest mb-2 relative z-10">Monthly Revenue</p>
-                      <h4 className="text-3xl font-black text-white relative z-10">EGP 24.5K</h4>
-                      <p className="text-xs text-emerald-400 font-medium mt-3 flex items-center gap-1 relative z-10">
+                      <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2 relative z-10">Monthly Revenue</p>
+                      <h4 className="text-3xl font-black text-base-content relative z-10">EGP 24.5K</h4>
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-3 flex items-center gap-1 relative z-10">
                         <TrendingUp size={12} /> +12.5% vs last month
                       </p>
                     </div>
                     <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/20 relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:scale-110 group-hover:opacity-30 transition-all duration-500">
+                      <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:scale-110 group-hover:opacity-30 transition-all duration-500 text-emerald-600 dark:text-emerald-400">
                         <Users size={48} />
                       </div>
-                      <p className="text-[10px] font-black text-emerald-500/80 uppercase tracking-widest mb-2 relative z-10">Active Patients</p>
-                      <h4 className="text-3xl font-black text-white relative z-10">1,284</h4>
-                      <p className="text-xs text-emerald-400 font-medium mt-3 flex items-center gap-1 relative z-10">
+                      <p className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-2 relative z-10">Active Patients</p>
+                      <h4 className="text-3xl font-black text-base-content relative z-10">1,284</h4>
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-3 flex items-center gap-1 relative z-10">
                         <TrendingUp size={12} /> +45 new this month
                       </p>
                     </div>
                   </div>
 
                   {/* Patient List Mockup */}
-                  <div className="bg-black/20 rounded-2xl border border-white/5 p-5 backdrop-blur-sm">
+                  <div className="bg-base-100/80 rounded-2xl border border-neutral-light p-5 backdrop-blur-sm">
                     <div className="flex items-center justify-between mb-5">
-                      <p className="text-[11px] font-black text-white/50 uppercase tracking-widest flex items-center gap-2">
+                      <p className="text-[11px] font-black text-base-content/60 uppercase tracking-widest flex items-center gap-2">
                         <CalendarClock size={14} className="text-primary" /> Today's Sessions
                       </p>
                       <button className="text-[10px] text-primary font-bold hover:underline tracking-wider uppercase">View All</button>
@@ -348,23 +337,23 @@ export default function LandingPage() {
                         },
                         {
                           name: 'Sara Mohamed', op: 'Orthodontics', status: 'Completed',
-                          avatarBg: 'bg-emerald-500/20', avatarText: 'text-emerald-500', avatarBorder: 'border-emerald-500/30',
-                          statusBg: 'bg-emerald-500/10', statusText: 'text-emerald-400', statusBorder: 'border-emerald-500/20'
+                          avatarBg: 'bg-emerald-500/20', avatarText: 'text-emerald-600 dark:text-emerald-500', avatarBorder: 'border-emerald-500/30',
+                          statusBg: 'bg-emerald-500/10', statusText: 'text-emerald-600 dark:text-emerald-400', statusBorder: 'border-emerald-500/20'
                         },
                         {
                           name: 'Omar Ali', op: 'Root Canal', status: 'Waiting',
-                          avatarBg: 'bg-amber-500/20', avatarText: 'text-amber-500', avatarBorder: 'border-amber-500/30',
-                          statusBg: 'bg-amber-500/10', statusText: 'text-amber-400', statusBorder: 'border-amber-500/20'
+                          avatarBg: 'bg-amber-500/20', avatarText: 'text-amber-600 dark:text-amber-500', avatarBorder: 'border-amber-500/30',
+                          statusBg: 'bg-amber-500/10', statusText: 'text-amber-600 dark:text-amber-400', statusBorder: 'border-amber-500/20'
                         }
                       ].map((p, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-3.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer border border-white/5 group/item">
+                        <div key={idx} className="flex items-center justify-between p-3.5 rounded-xl bg-base-200 hover:bg-base-200/80 transition-colors cursor-pointer border border-neutral-light group/item">
                           <div className="flex items-center gap-3.5">
                             <div className={`w-10 h-10 rounded-full ${p.avatarBg} flex items-center justify-center ${p.avatarText} font-bold text-sm border ${p.avatarBorder}`}>
                               {p.name.charAt(0)}
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-white group-hover/item:text-primary transition-colors">{p.name}</p>
-                              <p className="text-[11px] text-white/50 uppercase tracking-wider mt-0.5">{p.op}</p>
+                              <p className="text-sm font-bold text-base-content group-hover/item:text-primary transition-colors">{p.name}</p>
+                              <p className="text-[11px] text-base-content/50 uppercase tracking-wider mt-0.5">{p.op}</p>
                             </div>
                           </div>
                           <span className={`text-[10px] px-3 py-1.5 ${p.statusBg} ${p.statusText} rounded-lg font-black uppercase tracking-wider border ${p.statusBorder}`}>
@@ -382,14 +371,14 @@ export default function LandingPage() {
               <motion.div
                 animate={{ y: [10, -10, 10] }}
                 transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                className="absolute -right-4 lg:-right-8 bottom-12 lg:bottom-16 bg-[#1A1A1A]/90 backdrop-blur-xl p-4 rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/10 hidden sm:flex items-center gap-4 z-10"
+                className="absolute -right-4 lg:-right-8 bottom-12 lg:bottom-16 bg-base-200/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-neutral-light hidden sm:flex items-center gap-4 z-10"
               >
-                <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center text-sky-400 border border-sky-500/20">
+                <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center text-sky-500 dark:text-sky-400 border border-sky-500/20">
                   <SmartphoneIcon size={24} />
                 </div>
                 <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-white mb-1">Install App</p>
-                  <p className="text-[10px] text-white/50 font-medium">Available on iOS & Android</p>
+                  <p className="text-xs font-black uppercase tracking-widest text-base-content mb-1">Install App</p>
+                  <p className="text-[10px] text-base-content/60 font-medium">Available on iOS & Android</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -399,7 +388,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── 1.5 DEMO VIDEO SECTION ── */}
-      <section id="how-it-works" className="py-20 md:py-32 bg-[#0A0A0A] relative overflow-hidden border-t border-white/5">
+      <section id="how-it-works" className="py-20 md:py-32 bg-base-200 relative overflow-hidden border-t border-neutral-light">
         {/* Ambient Glows */}
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[100px] pointer-events-none" />
@@ -410,14 +399,14 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 bg-white/5 text-gray-300 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-white/10"
+              className="inline-flex items-center gap-2 bg-base-100 text-base-content/70 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-neutral-light"
             >
               How it works
             </motion.div>
-            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-6">
+            <h2 className="text-4xl md:text-6xl font-black text-base-content tracking-tight mb-6">
               See DentStory <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-sky-400">in Action</span>
             </h2>
-            <p className="text-gray-400 font-medium max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
+            <p className="text-base-content/70 font-medium max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
               Watch this quick demo to see how easy it is to manage your clinics, patients, portfolio, and financial records all in one place.
             </p>
           </div>
@@ -427,19 +416,19 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="relative w-full max-w-5xl mx-auto rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(0,198,255,0.15)] bg-[#1A1A1A]"
+            className="relative w-full max-w-5xl mx-auto rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-neutral-light shadow-[0_0_80px_rgba(0,198,255,0.15)] bg-base-100"
           >
             {/* Mac-style Window Header */}
-            <div className="h-10 md:h-12 bg-[#252525] flex items-center px-4 md:px-5 gap-4 border-b border-white/5">
+            <div className="h-10 md:h-12 bg-base-200 flex items-center px-4 md:px-5 gap-4 border-b border-neutral-light">
               <div className="flex gap-1.5 md:gap-2">
                 <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500/80" />
                 <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-500/80" />
                 <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-500/80" />
               </div>
               <div className="flex-1 flex justify-center">
-                <div className="flex items-center gap-2 px-4 md:px-6 py-1 md:py-1.5 rounded-full bg-black/40 border border-white/5">
-                  <Lock size={12} className="text-white/40" />
-                  <span className="text-[10px] md:text-[11px] font-medium text-white/50 tracking-wider">dentstory.site/demo</span>
+                <div className="flex items-center gap-2 px-4 md:px-6 py-1 md:py-1.5 rounded-full bg-base-100 border border-neutral-light">
+                  <Lock size={12} className="text-base-content/40" />
+                  <span className="text-[10px] md:text-[11px] font-medium text-base-content/60 tracking-wider">dentstory.site/demo</span>
                 </div>
               </div>
               <div className="w-10 md:w-16" /> {/* Spacer for centering */}
@@ -461,7 +450,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── 2. PORTFOLIO SHOWCASE ── */}
-      <section id="portfolio" className="bg-primary py-8 sm:py-12 relative overflow-hidden">
+      <section id="portfolio" className="bg-[#0A66C2] py-8 sm:py-12 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-full bg-white opacity-[0.03] skew-x-[-20deg] translate-x-32" />
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
           <div className="flex-1 text-center lg:text-left">
@@ -497,7 +486,7 @@ export default function LandingPage() {
                 href="https://dentstory.site/portfolio/dr-mohamed-farid"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-white text-primary text-base sm:text-lg font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center gap-2 w-full sm:w-auto justify-center"
+                className="px-8 py-4 bg-white text-[#0A66C2] text-base sm:text-lg font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center gap-2 w-full sm:w-auto justify-center"
               >
                 View Live Example <ArrowRight size={20} />
               </a>
@@ -513,9 +502,9 @@ export default function LandingPage() {
               {/* Glow effect behind card */}
               <div className="absolute -inset-1 bg-gradient-to-r from-primary to-sky-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
 
-              <div className="relative bg-white dark:bg-[#1A1A1A] rounded-3xl p-5 shadow-2xl border border-white/20 group-hover:scale-[1.02] transition-all duration-300">
+              <div className="relative bg-base-200 rounded-3xl p-5 shadow-2xl border border-neutral-light group-hover:scale-[1.02] transition-all duration-300">
 
-                <div className="aspect-[4/3] rounded-2xl bg-[#F3F2EF] dark:bg-[#252525] overflow-hidden relative mb-5 border border-[#E0DFDC] dark:border-white/10 group-hover:shadow-lg transition-all duration-500">
+                <div className="aspect-[4/3] rounded-2xl bg-base-100 overflow-hidden relative mb-5 border border-neutral-light group-hover:shadow-lg transition-all duration-500">
                   <img
                     src="/doctorfarid.jpeg"
                     alt="Doctor Profile"
@@ -532,28 +521,28 @@ export default function LandingPage() {
                 <div className="px-2 pb-2">
                   <div className="flex items-center gap-4 mb-4">
                     <div>
-                      <h3 className="text-[#191919] dark:text-white font-black text-xl leading-tight group-hover:text-primary transition-colors">
+                      <h3 className="text-base-content font-black text-xl leading-tight group-hover:text-primary transition-colors">
                         {demoPortfolio?.dentist?.name ? `Dr. ${demoPortfolio.dentist.name}` : 'Dr. Mohamed Farid'}
                       </h3>
-                      <p className="text-[#666666] dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-1">
+                      <p className="text-base-content/60 text-[10px] font-bold uppercase tracking-widest mt-1">
                         {demoPortfolio?.services?.length > 0 ? demoPortfolio.services[0] : 'Implants & Esthetics'}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-[#E0DFDC] dark:border-white/10">
+                  <div className="flex items-center justify-between pt-4 border-t border-neutral-light">
                     <div className="flex gap-6">
                       <div>
-                        <p className="text-xs font-black text-[#191919] dark:text-white">{demoPortfolio?.pagination?.totalItems || 24}</p>
-                        <p className="text-[9px] text-[#666666] dark:text-gray-500 uppercase tracking-widest font-bold">Cases</p>
+                        <p className="text-xs font-black text-base-content">{demoPortfolio?.pagination?.totalItems || 24}</p>
+                        <p className="text-[9px] text-base-content/50 uppercase tracking-widest font-bold">Cases</p>
                       </div>
                       <div>
-                        <p className="text-xs font-black text-[#191919] dark:text-white">{demoPortfolio?.yearsOfExperience || 8}yr</p>
-                        <p className="text-[9px] text-[#666666] dark:text-gray-500 uppercase tracking-widest font-bold">Exp.</p>
+                        <p className="text-xs font-black text-base-content">{demoPortfolio?.yearsOfExperience || 8}yr</p>
+                        <p className="text-[9px] text-base-content/50 uppercase tracking-widest font-bold">Exp.</p>
                       </div>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-[#F3F2EF] dark:bg-[#252525] flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                      <ArrowRight size={18} className="text-[#666666] dark:text-gray-400 group-hover:text-white transition-colors" />
+                    <div className="w-10 h-10 rounded-full bg-base-100 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-content transition-colors">
+                      <ArrowRight size={18} className="text-base-content/60 group-hover:text-primary-content transition-colors" />
                     </div>
                   </div>
                 </div>
@@ -565,11 +554,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── 3. FEATURE MISSION ── */}
-      <section id="features" className="bg-[#252525] py-16 sm:py-24 border-y border-white/5">
+      <section id="features" className="bg-base-200 py-16 sm:py-24 border-y border-neutral-light">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-20">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">DentStory features.</h2>
-            <p className="text-lg text-gray-400 font-medium leading-relaxed">
+            <h2 className="text-4xl md:text-5xl font-black text-base-content mb-6 tracking-tight">DentStory features.</h2>
+            <p className="text-lg text-base-content/70 font-medium leading-relaxed">
               Every feature in DentStory is designed to solve a friction point in the surgical and clinical workflow. Zero fluff, maximum performance.
             </p>
           </div>
@@ -579,14 +568,14 @@ export default function LandingPage() {
               <motion.div
                 key={i}
                 whileHover={{ y: -8 }}
-                className="p-5 sm:p-8 bg-[#1A1A1A] rounded-2xl sm:rounded-3xl border border-white/5 hover:border-primary/40 transition-all group"
+                className="p-5 sm:p-8 bg-base-100 rounded-2xl sm:rounded-3xl border border-neutral-light hover:border-primary/40 transition-all group"
               >
-                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[#252525] flex items-center justify-center text-primary mb-4 sm:mb-6 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-base-200 flex items-center justify-center text-primary mb-4 sm:mb-6 shadow-sm group-hover:bg-primary group-hover:text-primary-content transition-all border border-neutral-light">
                   <f.icon size={20} className="sm:w-6 sm:h-6" />
                 </div>
-                <p className="text-[8px] sm:text-[10px] font-black uppercase text-primary tracking-tighter sm:tracking-widest mb-1 sm:mb-2 opacity-60">{f.category}</p>
-                <h3 className="text-sm sm:text-xl font-bold text-white mb-2 sm:mb-4 leading-tight">{f.title}</h3>
-                <p className="text-[10px] sm:text-sm text-gray-400 leading-relaxed font-medium line-clamp-3 sm:line-clamp-none">
+                <p className="text-[8px] sm:text-[10px] font-black uppercase text-primary tracking-tighter sm:tracking-widest mb-1 sm:mb-2 opacity-70">{f.category}</p>
+                <h3 className="text-sm sm:text-xl font-bold text-base-content mb-2 sm:mb-4 leading-tight">{f.title}</h3>
+                <p className="text-[10px] sm:text-sm text-base-content/70 leading-relaxed font-medium line-clamp-3 sm:line-clamp-none">
                   {f.description}
                 </p>
               </motion.div>
@@ -596,21 +585,21 @@ export default function LandingPage() {
       </section>
 
       {/* ── 4. PRICING MISSION ── */}
-      <section id="pricing" className="py-16 sm:py-24 bg-[#1A1A1A]">
+      <section id="pricing" className="py-16 sm:py-24 bg-base-100">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="bg-[#252525] rounded-3xl sm:rounded-[3rem] border border-white/5 shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+          <div className="bg-base-200 rounded-3xl sm:rounded-[3rem] border border-neutral-light shadow-2xl overflow-hidden flex flex-col lg:flex-row">
 
             {/* Pricing Left */}
-            <div className="p-10 lg:p-16 flex-1 bg-primary text-white relative">
+            <div className="p-10 lg:p-16 flex-1 bg-[#0A66C2] text-white relative">
               <div className="absolute top-0 right-0 p-8">
                 <Heart size={40} className="text-white/20 fill-white/10" />
               </div>
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-white/60 mb-4">Our Commitment</p>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-white/70 mb-4">Our Commitment</p>
               <h2 className="text-4xl lg:text-6xl font-black mb-8 leading-tight">Free. <br />for Early Users. <br />Join Now..</h2>
-              <p className="text-lg text-white/80 font-medium leading-relaxed max-w-sm mb-12">
+              <p className="text-lg text-white/85 font-medium leading-relaxed max-w-sm mb-12">
                 DentStory is built by a dentist for the surgical family. We don't believe in limits or high access fees for critical clinical data.
               </p>
-              <div className="flex items-center gap-4 py-8 border-t border-white/10">
+              <div className="flex items-center gap-4 py-8 border-t border-white/15">
                 <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
                   <DollarSign size={24} className="text-white" />
                 </div>
@@ -619,23 +608,23 @@ export default function LandingPage() {
             </div>
 
             {/* Pricing Right */}
-            <div className="p-10 lg:p-16 flex-1 bg-[#252525]">
-              <h3 className="text-2xl font-black text-white mb-8">What's included?</h3>
+            <div className="p-10 lg:p-16 flex-1 bg-base-200">
+              <h3 className="text-2xl font-black text-base-content mb-8">What's included?</h3>
               <div className="grid sm:grid-cols-2 gap-4 mb-12">
                 {pricingFeatures.map((f, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <CheckCircle2 size={20} className="text-primary shrink-0" />
-                    <span className="text-sm font-bold text-base-content opacity-70">{f}</span>
+                    <span className="text-sm font-bold text-base-content/80">{f}</span>
                   </div>
                 ))}
               </div>
               <button
                 onClick={handleCTA}
-                className="w-full py-4 sm:py-5 bg-primary text-white text-base sm:text-lg font-black rounded-2xl hover:scale-[1.01] active:scale-95 transition-all"
+                className="w-full py-4 sm:py-5 bg-primary text-primary-content text-base sm:text-lg font-black rounded-2xl hover:scale-[1.01] active:scale-95 transition-all"
               >
                 Start Your denta Story
               </button>
-              <p className="text-center text-[10px] font-bold uppercase tracking-widest text-base-content opacity-30 mt-4">Takes 30 seconds • No Card needed</p>
+              <p className="text-center text-[10px] font-bold uppercase tracking-widest text-base-content/40 mt-4">Takes 30 seconds • No Card needed</p>
             </div>
 
           </div>
@@ -643,23 +632,23 @@ export default function LandingPage() {
       </section>
 
       {/* ── 5. FINAL MISSION ── */}
-      <section className="bg-[#252525] py-16 sm:py-24 border-t border-white/5">
+      <section className="bg-base-200 py-16 sm:py-24 border-t border-neutral-light">
         <div className="max-w-4xl mx-auto px-4 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-8">Ready to take your career to the next level?</h2>
-          <p className="text-xl text-gray-400 mb-12 leading-relaxed font-medium">
+          <h2 className="text-4xl md:text-5xl font-black text-base-content mb-8">Ready to take your career to the next level?</h2>
+          <p className="text-xl text-base-content/70 mb-12 leading-relaxed font-medium">
             Join the clinical family today. Streamline your sessions, track your growth, and showcase your expertise in one beautiful workspace.
           </p>
           <button
             onClick={handleCTA}
-            className="w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 bg-primary text-white text-lg sm:text-xl font-black rounded-2xl hover:scale-[1.05] active:scale-95 transition-all"
+            className="w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 bg-primary text-primary-content text-lg sm:text-xl font-black rounded-2xl hover:scale-[1.05] active:scale-95 transition-all"
           >
             Get Started for Free
           </button>
 
           {/* ── Simple Support Hub ── */}
           <div id="feedback" className="mt-16 sm:mt-24 text-center max-w-xl mx-auto px-4">
-            <h3 className="text-2xl font-black text-white mb-4 "> Support.</h3>
-            <p className="text-gray-400 text-sm font-medium mb-10 leading-relaxed">
+            <h3 className="text-2xl font-black text-base-content mb-4 "> Support.</h3>
+            <p className="text-base-content/70 text-sm font-medium mb-10 leading-relaxed">
               Have feedback, need advice, or ran into an issue? Reach out to us.            </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -673,7 +662,7 @@ export default function LandingPage() {
               </a>
               <a
                 href="mailto:omarselema52@gmail.com?subject=DentStory Feedback"
-                className="flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-[#252525] text-white text-sm font-black border border-white/5 hover:bg-white/10 active:scale-95 transition-all w-full sm:w-auto justify-center"
+                className="flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-base-100 text-base-content text-sm font-black border border-neutral-light hover:bg-base-content/5 active:scale-95 transition-all w-full sm:w-auto justify-center"
               >
                 <Mail size={18} /> Gmail
               </a>
@@ -691,15 +680,15 @@ export default function LandingPage() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100 }}
-            className="fixed bottom-6 right-6 z-[60] bg-[#252525] p-4 rounded-3xl border border-white/10 flex items-center gap-4 cursor-pointer hover:scale-[1.02] transition-transform"
+            className="fixed bottom-6 right-6 z-[60] bg-base-200 p-4 rounded-3xl border border-neutral-light shadow-xl flex items-center gap-4 cursor-pointer hover:scale-[1.02] transition-transform"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             <div className="w-10 h-10 rounded-2xl bg-sky-500 flex items-center justify-center text-white">
               <SmartphoneIcon size={20} />
             </div>
             <div className="pr-2">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white">Install App</p>
-              <p className="text-[9px] text-gray-500 font-bold whitespace-nowrap">Tap "Add to Home Screen" in browser</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-base-content">Install App</p>
+              <p className="text-[9px] text-base-content/60 font-bold whitespace-nowrap">Tap "Add to Home Screen" in browser</p>
             </div>
           </motion.div>
         )}

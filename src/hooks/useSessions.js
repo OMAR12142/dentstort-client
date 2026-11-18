@@ -29,6 +29,7 @@ export const useCreateSession = () => {
       qc.invalidateQueries({ queryKey: ['sessions'] });
       qc.invalidateQueries({ queryKey: ['appointments'] });
       qc.invalidateQueries({ queryKey: ['analytics'] });
+      qc.invalidateQueries({ queryKey: ['mediaLibrary'] });
     },
   });
 };
@@ -41,6 +42,7 @@ export const useUpdateSession = () => {
       qc.invalidateQueries({ queryKey: ['sessions'] });
       qc.invalidateQueries({ queryKey: ['appointments'] });
       qc.invalidateQueries({ queryKey: ['analytics'] });
+      qc.invalidateQueries({ queryKey: ['mediaLibrary'] });
     },
   });
 };
@@ -53,6 +55,7 @@ export const useDeleteSession = () => {
       qc.invalidateQueries({ queryKey: ['sessions'] });
       qc.invalidateQueries({ queryKey: ['appointments'] });
       qc.invalidateQueries({ queryKey: ['analytics'] });
+      qc.invalidateQueries({ queryKey: ['mediaLibrary'] });
     },
   });
 };

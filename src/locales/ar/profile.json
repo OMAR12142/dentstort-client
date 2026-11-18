@@ -1,0 +1,67 @@
+{
+  "title": "الملف الشخصي",
+  "subtitle": "إدارة ملفك الشخصي ومعلوماتك الشخصية والأمان.",
+  "editProfile": "تعديل الملف الشخصي",
+  "personalInfo": "المعلومات الشخصية",
+  "name": "الاسم الكامل",
+  "email": "البريد الإلكتروني",
+  "phone": "رقم الهاتف",
+  "phonePlaceholder": "أدخل رقم هاتفك",
+  "updateProfile": "تحديث الملف الشخصي",
+  "emailSupportMessage": "تواصل مع الدعم الفني لتغيير بريدك الإلكتروني.",
+  "saveChanges": "حفظ التغييرات",
+  "saved": "تم الحفظ!",
+  "roles": {
+    "admin": "مدير النظام",
+    "dentist": "طبيب أسنان"
+  },
+  "photo": {
+    "title": "صورة الملف الشخصي",
+    "upload": "رفع صورة",
+    "remove": "حذف الصورة",
+    "uploading": "جاري الرفع...",
+    "maxSize": "الحد الأقصى: 5MB",
+    "formats": "JPG، PNG، أو WebP",
+    "deleteConfirmTitle": "حذف صورة الملف الشخصي؟",
+    "deleteConfirmMsg": "هل أنت متأكد من رغبتك في حذف صورة الملف الشخصي؟ هذا الإجراء لا يمكن التراجع عنه."
+  },
+  "security": {
+    "title": "الأمان",
+    "subtitle": "قم بتحديث كلمة المرور للحفاظ على أمان حسابك",
+    "changePassword": "تغيير كلمة المرور",
+    "currentPassword": "كلمة المرور الحالية",
+    "currentPasswordPlaceholder": "أدخل كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "newPasswordPlaceholder": "أدخل كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور الجديدة",
+    "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور الجديدة",
+    "submit": "تحديث كلمة المرور",
+    "submitting": "جاري التحديث...",
+    "googleAccount": "سجلت الدخول عبر جوجل. يتم إدارة كلمة المرور عبر جوجل."
+  },
+  "insurance": {
+    "title": "شركات التأمين",
+    "addProvider": "إضافة شركة تأمين",
+    "providerPlaceholder": "أدخل اسم شركة التأمين",
+    "noProviders": "لم يتم إضافة شركات تأمين",
+    "rename": "إعادة تسمية",
+    "renamePlaceholder": "أدخل الاسم الجديد"
+  },
+  "completeProfile": {
+    "title": "أكمل ملفك الشخصي",
+    "message": "أضف رقم هاتفك لإكمال ملفك الشخصي وتسهيل تواصل المرضى معك.",
+    "addPhone": "إضافة رقم الهاتف",
+    "skip": "تخطي الآن"
+  },
+  "toast": {
+    "profileUpdated": "تم تحديث الملف الشخصي بنجاح",
+    "passwordChanged": "تم تغيير كلمة المرور بنجاح",
+    "photoUploaded": "تم رفع الصورة بنجاح",
+    "photoRemoved": "تم حذف الصورة",
+    "insuranceAdded": "تمت إضافة شركة التأمين",
+    "insuranceRenamed": "تمت إعادة تسمية شركة التأمين",
+    "insuranceDeleted": "تم حذف شركة التأمين",
+    "updateError": "فشل في تحديث الملف الشخصي",
+    "passwordError": "فشل في تغيير كلمة المرور"
+  }
+}

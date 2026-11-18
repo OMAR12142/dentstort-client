@@ -61,9 +61,12 @@ export const useToggleDentistStatus = () => {
 
   return useMutation({
     mutationFn: toggleDentistStatusApi,
-    onSuccess: () => {
+    onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dentists'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dentist', id] });
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] });
+      queryClient.invalidateQueries({ queryKey: ['publicPortfolio'] });
+      queryClient.invalidateQueries({ queryKey: ['publicCase'] });
     },
   });
 };
@@ -96,6 +99,8 @@ export const useTogglePortfolioStatus = () => {
     mutationFn: togglePortfolioStatusApi,
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dentist', id] });
+      queryClient.invalidateQueries({ queryKey: ['publicPortfolio'] });
+      queryClient.invalidateQueries({ queryKey: ['publicCase'] });
     },
   });
 };

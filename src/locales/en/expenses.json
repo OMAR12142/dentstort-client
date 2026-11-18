@@ -1,0 +1,122 @@
+{
+  "title": "Expenses",
+  "recordsTitle": "Expense Records",
+  "recordsSubtitle": "Full history of all your expense records, organized by month.",
+  "allCategories": "All Categories",
+  "addExpense": "Add Expense",
+  "editExpense": "Edit Expense",
+  "noExpenses": "No expenses found",
+  "noExpensesDesc": "Start tracking your clinic expenses",
+  "summary": {
+    "title": "Expense Summary",
+    "totalExpenses": "Total Expenses",
+    "byCategory": "By Category",
+    "byClinic": "By Clinic",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "thisYear": "This Year"
+  },
+  "form": {
+    "clinic": "Clinic",
+    "selectClinic": "Select clinic",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "amount": "Amount",
+    "amountPlaceholder": "0",
+    "description": "Description",
+    "descriptionPlaceholder": "What was this expense for?",
+    "optional": "(optional)",
+    "date": "Date",
+    "submit": "Add Expense",
+    "update": "Update Expense",
+    "submitting": "Adding...",
+    "updating": "Updating..."
+  },
+  "categories": {
+    "Material": "Material",
+    "Salaries": "Salaries",
+    "Lab": "Lab",
+    "Other": "Other"
+  },
+  "fixedSalary": {
+    "title": "Fixed Salaries",
+    "addSalary": "Add Fixed Salary",
+    "editSalary": "Edit Fixed Salary",
+    "clinic": "Clinic",
+    "amount": "Salary Amount",
+    "salaryDay": "Salary Day",
+    "salaryDayHelp": "Day of the month (1-28)",
+    "noSalaries": "No fixed salaries set up",
+    "toast": {
+      "created": "Fixed salary created successfully",
+      "updated": "Fixed salary updated successfully",
+      "deleted": "Fixed salary deleted successfully"
+    }
+  },
+  "delete": {
+    "title": "Delete Expense",
+    "confirm": "Are you sure you want to delete this expense?",
+    "success": "Expense deleted successfully"
+  },
+  "toast": {
+    "created": "Expense added successfully",
+    "updated": "Expense updated successfully",
+    "deleted": "Expense deleted successfully",
+    "createError": "Failed to add expense",
+    "updateError": "Failed to update expense"
+  },
+  "table": {
+    "date": "Date",
+    "category": "Category",
+    "description": "Description",
+    "amount": "Amount",
+    "clinic": "Clinic",
+    "actions": "Actions"
+  },
+  "stats": {
+    "records": "Records",
+    "months": "Months",
+    "showing": "Showing {{shown}} of {{total}}"
+  },
+  "search": {
+    "placeholder": "Search expenses...",
+    "noMatch": "No matching records",
+    "noMatchDesc": "We couldn't find any expenses matching \"{{query}}\". Try adjusting your filters or search term.",
+    "noRecords": "No records found",
+    "noRecordsDesc": "Your expense history is currently empty. Start logging expenses to see them organized here.",
+    "addFirst": "Add First Expense"
+  },
+  "pagination": {
+    "prev": "Prev",
+    "next": "Next"
+  },
+  "record": "record",
+  "records": "records",
+  "filters": "Filters",
+  "recentExpenses": "Recent Expenses",
+  "recentTotal": "{{count}} total",
+  "emptyState": {
+    "title": "Track Your Impact",
+    "desc": "Log your materials, salaries, and operating costs to unlock accurate profit margins and financial insights.",
+    "logFirst": "Log First Expense"
+  },
+  "timeframe": {
+    "monthly": "This Month",
+    "yearly": "This Year",
+    "all": "All Time"
+  },
+  "filter": {
+    "allClinics": "All Clinics",
+    "allCategories": "All Categories"
+  },
+  "actions": {
+    "viewRecords": "View All Records",
+    "addExpense": "Add Expense",
+    "removeExpense": "Remove Expense?",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "messages": {
+    "removeWarning": "This expense will be removed from your records."
+  }
+}

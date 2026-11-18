@@ -1,0 +1,72 @@
+{
+  "title": "Tasks",
+  "addTask": "Add Task",
+  "editTask": "Edit Task",
+  "noTasks": "No tasks found",
+  "noTasksDesc": "Manage your day-to-day tasks, lab work, and follow-ups seamlessly.",
+  "allTasks": "All Tasks",
+  "pending": "Pending",
+  "completed": "Completed",
+  "activeTasksCount": "Active Tasks ({{count}})",
+  "completedTasksCount": "Completed Tasks ({{count}})",
+  "overdue": "⚠ Overdue — ",
+  "stats": {
+    "total": "Total Tasks",
+    "active": "Active",
+    "completed": "Completed"
+  },
+  "actions": {
+    "addFirstTask": "Add First Task",
+    "addTask": "Add Task",
+    "markComplete": "Mark complete",
+    "markIncomplete": "Mark incomplete",
+    "whatsapp": "Chat on WhatsApp",
+    "delete": "Delete task"
+  },
+  "emptyState": {
+    "title": "No tasks yet",
+    "desc": "Create your first task to start organizing your workflow."
+  },
+  "form": {
+    "required": "Task description is required",
+    "text": "Task Description",
+    "taskDescription": "Task Description",
+    "taskPlaceholder": "e.g., Send patient report to lab, Follow up with Ahmed...",
+    "type": "Task Type",
+    "taskType": "Task Type",
+    "selectType": "Select type",
+    "clinic": "Clinic",
+    "selectClinic": "Select clinic...",
+    "patient": "Patient",
+    "selectPatient": "Select patient...",
+    "linkPatientHelp": "Linking a patient enables the WhatsApp quick-call button on this task.",
+    "dueDate": "Due Date",
+    "submit": "Add Task",
+    "update": "Update Task",
+    "submitting": "Adding...",
+    "updating": "Updating..."
+  },
+  "types": {
+    "General": "General",
+    "Lab_Work": "Lab Work",
+    "Follow_Up": "Follow Up",
+    "Financial": "Financial",
+    "general": "General",
+    "labWork": "Lab Work",
+    "followUp": "Follow Up",
+    "financial": "Financial"
+  },
+  "delete": {
+    "title": "Delete Task",
+    "confirm": "Are you sure you want to delete this task?",
+    "success": "Task deleted successfully"
+  },
+  "toast": {
+    "created": "Task created successfully",
+    "updated": "Task updated successfully",
+    "deleted": "Task deleted successfully",
+    "toggled": "Task status updated",
+    "createError": "Failed to create task",
+    "updateError": "Failed to update task"
+  }
+}

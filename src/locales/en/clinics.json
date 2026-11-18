@@ -1,0 +1,83 @@
+{
+  "title": "Clinics",
+  "addClinic": "Add Clinic",
+  "editClinic": "Edit Clinic",
+  "todaysShifts": "Today's Shifts",
+  "noClinicShiftsToday": "✨ No clinic shifts today. Enjoy your well-deserved rest!",
+  "noClinics": "No clinics yet",
+  "noClinicsDesc": "Add your first clinic to get started",
+  "fields": {
+    "clinicName": "Clinic Name",
+    "namePlaceholder": "Bright Smile Dental",
+    "address": "Address",
+    "addressPlaceholder": "123 Main St, Cairo",
+    "commissionPercentage": "Commission Percentage",
+    "addFixedSalary": "Add Fixed Salary",
+    "fixedSalary": "Fixed Salary",
+    "workingHours": "Working Hours",
+    "amountEgp": "Amount (EGP)",
+    "salaryDay": "Salary Day (1-28)",
+    "workingDays": "Working Days"
+  },
+  "actions": {
+    "addDayShift": "Add Day/Shift",
+    "addFixedSalary": "Add Fixed Salary"
+  },
+  "messages": {
+    "noWorkingDays": "No working days added yet. Click \"Add Day/Shift\" to set your clinic hours."
+  },
+  "days": {
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday"
+  },
+  "validation": {
+    "nameRequired": "Clinic name is required",
+    "commissionRequired": "Commission is required",
+    "commissionRange": "Must be 0-100",
+    "validAmountRequired": "Valid amount > 0 is required",
+    "dayBetween1And28": "Day must be between 1 and 28"
+  },
+  "form": {
+    "name": "Clinic Name",
+    "namePlaceholder": "Enter clinic name",
+    "address": "Address",
+    "addressPlaceholder": "Enter clinic address",
+    "commission": "Default Commission %",
+    "commissionPlaceholder": "e.g. 50",
+    "commissionHelp": "The percentage the clinic keeps from each session",
+    "workingDays": "Working Days",
+    "day": "Day",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "addDay": "Add Working Day",
+    "removeDay": "Remove",
+    "submit": "Create Clinic",
+    "update": "Update Clinic",
+    "submitting": "Creating...",
+    "updating": "Updating..."
+  },
+  "card": {
+    "commission": "Commission",
+    "workingDays": "Working Days",
+    "patients": "Patients",
+    "sessions": "Sessions",
+    "noSchedule": "No schedule set"
+  },
+  "delete": {
+    "title": "Delete Clinic",
+    "confirm": "Are you sure you want to delete this clinic? All associated data will remain.",
+    "success": "Clinic deleted successfully"
+  },
+  "toast": {
+    "created": "Clinic created successfully",
+    "updated": "Clinic updated successfully",
+    "deleted": "Clinic deleted successfully",
+    "createError": "Failed to create clinic",
+    "updateError": "Failed to update clinic"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "title": "تسجيل جلسة",
+  "editTitle": "تعديل الجلسة",
+  "form": {
+    "clinic": "العيادة",
+    "selectClinic": "اختر العيادة",
+    "date": "تاريخ الجلسة",
+    "treatmentDetails": "تفاصيل العلاج",
+    "treatmentDetailsPlaceholder": "صف العلاج الذي تم إجراؤه...",
+    "treatmentCategory": "فئة العلاج",
+    "selectCategory": "اختر الفئات",
+    "totalCost": "التكلفة الإجمالية",
+    "totalCostPlaceholder": "0",
+    "amountPaid": "المبلغ المدفوع",
+    "amountPaidPlaceholder": "0",
+    "remainingBalance": "الرصيد المتبقي",
+    "nextAppointment": "الموعد القادم",
+    "images": "صور الجلسة",
+    "uploadImages": "رفع صور",
+    "maxImages": "بحد أقصى {{max}} صور",
+    "removeImage": "حذف الصورة",
+    "submit": "تسجيل الجلسة",
+    "update": "تحديث الجلسة",
+    "submitting": "جاري التسجيل...",
+    "updating": "جاري التحديث..."
+  },
+  "categories": {
+    "checkup": "فحص",
+    "cleaning": "تنظيف",
+    "filling": "حشو",
+    "extraction": "خلع",
+    "rootCanal": "علاج عصب",
+    "crown": "تاج",
+    "bridge": "جسر",
+    "implant": "زراعة",
+    "denture": "طقم أسنان",
+    "orthodontics": "تقويم",
+    "surgery": "جراحة",
+    "whitening": "تبييض",
+    "veneer": "فينير",
+    "xray": "أشعة سينية",
+    "consultation": "استشارة",
+    "other": "أخرى"
+  },
+  "details": {
+    "treatmentDetails": "تفاصيل العلاج",
+    "cost": "التكلفة",
+    "paid": "المدفوع",
+    "remaining": "المتبقي",
+    "dentistCut": "أرباحك",
+    "date": "التاريخ",
+    "clinic": "العيادة",
+    "category": "الفئة",
+    "images": "الصور",
+    "nextAppointment": "الموعد القادم"
+  },
+  "delete": {
+    "title": "حذف الجلسة",
+    "confirm": "هل أنت متأكد من حذف هذه الجلسة؟",
+    "success": "تم حذف الجلسة بنجاح"
+  },
+  "toast": {
+    "created": "تم تسجيل الجلسة بنجاح",
+    "updated": "تم تحديث الجلسة بنجاح",
+    "deleted": "تم حذف الجلسة بنجاح",
+    "createError": "فشل في تسجيل الجلسة",
+    "updateError": "فشل في تحديث الجلسة"
+  }
+}

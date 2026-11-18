@@ -1,0 +1,113 @@
+{
+  "title": "لوحة التحكم",
+  "greeting": "مرحباً بعودتك",
+  "currency": {
+    "egp": "ج.م"
+  },
+  "timeframe": {
+    "thisMonth": "هذا الشهر",
+    "thisYear": "هذه السنة",
+    "allTime": "كل الأوقات"
+  },
+  "stats": {
+    "totalEarnings": "إجمالي الإيرادات",
+    "dentistEarnings": "أرباحك",
+    "totalSessions": "إجمالي الجلسات",
+    "totalPatients": "إجمالي المرضى",
+    "activePatients": "المرضى النشطون",
+    "newPatients": "مرضى جدد",
+    "upcomingAppointments": "المواعيد القادمة",
+    "totalExpenses": "إجمالي المصروفات",
+    "netIncome": "صافي الدخل",
+    "remainingBalance": "المبلغ المتبقي",
+    "collectionRate": "نسبة التحصيل",
+    "fixedSalary": "الراتب الثابت",
+    "netProfit": "صافي الربح",
+    "totalIncomeLabel": "إجمالي الدخل",
+    "sessionsLabel": "الجلسات",
+    "expensesLabel": "المصروفات",
+    "badgeFixed": "ثابت",
+    "badgeHistory": "السجل",
+    "badgeSpent": "منصرف",
+    "badgeNet": "الصافي"
+  },
+  "quickActions": {
+    "title": "إجراءات سريعة",
+    "addPatient": "إضافة مريض",
+    "createNewRecord": "إنشاء سجل جديد",
+    "logSession": "تسجيل جلسة",
+    "recordTreatment": "تسجيل علاج",
+    "whatsapp": "واتساب"
+  },
+  "todaySchedule": {
+    "title": "جدول اليوم",
+    "noAppointments": "لا توجد مواعيد اليوم",
+    "viewAll": "عرض جميع المواعيد"
+  },
+  "todayClinic": {
+    "title": "عيادة اليوم",
+    "noClinic": "لا توجد عيادة مجدولة اليوم",
+    "workingHours": "ساعات العمل",
+    "commission": "العمولة"
+  },
+  "recentPatients": {
+    "title": "أحدث المرضى",
+    "viewAll": "عرض جميع المرضى",
+    "noPatients": "لا يوجد مرضى بعد"
+  },
+  "pendingTasks": {
+    "title": "المهام المعلقة",
+    "viewAll": "عرض جميع المهام",
+    "noTasks": "لا توجد مهام معلقة"
+  },
+  "sections": {
+    "overview": "نظرة عامة",
+    "activity": "النشاط",
+    "todaysShifts": "شفتات اليوم",
+    "noClinicShiftsToday": "✨ لا توجد شفتات عيادة اليوم. استمتع براحتك المستحقة!",
+    "clinicEarnings": "أرباح العيادات",
+    "overviewTimeframe": "نظرة عامة",
+    "todaysAppointments": "مواعيد اليوم",
+    "scheduledCount": "مجدول",
+    "noAppointmentsToday": "لا توجد مواعيد مجدولة اليوم.",
+    "openCalendar": "فتح التقويم",
+    "viewFullCalendar": "عرض التقويم الكامل",
+    "smartShiftTasks": "مهام الشفت ",
+    "activeCount": "نشط",
+    "noTasksYet": "لا توجد مهام بعد. توجه لصفحة المهام للبدء!",
+    "goToTasks": "الذهاب للمهام",
+    "viewAllActiveTasks": "عرض جميع المهام ({{count}} نشطة)",
+    "manageTasks": "إدارة المهام",
+    "unknownPatient": "مريض غير معروف"
+  },
+  "fields": {
+    "date": "التاريخ",
+    "treatmentType": "نوع العلاج",
+    "treatmentDetails": "تفاصيل العلاج",
+    "totalCost": "التكلفة الإجمالية",
+    "amountPaid": "المبلغ المدفوع",
+    "nextAppointment": "الموعد القادم",
+    "uploadMedia": "رفع وسائط/صور"
+  },
+  "actions": {
+    "choosePatient": "اختر مريضاً",
+    "logSession": "تسجيل جلسة",
+    "custom": "مخصص",
+    "yesSaveSession": "نعم، احفظ الجلسة"
+  },
+  "placeholders": {
+    "typeCustomCategory": "اكتب فئة مخصصة (مثال: تأمين)..."
+  },
+  "labels": {
+    "currentMedia": "الوسائط الحالية",
+    "newMediaToUpload": "وسائط جديدة للرفع"
+  },
+  "messages": {
+    "clickAddMoreMedia": "انقر لإضافة المزيد من الوسائط",
+    "clickUploadMedia": "انقر لرفع الأشعة أو الصور",
+    "confirmZeroFinancialsText": "هل أنت متأكد من أن التكلفة والمبلغ المدفوع يساوي 0؟"
+  },
+  "titles": {
+    "confirmZeroFinancials": "تأكيد ماليات الجلسة"
+  }
+}

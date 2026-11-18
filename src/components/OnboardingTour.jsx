@@ -47,7 +47,7 @@ const TOUR_STEPS = [
     icon: Image,
     title: 'Step 4: Build Your Portfolio',
     description:
-      'Upload X-Rays and Before/After photos in the Portfolio section. You need to create a patient first before assigning photos.',
+      'Showcase your best clinical work! Upload up to 8 Before/After photos directly from your phone or computer gallery, or pick existing photos from your Session Media Library.',
     color: '#ec4899',
   },
   {

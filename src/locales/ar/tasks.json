@@ -1,0 +1,72 @@
+{
+  "title": "المهام",
+  "addTask": "إضافة مهمة",
+  "editTask": "تعديل المهمة",
+  "noTasks": "لا توجد مهام",
+  "noTasksDesc": "أدر مهامك اليومية، وأعمال المعمل، والمتابعات بكل سهولة.",
+  "allTasks": "كل المهام",
+  "pending": "معلقة",
+  "completed": "مكتملة",
+  "activeTasksCount": "المهام النشطة ({{count}})",
+  "completedTasksCount": "المهام المكتملة ({{count}})",
+  "overdue": "⚠ متأخر — ",
+  "stats": {
+    "total": "إجمالي المهام",
+    "active": "نشطة",
+    "completed": "مكتملة"
+  },
+  "actions": {
+    "addFirstTask": "إضافة أول مهمة",
+    "addTask": "إضافة مهمة",
+    "markComplete": "تحديد كمكتمل",
+    "markIncomplete": "تحديد كغير مكتمل",
+    "whatsapp": "مراسلة عبر الواتساب",
+    "delete": "حذف المهمة"
+  },
+  "emptyState": {
+    "title": "لا توجد مهام بعد",
+    "desc": "أنشئ أول مهمة للبدء في تنظيم جدول أعمالك."
+  },
+  "form": {
+    "required": "وصف المهمة مطلوب",
+    "text": "وصف المهمة",
+    "taskDescription": "وصف المهمة",
+    "taskPlaceholder": "مثال: إرسال تقرير المريض للمعمل، متابعة مع أحمد...",
+    "type": "نوع المهمة",
+    "taskType": "نوع المهمة",
+    "selectType": "اختر النوع",
+    "clinic": "العيادة",
+    "selectClinic": "اختر العيادة...",
+    "patient": "المريض",
+    "selectPatient": "اختر المريض...",
+    "linkPatientHelp": "ربط مريض يُفعّل زر المراسل السريعة عبر الواتساب لهذه المهمة.",
+    "dueDate": "تاريخ الاستحقاق",
+    "submit": "إضافة مهمة",
+    "update": "تحديث المهمة",
+    "submitting": "جاري الإضافة...",
+    "updating": "جاري التحديث..."
+  },
+  "types": {
+    "General": "عامة",
+    "Lab_Work": "أعمال المعمل",
+    "Follow_Up": "متابعة",
+    "Financial": "مالية",
+    "general": "عامة",
+    "labWork": "أعمال المعمل",
+    "followUp": "متابعة",
+    "financial": "مالية"
+  },
+  "delete": {
+    "title": "حذف المهمة",
+    "confirm": "هل أنت متأكد من حذف هذه المهمة؟",
+    "success": "تم حذف المهمة بنجاح"
+  },
+  "toast": {
+    "created": "تم إنشاء المهمة بنجاح",
+    "updated": "تم تحديث المهمة بنجاح",
+    "deleted": "تم حذف المهمة بنجاح",
+    "toggled": "تم تحديث حالة المهمة",
+    "createError": "فشل في إنشاء المهمة",
+    "updateError": "فشل في تحديث المهمة"
+  }
+}

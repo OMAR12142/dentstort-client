@@ -1,0 +1,107 @@
+{
+  "title": "لوحة الإدارة",
+  "overview": {
+    "title": "نظرة عامة",
+    "totalDentists": "إجمالي الأطباء",
+    "activeDentists": "الأطباء النشطين",
+    "suspendedDentists": "الموقوفين",
+    "totalPatients": "إجمالي المرضى",
+    "totalSessions": "إجمالي الجلسات",
+    "totalRevenue": "إجمالي الإيرادات",
+    "recentSignups": "التسجيلات الأخيرة",
+    "platformStats": "إحصائيات المنصة"
+  },
+  "revenue": {
+    "title": "الإيرادات",
+    "totalRevenue": "إجمالي الإيرادات",
+    "monthlyRevenue": "الإيرادات الشهرية",
+    "topEarners": "الأكثر أرباحاً",
+    "revenueChart": "رسم بياني للإيرادات"
+  },
+  "dentists": {
+    "title": "الأطباء",
+    "searchPlaceholder": "ابحث عن طبيب بالاسم أو البريد...",
+    "allStatuses": "كل الحالات",
+    "active": "نشط",
+    "suspended": "موقوف",
+    "noDentists": "لم يتم العثور على أطباء",
+    "viewProfile": "عرض الملف الشخصي",
+    "totalPatients": "المرضى",
+    "totalSessions": "الجلسات",
+    "joinedAt": "تاريخ الانضمام",
+    "lastActive": "آخر نشاط"
+  },
+  "dentistProfile": {
+    "title": "ملف الطبيب",
+    "personalInfo": "المعلومات الشخصية",
+    "statistics": "الإحصائيات",
+    "actions": "الإجراءات",
+    "suspend": "إيقاف الحساب",
+    "activate": "تفعيل الحساب",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "impersonate": "الدخول كهذا الطبيب",
+    "suspendPortfolio": "إيقاف معرض الأعمال",
+    "activatePortfolio": "تفعيل معرض الأعمال",
+    "confirmSuspend": "هل أنت متأكد من إيقاف هذا الحساب؟",
+    "confirmActivate": "هل أنت متأكد من تفعيل هذا الحساب؟",
+    "confirmResetPassword": "هل أنت متأكد من إعادة تعيين كلمة مرور هذا الطبيب؟",
+    "confirmImpersonate": "سيتم تسجيل دخولك كهذا الطبيب. سيتم حفظ جلسة المدير.",
+    "newPassword": "كلمة المرور الجديدة",
+    "clinics": "العيادات",
+    "patients": "المرضى",
+    "sessions": "الجلسات",
+    "portfolio": "معرض الأعمال"
+  },
+  "announcements": {
+    "title": "الإعلانات",
+    "create": "إنشاء إعلان",
+    "edit": "تعديل الإعلان",
+    "noAnnouncements": "لا توجد إعلانات",
+    "form": {
+      "title": "العنوان",
+      "titlePlaceholder": "عنوان الإعلان",
+      "content": "المحتوى",
+      "contentPlaceholder": "محتوى الإعلان...",
+      "type": "نوع العرض",
+      "banner": "شريط",
+      "modal": "نافذة منبثقة",
+      "severity": "الأهمية",
+      "info": "معلومات",
+      "success": "نجاح",
+      "warning": "تحذير",
+      "error": "خطأ",
+      "frequency": "تكرار العرض",
+      "once": "مرة واحدة",
+      "session": "كل جلسة",
+      "always": "دائماً",
+      "expiresAt": "ينتهي في",
+      "publish": "نشر",
+      "publishing": "جاري النشر..."
+    },
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "toggleActive": "تبديل الحالة",
+    "delete": "حذف الإعلان",
+    "confirmDelete": "هل أنت متأكد من حذف هذا الإعلان؟"
+  },
+  "shadowMode": {
+    "banner": "أنت تشاهد حالياً كـ",
+    "returnToAdmin": "العودة للوحة الإدارة"
+  },
+  "toast": {
+    "dentistSuspended": "تم إيقاف الطبيب بنجاح",
+    "dentistActivated": "تم تفعيل الطبيب بنجاح",
+    "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح",
+    "portfolioSuspended": "تم إيقاف معرض الأعمال",
+    "portfolioActivated": "تم تفعيل معرض الأعمال",
+    "announcementCreated": "تم إنشاء الإعلان",
+    "announcementDeleted": "تم حذف الإعلان",
+    "announcementToggled": "تم تحديث حالة الإعلان"
+  },
+  "nav": {
+    "overview": "نظرة عامة",
+    "revenue": "الإيرادات",
+    "dentists": "الأطباء",
+    "broadcasts": "الإعلانات"
+  }
+}

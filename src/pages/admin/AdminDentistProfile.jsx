@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -32,6 +33,7 @@ import {
   useTogglePortfolioStatus
 } from '../../hooks/useAdmin';
 import { useAuthStore } from '../../store/authStore';
+import { clearUserQueryCache } from '../../api/queryClient';
 import Card from '../../components/Card';
 import Modal from '../../components/Modal';
 import { calculateAge } from '../../utils/dateUtils';
@@ -86,6 +88,7 @@ export default function AdminDentistProfile() {
   const { mutate: impersonate, isPending: isImpersonating } = useImpersonateDentist();
   const { mutate: togglePortfolio, isPending: isTogglingPortfolio } = useTogglePortfolioStatus();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const queryClient = useQueryClient();
 
   // Reset Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -123,6 +126,7 @@ export default function AdminDentistProfile() {
       onSuccess: (res) => {
         // Switch session to this user, but flag it as shadow mode
         setAuth(res, res.accessToken, true);
+        clearUserQueryCache(queryClient);
         navigate('/dashboard');
       }
     });

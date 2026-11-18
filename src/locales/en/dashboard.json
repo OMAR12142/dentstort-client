@@ -1,0 +1,113 @@
+{
+  "title": "Dashboard",
+  "greeting": "Welcome back",
+  "currency": {
+    "egp": "EGP"
+  },
+  "timeframe": {
+    "thisMonth": "This Month",
+    "thisYear": "This Year",
+    "allTime": "All Time"
+  },
+  "stats": {
+    "totalEarnings": "Total Earnings",
+    "dentistEarnings": "Your Earnings",
+    "totalSessions": "Total Sessions",
+    "totalPatients": "Total Patients",
+    "activePatients": "Active Patients",
+    "newPatients": "New Patients",
+    "upcomingAppointments": "Upcoming Appointments",
+    "totalExpenses": "Total Expenses",
+    "netIncome": "Net Income",
+    "remainingBalance": "Remaining Balance",
+    "collectionRate": "Collection Rate",
+    "fixedSalary": "Fixed Salary",
+    "netProfit": "Net Profit",
+    "totalIncomeLabel": "Total Income",
+    "sessionsLabel": "Sessions",
+    "expensesLabel": "Expenses",
+    "badgeFixed": "Fixed",
+    "badgeHistory": "History",
+    "badgeSpent": "Spent",
+    "badgeNet": "Net"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "addPatient": "Add Patient",
+    "createNewRecord": "Create new record",
+    "logSession": "Log Session",
+    "recordTreatment": "Record treatment",
+    "whatsapp": "WhatsApp"
+  },
+  "todaySchedule": {
+    "title": "Today's Schedule",
+    "noAppointments": "No appointments today",
+    "viewAll": "View All Appointments"
+  },
+  "todayClinic": {
+    "title": "Today's Clinic",
+    "noClinic": "No clinic scheduled for today",
+    "workingHours": "Working Hours",
+    "commission": "Commission"
+  },
+  "recentPatients": {
+    "title": "Recent Patients",
+    "viewAll": "View All Patients",
+    "noPatients": "No patients yet"
+  },
+  "pendingTasks": {
+    "title": "Pending Tasks",
+    "viewAll": "View All Tasks",
+    "noTasks": "No pending tasks"
+  },
+  "sections": {
+    "overview": "Overview",
+    "activity": "Activity",
+    "todaysShifts": "Today's Shifts",
+    "noClinicShiftsToday": "✨ No clinic shifts today. Enjoy your day!",
+    "clinicEarnings": "Clinic Earnings",
+    "overviewTimeframe": "Overview",
+    "todaysAppointments": "Today's Appointments",
+    "scheduledCount": "scheduled",
+    "noAppointmentsToday": "No appointments scheduled for today.",
+    "openCalendar": "Open Calendar",
+    "viewFullCalendar": "View full calendar",
+    "smartShiftTasks": "Smart Shift Tasks",
+    "activeCount": "active",
+    "noTasksYet": "No tasks yet. Head to the Tasks page to get started!",
+    "goToTasks": "Go to Tasks",
+    "viewAllActiveTasks": "View all tasks ({{count}} active)",
+    "manageTasks": "Manage tasks",
+    "unknownPatient": "Unknown Patient"
+  },
+  "fields": {
+    "date": "Date",
+    "treatmentType": "Treatment Type",
+    "treatmentDetails": "Treatment Details",
+    "totalCost": "Total Cost",
+    "amountPaid": "Amount Paid",
+    "nextAppointment": "Next Appointment",
+    "uploadMedia": "Upload Media"
+  },
+  "actions": {
+    "choosePatient": "Choose patient",
+    "logSession": "Log Session",
+    "custom": "Custom",
+    "yesSaveSession": "Yes, Save Session"
+  },
+  "placeholders": {
+    "typeCustomCategory": "Type custom category (e.g. Insurance)..."
+  },
+  "labels": {
+    "currentMedia": "Current Media",
+    "newMediaToUpload": "New Media to Upload"
+  },
+  "messages": {
+    "clickAddMoreMedia": "Click to add more media",
+    "clickUploadMedia": "Click to upload X-rays or photos",
+    "confirmZeroFinancialsText": "Are you sure you want the Total Cost and Amount Paid to be 0?"
+  },
+  "titles": {
+    "confirmZeroFinancials": "Confirm Session Financials"
+  }
+}

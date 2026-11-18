@@ -1,25 +1,26 @@
 import React, { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard, CalendarDays, Building2, Users, BarChart3, TrendingUp, ListTodo, Briefcase, ChevronLeft, ChevronRight, X, PlayCircle, Headset, Receipt
 } from 'lucide-react';
 import { useLayoutStore } from '../store/layoutStore';
 import AppLogo from './AppLogo';
 
-const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/appointments', icon: CalendarDays, label: 'Appointments' },
-  { to: '/clinics', icon: Building2, label: 'Clinics' },
-  { to: '/patients', icon: Users, label: 'Patients' },
-  { to: '/tasks', icon: ListTodo, label: 'Tasks' },
-  { to: '/analytics', icon: BarChart3, label: 'Earnings' },
-  { to: '/expenses', icon: Receipt, label: 'Expenses' },
-  { to: '/career-analytics', icon: TrendingUp, label: 'Career' },
-  { to: '/portfolio/manage', icon: Briefcase, label: 'Portfolio' },
+const navItemsDef = [
+  { to: '/dashboard', icon: LayoutDashboard, labelKey: 'nav.dashboard' },
+  { to: '/appointments', icon: CalendarDays, labelKey: 'nav.appointments' },
+  { to: '/clinics', icon: Building2, labelKey: 'nav.clinics' },
+  { to: '/patients', icon: Users, labelKey: 'nav.patients' },
+  { to: '/tasks', icon: ListTodo, labelKey: 'nav.tasks' },
+  { to: '/analytics', icon: BarChart3, labelKey: 'nav.earnings' },
+  { to: '/expenses', icon: Receipt, labelKey: 'nav.expenses' },
+  { to: '/career-analytics', icon: TrendingUp, labelKey: 'nav.career' },
+  { to: '/portfolio/manage', icon: Briefcase, labelKey: 'nav.portfolio' },
   { type: 'divider' },
-  { to: '/how-to-use', icon: PlayCircle, label: 'How to Use' },
-  { to: '/support', icon: Headset, label: 'Support' },
+  { to: '/how-to-use', icon: PlayCircle, labelKey: 'nav.howToUse' },
+  { to: '/support', icon: Headset, labelKey: 'nav.support' },
 ];
 
 const getTourId = (path) => {
@@ -35,6 +36,12 @@ const getTourId = (path) => {
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const { isSidebarExpanded, toggleSidebar } = useLayoutStore();
   const location = useLocation();
+  const { t } = useTranslation('common');
+
+  // Resolve labels at render time so they react to language changes
+  const navItems = navItemsDef.map(item => 
+    item.type === 'divider' ? item : { ...item, label: t(item.labelKey) }
+  );
 
   // On route change, close mobile sidebar automatically
   useEffect(() => {

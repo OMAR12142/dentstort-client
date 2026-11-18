@@ -1,0 +1,139 @@
+{
+  "title": "Earnings & Analytics",
+  "careerTitle": "Career Analytics",
+  "months": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  },
+  "labels": {
+    "viewing": "Viewing:",
+    "range": "Range",
+    "to": "to"
+  },
+  "timeframes": {
+    "fixedPeriod": "Fixed Period",
+    "allTime": "All-Time",
+    "customRange": "Custom Range",
+    "fullCareer": "Full Career",
+    "annualView": "Annual View"
+  },
+  "stats": {
+    "grossEarnings": "Gross Earnings",
+    "totalEarnings": "Total Earnings",
+    "totalSessions": "Total Sessions",
+    "totalExpenses": "Total Expenses",
+    "netProfit": "Net Profit"
+  },
+  "subtext": {
+    "grossEarnings": "Commissions + Fixed Salaries",
+    "totalSessions": "Documented patient sessions",
+    "totalExpenses": "Materials + Salaries + Other",
+    "netProfit": "Earnings − Expenses",
+    "fixed": "Fixed",
+    "expenses": "Expenses",
+    "sessionsRecorded": "Sessions recorded",
+    "sessionsCount": "{{count}} Sessions"
+  },
+  "sections": {
+    "growth": "Growth",
+    "rangeMetrics": "Range Metrics",
+    "clinic": "Clinic",
+    "earnings": "Earnings",
+    "cases": "Cases"
+  },
+  "filters": {
+    "clinic": "Clinic",
+    "allClinics": "All Clinics",
+    "timeframe": "Timeframe",
+    "insurance": "Insurance",
+    "both": "Both",
+    "commissionsOnly": "Commissions Only",
+    "fixedSalaryOnly": "Fixed Salary Only",
+    "expensesOnly": "Expenses Only"
+  },
+  "actions": {
+    "exportReport": "Export Report",
+    "selectFormat": "Select Format"
+  },
+  "emptyState": {
+    "noActivity": "No activity detected in this period",
+    "noEarnings": "No earnings data for this period",
+    "noTreatments": "No treatments indexed for this period",
+    "selectPeriod": "Select a period with activity to identify expertise."
+  },
+  "dashboardStats": {
+    "totalRevenue": "Total Revenue",
+    "yourEarnings": "Your Earnings",
+    "totalSessions": "Total Sessions",
+    "avgPerSession": "Avg. per Session",
+    "collectionRate": "Collection Rate",
+    "outstanding": "Outstanding Balance"
+  },
+  "monthlyEarnings": {
+    "title": "Monthly Earnings",
+    "totalCost": "Total Revenue",
+    "amountPaid": "Amount Collected",
+    "dentistCut": "Your Earnings",
+    "remaining": "Outstanding"
+  },
+  "earningsHistory": {
+    "title": "Earnings History",
+    "trend": "Trend",
+    "noData": "No earnings data available yet"
+  },
+  "treatments": {
+    "title": "Treatment Distribution",
+    "noData": "No treatment data available yet"
+  },
+  "charts": {
+    "revenue": "Revenue",
+    "earnings": "Earnings",
+    "sessions": "Sessions",
+    "patients": "Patients",
+    "noData": "No data to display"
+  },
+  "career": {
+    "totalPatients": "Total Patients",
+    "totalSessions": "Total Sessions",
+    "totalEarnings": "Total Earnings",
+    "avgRating": "Avg. Rating",
+    "topCategories": "Top Treatment Categories",
+    "monthlyGrowth": "Monthly Growth",
+    "patientRetention": "Patient Retention",
+    "clinicPerformance": "Clinic Performance"
+  },
+  "benchmarkedAgainst": "Benchmarked against:",
+  "periodLabels": {
+    "allTime": "All-Time Professional History",
+    "customRange": "Custom Range: {{start}} to {{end}}",
+    "annualReview": "Annual Review: {{year}}"
+  },
+  "careerStats": {
+    "totalTreatments": "Total Treatments",
+    "periodTreatments": "Period Treatments",
+    "treatmentTypes": "Treatment Types",
+    "activeTreatments": "Active Treatments",
+    "completedSessions": "Completed Sessions",
+    "differentCategories": "Different Categories"
+  },
+  "expertiseDistribution": "Expertise Distribution",
+  "rangeIndexed": "Range Indexed",
+  "expertiseSpotlight": "Expertise Spotlight",
+  "representingVolume": "Representing <1>{{pct}}%</1> of clinical volume in this range.",
+  "analyzeDomainBenchmarks": "Analyze Domain Benchmarks",
+  "areasOfFocus": "Areas of Focus",
+  "weight": "Weight",
+  "period": "Period",
+  "to": "to",
+  "sessions": "Sessions"
+}

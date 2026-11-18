@@ -1,0 +1,67 @@
+{
+  "title": "Profile",
+  "subtitle": "Manage your profile, personal information, and security.",
+  "editProfile": "Edit Profile",
+  "personalInfo": "Personal Information",
+  "name": "Full Name",
+  "email": "Email Address",
+  "phone": "Phone Number",
+  "phonePlaceholder": "Enter your phone number",
+  "updateProfile": "Update Profile",
+  "emailSupportMessage": "Contact support to change your email.",
+  "saveChanges": "Save Changes",
+  "saved": "Saved!",
+  "roles": {
+    "admin": "Administrator",
+    "dentist": "Dentist"
+  },
+  "photo": {
+    "title": "Profile Photo",
+    "upload": "Upload Photo",
+    "remove": "Remove Photo",
+    "uploading": "Uploading...",
+    "maxSize": "Max size: 5MB",
+    "formats": "JPG, PNG, or WebP",
+    "deleteConfirmTitle": "Delete Profile Photo?",
+    "deleteConfirmMsg": "Are you sure you want to remove your profile photo? This action cannot be undone."
+  },
+  "security": {
+    "title": "Security",
+    "subtitle": "Update your password to keep your account secure",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "submit": "Update Password",
+    "submitting": "Updating...",
+    "googleAccount": "You signed in with Google. Password management is handled by Google."
+  },
+  "insurance": {
+    "title": "Insurance Providers",
+    "addProvider": "Add Provider",
+    "providerPlaceholder": "Enter provider name",
+    "noProviders": "No insurance providers added",
+    "rename": "Rename",
+    "renamePlaceholder": "Enter new name"
+  },
+  "completeProfile": {
+    "title": "Complete Your Profile",
+    "message": "Add your phone number to complete your profile and make it easier for patients to reach you.",
+    "addPhone": "Add Phone Number",
+    "skip": "Skip for now"
+  },
+  "toast": {
+    "profileUpdated": "Profile updated successfully",
+    "passwordChanged": "Password changed successfully",
+    "photoUploaded": "Photo uploaded successfully",
+    "photoRemoved": "Photo removed",
+    "insuranceAdded": "Insurance provider added",
+    "insuranceRenamed": "Insurance provider renamed",
+    "insuranceDeleted": "Insurance provider removed",
+    "updateError": "Failed to update profile",
+    "passwordError": "Failed to change password"
+  }
+}

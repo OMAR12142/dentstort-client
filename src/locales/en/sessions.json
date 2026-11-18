@@ -1,0 +1,69 @@
+{
+  "title": "Log Session",
+  "editTitle": "Edit Session",
+  "form": {
+    "clinic": "Clinic",
+    "selectClinic": "Select clinic",
+    "date": "Session Date",
+    "treatmentDetails": "Treatment Details",
+    "treatmentDetailsPlaceholder": "Describe the treatment performed...",
+    "treatmentCategory": "Treatment Category",
+    "selectCategory": "Select categories",
+    "totalCost": "Total Cost",
+    "totalCostPlaceholder": "0",
+    "amountPaid": "Amount Paid",
+    "amountPaidPlaceholder": "0",
+    "remainingBalance": "Remaining Balance",
+    "nextAppointment": "Next Appointment",
+    "images": "Session Images",
+    "uploadImages": "Upload Images",
+    "maxImages": "Max {{max}} images",
+    "removeImage": "Remove image",
+    "submit": "Log Session",
+    "update": "Update Session",
+    "submitting": "Logging...",
+    "updating": "Updating..."
+  },
+  "categories": {
+    "checkup": "Check-up",
+    "cleaning": "Cleaning",
+    "filling": "Filling",
+    "extraction": "Extraction",
+    "rootCanal": "Root Canal",
+    "crown": "Crown",
+    "bridge": "Bridge",
+    "implant": "Implant",
+    "denture": "Denture",
+    "orthodontics": "Orthodontics",
+    "surgery": "Surgery",
+    "whitening": "Whitening",
+    "veneer": "Veneer",
+    "xray": "X-Ray",
+    "consultation": "Consultation",
+    "other": "Other"
+  },
+  "details": {
+    "treatmentDetails": "Treatment Details",
+    "cost": "Cost",
+    "paid": "Paid",
+    "remaining": "Remaining",
+    "dentistCut": "Your Earnings",
+    "date": "Date",
+    "clinic": "Clinic",
+    "category": "Category",
+    "images": "Images",
+    "nextAppointment": "Next Appointment"
+  },
+  "delete": {
+    "title": "Delete Session",
+    "confirm": "Are you sure you want to delete this session?",
+    "success": "Session deleted successfully"
+  },
+  "toast": {
+    "created": "Session logged successfully",
+    "updated": "Session updated successfully",
+    "deleted": "Session deleted successfully",
+    "createError": "Failed to log session",
+    "updateError": "Failed to update session"
+  }
+}

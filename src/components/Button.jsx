@@ -20,8 +20,8 @@ export default function Button({
 }) {
   const base = 'inline-flex items-center justify-center gap-2 rounded-lg font-bold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary active:scale-[0.98]';
   const variants = {
-    primary: 'bg-primary text-white border-0 hover:bg-primary/90 shadow-sm',
-    secondary: 'bg-[#F3F2EF] text-[#191919] border border-[#E0DFDC] hover:bg-[#E0DFDC]',
+    primary: 'bg-primary text-primary-content border-0 hover:bg-primary/90 shadow-sm',
+    secondary: 'bg-base-100 text-base-content border border-neutral-light hover:bg-base-content/10',
     outline: 'bg-transparent text-primary border border-primary hover:bg-primary/5',
     ghost: 'bg-transparent text-base-content hover:bg-base-200',
   };

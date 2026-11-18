@@ -1,6 +1,8 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
+import { clearUserQueryCache } from './api/queryClient';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
 import MainLayout from './layouts/MainLayout';
@@ -112,6 +114,7 @@ function DentistRoute() {
 export default function App() {
   const isDark = useThemeStore((s) => s.isDark);
   const { isShadowMode, exitShadowMode, user } = useAuthStore();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const html = document.documentElement;
@@ -123,6 +126,7 @@ export default function App() {
 
   const handleExitShadow = () => {
     if (exitShadowMode()) {
+      clearUserQueryCache(queryClient);
       window.location.href = '/admin/dentists';
     }
   };
@@ -142,7 +146,7 @@ export default function App() {
             onClick={handleExitShadow}
             className="btn btn-xs btn-outline border-warning-content/30 text-warning-content hover:bg-warning-content hover:text-warning"
           >
-            Return to Admin Dashboard
+            Return to Admin Dashboard 
           </button>
         </div>
       )}

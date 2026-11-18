@@ -2,15 +2,18 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, Sun, Moon, LogOut, User, Settings, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
 import { useLogout } from '../hooks/useAuth';
 import AppLogo from './AppLogo';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function TopHeader({ setMobileOpen }) {
   const { user } = useAuthStore();
   const { isDark, toggleTheme } = useThemeStore();
   const { mutate: logout } = useLogout();
+  const { t } = useTranslation('common');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -56,6 +59,8 @@ export default function TopHeader({ setMobileOpen }) {
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
+        <LanguageSwitcher />
+
         {/* Vertical Divider */}
         <div className="w-[1px] h-6 bg-neutral-light mx-1 hidden sm:block"></div>
 
@@ -82,7 +87,7 @@ export default function TopHeader({ setMobileOpen }) {
                 {user?.name?.split(' ')[0] || 'User'}
               </span>
               <span className="text-[11px] text-base-content/50 font-medium mt-1">
-                {user?.role === 'admin' ? 'Admin' : 'Dentist'}
+                {user?.role === 'admin' ? t('roles.admin', 'Admin') : t('roles.dentist', 'Dentist')}
               </span>
             </div>
 
@@ -112,7 +117,7 @@ export default function TopHeader({ setMobileOpen }) {
                   className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-base-content/80 hover:text-primary hover:bg-primary/5 transition-colors"
                 >
                   <Settings size={18} />
-                  Account Settings
+                  {t('accountSettings', 'Account Settings')}
                 </Link>
 
                 <div className="h-[1px] bg-neutral-light/50 my-1"></div>
@@ -125,7 +130,7 @@ export default function TopHeader({ setMobileOpen }) {
                   className="w-full flex items-center justify-start gap-3 px-4 py-2.5 text-sm font-medium text-error hover:bg-error/10 transition-colors"
                 >
                   <LogOut size={18} />
-                  Log out
+                  {t('logOut', 'Log out')}
                 </button>
               </motion.div>
             )}

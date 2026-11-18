@@ -1,17 +1,20 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { loginApi, registerApi, logoutApi, updateProfileApi, updatePasswordApi, uploadPhotoApi, removePhotoApi, googleLoginApi } from '../api/auth';
+import { clearUserQueryCache } from '../api/queryClient';
 import { useAuthStore } from '../store/authStore';
 
 export const useLogin = () => {
   const setAuth = useAuthStore((s) => s.setAuth);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: loginApi,
     onSuccess: (data) => {
       const { accessToken, ...user } = data;
       setAuth(user, accessToken);
+      clearUserQueryCache(queryClient);
       navigate(user.role === 'admin' ? '/admin' : '/dashboard');
     },
   });
@@ -20,12 +23,14 @@ export const useLogin = () => {
 export const useGoogleLogin = () => {
   const setAuth = useAuthStore((s) => s.setAuth);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: googleLoginApi,
     onSuccess: (data) => {
       const { accessToken, ...user } = data;
       setAuth(user, accessToken);
+      clearUserQueryCache(queryClient);
       navigate(user.role === 'admin' ? '/admin' : '/dashboard');
     },
   });
@@ -34,12 +39,14 @@ export const useGoogleLogin = () => {
 export const useRegister = () => {
   const setAuth = useAuthStore((s) => s.setAuth);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: registerApi,
     onSuccess: (data) => {
       const { accessToken, ...user } = data;
       setAuth(user, accessToken);
+      clearUserQueryCache(queryClient);
       navigate('/dashboard');
     },
   });
@@ -48,11 +55,13 @@ export const useRegister = () => {
 export const useLogout = () => {
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: logoutApi,
-    onSuccess: () => {
+    onSettled: () => {
       logout();
+      clearUserQueryCache(queryClient);
       navigate('/login');
     },
   });

@@ -8,6 +8,8 @@ import { usePatients } from '../hooks/usePatients';
 const DEFAULT_CATEGORIES = [
   'Surgery', 'Implant', 'Endo', 'Perio', 'Fixed', 'Removable', 'Restorative', 'General',
 ];
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 const getCustomCategories = () => {
   try {
@@ -151,21 +153,50 @@ export default function LogSessionModal({
   };
 
   const handleFiles = (e) => {
-    const selected = Array.from(e.target.files);
+    const selected = Array.from(e.target.files || []);
+    e.target.value = '';
     if (!selected.length) return;
+
+    const validFiles = [];
+    const rejectionReasons = [];
+
+    for (const file of selected) {
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        rejectionReasons.push('Only JPG, PNG, and WebP images are allowed.');
+        continue;
+      }
+      if (file.size > MAX_IMAGE_SIZE_BYTES) {
+        rejectionReasons.push('Each image must be 5 MB or smaller.');
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    const uniqueReason = [...new Set(rejectionReasons)].join(' ');
+
+    if (validFiles.length === 0) {
+      setErrors((p) => ({ ...p, media: uniqueReason || 'Invalid image selected.' }));
+      return;
+    }
 
     setFiles((prev) => {
       const currentTotal = existingMedia.length + prev.length;
       const maxAllowed = 5 - currentTotal;
 
       if (maxAllowed <= 0) {
-        setErrors(p => ({ ...p, media: 'Already reached 5 images.' }));
+        setErrors((p) => ({ ...p, media: 'Already reached 5 images.' }));
         return prev;
       }
 
-      const toAdd = selected.slice(0, maxAllowed);
-      if (selected.length > maxAllowed) {
-        setErrors(p => ({ ...p, media: `Only added ${maxAllowed} more. Limit is 5 total.` }));
+      const toAdd = validFiles.slice(0, maxAllowed);
+      if (validFiles.length > maxAllowed) {
+        const limitMsg = `Only added ${maxAllowed} more. Limit is 5 total.`;
+        setErrors((p) => ({
+          ...p,
+          media: uniqueReason ? `${uniqueReason} ${limitMsg}` : limitMsg,
+        }));
+      } else if (uniqueReason) {
+        setErrors((p) => ({ ...p, media: uniqueReason }));
       } else {
         clearError('media');
       }
@@ -521,7 +552,7 @@ export default function LogSessionModal({
             </span>
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp"
               multiple
               className="hidden"
               onChange={handleFiles}

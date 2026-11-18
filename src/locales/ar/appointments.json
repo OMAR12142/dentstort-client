@@ -1,0 +1,96 @@
+{
+  "title": "المواعيد",
+  "subtitle": "اضغط على أي يوم لرؤية التفاصيل · نظرة عامة على جدول مواعيدك",
+  "allClinics": "جميع العيادات",
+  "addAppointment": "إضافة موعد",
+  "editAppointment": "تعديل الموعد",
+  "bookAppointment": "حجز الموعد",
+  "noAppointments": "لا توجد مواعيد",
+  "todayAppointments": "مواعيد اليوم",
+  "upcomingAppointments": "المواعيد القادمة",
+  "actions": {
+    "newAppointment": "موعد جديد",
+    "searchPatients": "ابحث عن مريض...",
+    "addNewPatient": "إضافة مريض جديد",
+    "createAndSelect": "إنشاء واختيار",
+    "selectClinic": "اختر عيادة"
+  },
+  "legend": {
+    "future": "المواعيد القادمة",
+    "today": "اليوم"
+  },
+  "fields": {
+    "patient": "المريض",
+    "newPatient": "مريض جديد",
+    "patientNameRequired": "اسم المريض *",
+    "phoneOptional": "الهاتف (اختياري)",
+    "clinic": "العيادة",
+    "date": "التاريخ",
+    "start": "البدء",
+    "end": "الانتهاء",
+    "type": "نوع الموعد",
+    "status": "الحالة",
+    "notes": "ملاحظات",
+    "preVisitNotes": "ملاحظات قبل الزيارة (اختياري)"
+  },
+  "messages": {
+    "noPatientsFound": "لم يتم العثور على مرضى"
+  },
+  "dayDetail": {
+    "title": "مواعيد يوم",
+    "noAppointments": "لا توجد مواعيد في هذا اليوم",
+    "backToCalendar": "العودة للتقويم"
+  },
+  "form": {
+    "patient": "المريض",
+    "selectPatient": "اختر مريض",
+    "searchPatient": "ابحث عن مريض...",
+    "clinic": "العيادة",
+    "selectClinic": "اختر عيادة",
+    "date": "التاريخ",
+    "startTime": "وقت البدء",
+    "endTime": "وقت الانتهاء",
+    "type": "نوع الموعد",
+    "status": "الحالة",
+    "notes": "ملاحظات",
+    "notesPlaceholder": "أضف ملاحظات حول هذا الموعد...",
+    "submit": "إنشاء الموعد",
+    "update": "تحديث الموعد",
+    "submitting": "جاري الإنشاء...",
+    "updating": "جاري التحديث..."
+  },
+  "types": {
+    "consultation": "استشارة",
+    "follow-up": "متابعة",
+    "procedure": "إجراء",
+    "emergency": "طوارئ",
+    "other": "أخرى"
+  },
+  "statuses": {
+    "scheduled": "مجدول",
+    "confirmed": "مؤكد",
+    "completed": "مكتمل",
+    "cancelled": "ملغى",
+    "no-show": "لم يحضر"
+  },
+  "delete": {
+    "title": "حذف الموعد",
+    "confirm": "هل أنت متأكد من حذف هذا الموعد؟",
+    "success": "تم حذف الموعد بنجاح"
+  },
+  "toast": {
+    "created": "تم إنشاء الموعد بنجاح",
+    "updated": "تم تحديث الموعد بنجاح",
+    "deleted": "تم حذف الموعد بنجاح",
+    "statusUpdated": "تم تحديث حالة الموعد",
+    "createError": "فشل في إنشاء الموعد",
+    "updateError": "فشل في تحديث الموعد"
+  },
+  "calendar": {
+    "today": "اليوم",
+    "month": "شهر",
+    "week": "أسبوع",
+    "day": "يوم",
+    "list": "قائمة"
+  }
+}

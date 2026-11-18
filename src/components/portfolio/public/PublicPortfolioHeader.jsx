@@ -1,77 +1,96 @@
 import React from 'react';
-import { User, Award } from 'lucide-react';
+import { User, Award, Briefcase, MapPin } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import SafeImage from '../SafeImage';
+import BrandedPortfolioCover from './BrandedPortfolioCover';
+import { formatDoctorDisplayName } from '../../../utils/portfolioFormatters';
 
 /**
- * PublicPortfolioHeader — Displays the clinician's banner, profile photo, and key identity stats.
+ * PublicPortfolioHeader — Branded DentStory marketing cover (custom coverPhoto or curated
+ * coverTheme preset), overlapping circular avatar, doctor identity, clinic subtitle,
+ * and unified trust stat pills.
  */
-export default function PublicPortfolioHeader({ dentist, yearsOfExperience, onPhotoClick }) {
+export default function PublicPortfolioHeader({
+  dentist,
+  coverPhoto,
+  coverTheme,
+  clinicName,
+  yearsOfExperience,
+  totalCases = 0,
+  onPhotoClick,
+}) {
+  const { t, i18n } = useTranslation('portfolio');
+  const isArabic = i18n.language?.startsWith('ar');
+  const displayName = formatDoctorDisplayName(dentist?.name, isArabic);
+
   return (
-    <div className="bg-white dark:bg-base-100 border-b border-slate-200 dark:border-base-content/10 pb-4 mb-2 shadow-sm relative overflow-hidden">
-
-      {/* Banner with Primary Brand Color */}
-      <div className="w-full max-w-7xl mx-auto sm:px-4 lg:px-8 mt-0 sm:mt-4">
-        <div className="w-full h-40 sm:h-64 bg-[#050505] relative rounded-br-[80px] sm:rounded-br-[160px] sm:rounded-tl-[40px] overflow-hidden shadow-2xl group">
-
-          {/* Mesh Gradient Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0A66C2] via-[#001D3D] to-[#000814] opacity-80" />
-
-          {/* Architectural Glows */}
-          <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-primary/20 rounded-full blur-[120px]" />
-          <div className="absolute bottom-[-20%] left-[-10%] w-[300px] h-[300px] bg-blue-400/10 rounded-full blur-[100px]" />
-
-          {/* Logo Mark Typography Background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none text-center">
-            <h2 className="text-[80px] sm:text-[180px] font-black text-white/[0.03] leading-none tracking-tighter uppercase whitespace-nowrap">
-              DENTSTORY
-            </h2>
-          </div>
-
-          {/* Creative Glass Element (Branding Card) */}
-
-          {/* Pattern Overlay */}
-          <div className={`absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.03"%3E%3Cpath d="M0 38.59V40h1.41l.59-.59V38H0v.59zM0 1.41V0h1.41L0 1.41zM38.59 0H40v1.41L38.59 0zM40 38.59V40h-1.41L40 38.59zM0 20h1v1H0v-1zm1 0h1v1H1v-1zm1 0h1v1H2v-1zm1 0h1v1H3v-1zm1 0h1v1H4v-1zm1 0h1v1H5v-1zm1 0h1v1H6v-1zm1 0h1v1H7v-1zm1 0h1v1H8v-1zm1 0h1v1H9v-1zm1 0h1v1H10v-1zm1 0h1v1H11v-1zm1 0h1v1H12v-1zm1 0h1v1H13v-1zm1 0h1v1H14v-1zm1 0h1v1H15v-1zm1 0h1v1H16v-1zm1 0h1v1H17v-1zm1 0h1v1H18v-1zm1 0h1v1H19v-1zm1 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1zm0 1h-1v-1h1v1z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30 pointer-events-none`} />
-
-          {/* Bottom Glow Fade */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-        </div>
+    <div className="bg-base-200 border-b border-neutral-light pb-4 shadow-sm relative overflow-hidden transition-colors duration-300">
+      {/* ── Branded DentStory Cover Banner (Custom Photo or Curated Preset) ── */}
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-3 sm:pt-4">
+        <BrandedPortfolioCover
+          coverPhoto={coverPhoto}
+          coverTheme={coverTheme}
+          alt={`${displayName} cover`}
+          className="w-full h-36 sm:h-44 md:h-48 rounded-2xl"
+          patternId="public-portfolio-cover-grid"
+          interactive
+        />
       </div>
 
-      {/* Identity Overlay */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-12 sm:-mt-16 relative z-10">
-          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 text-center sm:text-left">
-            {/* Overlapping Avatar */}
+      {/* ── Overlapping Avatar, Identity & Unified Trust Stats ── */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-5 -mt-10 sm:-mt-12 px-2 sm:px-4 relative z-10">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-3 sm:gap-4 text-center sm:text-start min-w-0 w-full sm:w-auto">
+            {/* Overlapping Circular Avatar */}
             <div
               onClick={onPhotoClick}
-              className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden border-[6px] border-white dark:border-[#252525] bg-white dark:bg-base-100 shadow-xl shrink-0 transition-transform hover:scale-105 duration-500 cursor-pointer"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-4 ring-base-100 bg-base-100 shadow-lg shrink-0 transition-transform hover:scale-105 duration-300 cursor-pointer"
             >
-              {dentist.profilePhoto?.url ? (
-                <img src={dentist.profilePhoto.url} alt={dentist.name} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-primary/10">
-                  <User size={40} className="text-primary/40" />
+              <SafeImage
+                src={dentist?.profilePhoto?.url}
+                alt={displayName}
+                className="w-full h-full object-cover"
+                fallback={<User size={34} className="text-primary/40" />}
+                fallbackClassName="w-full h-full flex items-center justify-center bg-primary/10"
+              />
+            </div>
+
+            {/* Doctor Name, Clinic Subtitle & Inline Trust Pills */}
+            <div className="pb-0.5 space-y-1.5 min-w-0 w-full sm:w-auto">
+              <div className="space-y-0.5">
+                <h1 className="text-xl sm:text-2xl font-bold text-base-content tracking-tight break-words [overflow-wrap:anywhere] leading-tight">
+                  {displayName}
+                </h1>
+                {clinicName && (
+                  <p className="inline-flex items-center justify-center sm:justify-start gap-1.5 text-xs sm:text-sm font-semibold text-base-content/70 max-w-full">
+                    <MapPin size={13} className="text-primary shrink-0" />
+                    <span className="break-words [overflow-wrap:anywhere]">{clinicName}</span>
+                  </p>
+                )}
+              </div>
+
+              {(yearsOfExperience > 0 || totalCases > 0) && (
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5">
+                  {yearsOfExperience > 0 && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-success/10 text-success border border-success/25 dark:bg-success/20">
+                      <Award size={12} className="shrink-0" />
+                      {t('public.yearsExpPlus', { count: yearsOfExperience })}
+                    </span>
+                  )}
+                  {totalCases > 0 && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/25 dark:bg-primary/20">
+                      <Briefcase size={12} className="shrink-0" />
+                      {totalCases === 1
+                        ? t('public.documentedCase')
+                        : t('public.documentedCases', { count: totalCases })}
+                    </span>
+                  )}
                 </div>
               )}
             </div>
-
-            {/* Mini Identity */}
-            <div className="pb-2 space-y-1">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-base-content tracking-tight">
-                Dr. {dentist.name}
-              </h1>
-            </div>
-          </div>
-
-          {/* Quick Stats/Badges */}
-          <div className="shrink-0 flex items-center justify-center md:pb-4 gap-3">
-            {yearsOfExperience > 0 && (
-              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-success/10 text-success border border-success/20 flex items-center gap-1.5 dark:bg-success/20">
-                <Award size={12} /> {yearsOfExperience} years experience
-              </span>
-            )}
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }

@@ -1,0 +1,83 @@
+{
+  "title": "العيادات",
+  "addClinic": "إضافة عيادة",
+  "editClinic": "تعديل العيادة",
+  "todaysShifts": "شفتات اليوم",
+  "noClinicShiftsToday": "✨ لا توجد شفتات عيادة اليوم. استمتع براحتك المستحقة!",
+  "noClinics": "لا توجد عيادات",
+  "noClinicsDesc": "أضف أول عيادة للبدء",
+  "fields": {
+    "clinicName": "اسم العيادة",
+    "namePlaceholder": "عيادة الابتسامة المشرقة",
+    "address": "العنوان",
+    "addressPlaceholder": "١٢٣ الشارع الرئيسي، القاهرة",
+    "commissionPercentage": "نسبة العمولة %",
+    "addFixedSalary": "إضافة راتب ثابت",
+    "fixedSalary": "الراتب الثابت",
+    "workingHours": "ساعات العمل",
+    "amountEgp": "المبلغ (ج.م)",
+    "salaryDay": "يوم القبض (١-٢٨)",
+    "workingDays": "أيام العمل"
+  },
+  "actions": {
+    "addDayShift": "إضافة يوم/شفت",
+    "addFixedSalary": "إضافة راتب ثابت"
+  },
+  "messages": {
+    "noWorkingDays": "لم يتم إضافة أيام عمل بعد. انقر على \"إضافة يوم/شفت\" لتحديد ساعات عمل العيادة."
+  },
+  "days": {
+    "saturday": "السبت",
+    "sunday": "الأحد",
+    "monday": "الإثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة"
+  },
+  "validation": {
+    "nameRequired": "اسم العيادة مطلوب",
+    "commissionRequired": "العمولة مطلوبة",
+    "commissionRange": "يجب أن تكون النسبة بين ٠ و ١٠٠",
+    "validAmountRequired": "المبلغ يجب أن يكون أكبر من ٠",
+    "dayBetween1And28": "يجب أن يكون اليوم بين ١ و ٢٨"
+  },
+  "form": {
+    "name": "اسم العيادة",
+    "namePlaceholder": "أدخل اسم العيادة",
+    "address": "العنوان",
+    "addressPlaceholder": "أدخل عنوان العيادة",
+    "commission": "نسبة العمولة الافتراضية %",
+    "commissionPlaceholder": "مثال: 50",
+    "commissionHelp": "النسبة التي تحتفظ بها العيادة من كل جلسة",
+    "workingDays": "أيام العمل",
+    "day": "اليوم",
+    "startTime": "وقت البدء",
+    "endTime": "وقت الانتهاء",
+    "addDay": "إضافة يوم عمل",
+    "removeDay": "حذف",
+    "submit": "إنشاء العيادة",
+    "update": "تحديث العيادة",
+    "submitting": "جاري الإنشاء...",
+    "updating": "جاري التحديث..."
+  },
+  "card": {
+    "commission": "العمولة",
+    "workingDays": "أيام العمل",
+    "patients": "المرضى",
+    "sessions": "الجلسات",
+    "noSchedule": "لا يوجد جدول محدد"
+  },
+  "delete": {
+    "title": "حذف العيادة",
+    "confirm": "هل أنت متأكد من حذف هذه العيادة؟ جميع البيانات المرتبطة ستبقى.",
+    "success": "تم حذف العيادة بنجاح"
+  },
+  "toast": {
+    "created": "تم إنشاء العيادة بنجاح",
+    "updated": "تم تحديث العيادة بنجاح",
+    "deleted": "تم حذف العيادة بنجاح",
+    "createError": "فشل في إنشاء العيادة",
+    "updateError": "فشل في تحديث العيادة"
+  }
+}
