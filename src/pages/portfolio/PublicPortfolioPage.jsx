@@ -119,7 +119,7 @@ export default function PublicPortfolioPage() {
   } = data;
 
   return (
-    <div className="bg-base-100 min-h-screen pb-8 font-sans transition-colors duration-300">
+    <div className="bg-base-100 min-h-screen pb-8 font-sans transition-colors duration-300 w-full max-w-full overflow-x-clip">
       <SEO
         title={`${formattedDoctorTitle} — Dental Portfolio`}
         description={bio ? bio.substring(0, 150) : `View ${formattedDoctorTitle}'s professional clinical portfolio.`}

@@ -12,7 +12,7 @@ export default function PortfolioLayout() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-base-100 text-base-content">
+    <div className="min-h-screen flex flex-col bg-base-100 text-base-content w-full max-w-full overflow-x-clip">
       {/* Integrated Main Navbar */}
       <PublicNavbar />
 

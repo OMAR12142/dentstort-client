@@ -91,7 +91,11 @@ export default function PublicCaseDetailPage() {
     const url = window.location.href;
     const title = `${caseData.title} | Dr. ${dentist.name}`;
     if (navigator.share) {
-      try { await navigator.share({ title, url }); } catch (err) { }
+      try {
+        await navigator.share({ title, url });
+      } catch {
+        // User aborted share or share unavailable
+      }
     } else {
       navigator.clipboard.writeText(url);
       setCopied(true);
@@ -112,7 +116,7 @@ export default function PublicCaseDetailPage() {
   const doctorDisplayName = formatDoctorDisplayName(dentist.name);
 
   return (
-    <div className="bg-base-100 min-h-screen pb-16 font-sans transition-colors duration-300">
+    <div className="bg-base-100 min-h-screen pb-16 font-sans transition-colors duration-300 w-full max-w-full overflow-x-clip">
       <SEO
         title={`${caseData.title} — ${doctorDisplayName}`}
         description={caseData.description?.substring(0, 150) || `Clinical case detail on ${doctorDisplayName}'s portfolio.`}

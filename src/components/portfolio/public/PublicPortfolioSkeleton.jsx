@@ -105,20 +105,22 @@ export default function PublicPortfolioSkeleton() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-5">
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div
                 key={n}
-                className="bg-base-200 border border-neutral-light rounded-2xl overflow-hidden shadow-sm"
+                className="bg-base-200 border border-neutral-light rounded-xl sm:rounded-2xl overflow-hidden shadow-sm flex flex-col"
               >
-                <div className="aspect-[4/3] bg-base-content/10" />
-                <div className="p-4 space-y-2.5">
-                  <div className="flex items-center gap-2">
-                    <div className="h-4 w-16 rounded-md bg-base-content/10" />
-                    <div className="h-4 w-14 rounded-md bg-base-content/10" />
+                <div className="aspect-[4/3] bg-base-content/10 shrink-0" />
+                <div className="p-2.5 sm:p-4 space-y-2 sm:space-y-2.5 flex-1 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="h-3.5 sm:h-4 w-3/4 rounded-md bg-base-content/15" />
+                    <div className="h-2.5 sm:h-3 w-full rounded bg-base-content/10" />
                   </div>
-                  <div className="h-4 w-3/4 rounded-md bg-base-content/15" />
-                  <div className="h-3 w-full rounded bg-base-content/10" />
+                  <div className="pt-2 sm:pt-3 border-t border-neutral-light/70 flex items-center justify-between">
+                    <div className="h-2.5 sm:h-3 w-14 sm:w-16 rounded bg-base-content/10" />
+                    <div className="h-2.5 sm:h-3 w-8 sm:w-10 rounded bg-base-content/10" />
+                  </div>
                 </div>
               </div>
             ))}
