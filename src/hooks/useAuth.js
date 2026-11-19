@@ -31,7 +31,20 @@ export const useGoogleLogin = () => {
       const { accessToken, ...user } = data;
       setAuth(user, accessToken);
       clearUserQueryCache(queryClient);
-      navigate(user.role === 'admin' ? '/admin' : '/dashboard');
+      if (user.role === 'admin') {
+        navigate('/admin');
+        return;
+      }
+      try {
+        const claimed = sessionStorage.getItem('dentstory_claimed_portfolio');
+        if (claimed) {
+          navigate('/portfolio/manage');
+          return;
+        }
+      } catch {
+        // ignore
+      }
+      navigate('/dashboard');
     },
   });
 };
@@ -47,6 +60,15 @@ export const useRegister = () => {
       const { accessToken, ...user } = data;
       setAuth(user, accessToken);
       clearUserQueryCache(queryClient);
+      try {
+        const claimed = sessionStorage.getItem('dentstory_claimed_portfolio');
+        if (claimed) {
+          navigate('/portfolio/manage');
+          return;
+        }
+      } catch {
+        // ignore
+      }
       navigate('/dashboard');
     },
   });

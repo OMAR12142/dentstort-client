@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import {
@@ -510,6 +511,32 @@ export default function PortfolioEditorPage() {
   // Tab state
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'cases'
 
+  // Claimed portfolio data from Landing Page Hero
+  const [claimedData] = useState(() => {
+    try {
+      const stored = sessionStorage.getItem('dentstory_claimed_portfolio');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const handleCreatePortfolio = () => {
+    const payload = {};
+    if (claimedData?.claimedSlug) {
+      payload.slug = claimedData.claimedSlug;
+    }
+    createPortfolio(payload, {
+      onSuccess: () => {
+        try {
+          sessionStorage.removeItem('dentstory_claimed_portfolio');
+        } catch {
+          // ignore storage error
+        }
+      },
+    });
+  };
+
   const handleCopyLink = () => {
     const url = `${window.location.origin}/portfolio/${portfolio.slug}`;
     navigator.clipboard.writeText(url);
@@ -619,13 +646,22 @@ export default function PortfolioEditorPage() {
               <li>Mark your <strong>Before &amp; After</strong> photos, preview your draft, and go live!</li>
             </ol>
           </div>
+          {claimedData?.claimedSlug && (
+            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-primary/10 border border-primary/20 text-xs font-bold text-primary mb-6 max-w-md mx-auto">
+              <Link2 size={15} className="shrink-0 text-primary" />
+              <span className="truncate">
+                Reserved Link: <span className="font-mono underline">dentstory.site/portfolio/{claimedData.claimedSlug}</span>
+              </span>
+            </div>
+          )}
+
           <Button
-            onClick={() => createPortfolio({})}
+            onClick={handleCreatePortfolio}
             loading={isCreating}
             className="px-8"
           >
             <Plus size={18} />
-            Create Portfolio
+            {claimedData?.claimedSlug ? `Create Portfolio (${claimedData.claimedSlug})` : 'Create Portfolio'}
           </Button>
         </Card>
       </div>
