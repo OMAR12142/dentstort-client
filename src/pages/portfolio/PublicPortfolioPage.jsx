@@ -113,6 +113,8 @@ export default function PublicPortfolioPage() {
     contactPhone,
     clinicName,
     clinicAddress,
+    cvUrl,
+    cvFileName,
     cases,
     pagination,
     isDraftPreview,
@@ -150,11 +152,15 @@ export default function PublicPortfolioPage() {
       {/* ── 1. Profile Header ── */}
       <PublicPortfolioHeader
         dentist={dentist}
+        slug={data?.slug || slug}
         coverPhoto={coverPhoto}
         coverTheme={coverTheme}
         clinicName={clinicName}
         yearsOfExperience={yearsOfExperience}
         totalCases={pagination?.totalItems || cases?.length || 0}
+        cvUrl={cvUrl}
+        cvFileName={cvFileName}
+        visibility={data?.visibility}
         onPhotoClick={() => setProfilePhotoOpen(true)}
       />
 
@@ -165,9 +171,11 @@ export default function PublicPortfolioPage() {
           services={services}
           contactEmail={contactEmail}
           contactPhone={contactPhone}
+          whatsappPhone={data?.whatsappPhone}
           clinicName={clinicName}
           clinicAddress={clinicAddress}
           dentistName={dentist.name}
+          visibility={data?.visibility}
           isExpanded={isExpanded}
           onToggleExpand={() => setIsExpanded(!isExpanded)}
         />

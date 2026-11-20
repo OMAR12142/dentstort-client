@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowLeftRight, Briefcase, Images } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, Briefcase, Images, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import SafeImage from '../SafeImage';
 
@@ -104,8 +104,14 @@ export default function PublicCaseCard({ caseData, slug }) {
             </>
           )}
 
-          {/* Top-start Treatment Category Badge */}
-          <div className="pointer-events-none absolute top-1.5 sm:top-2.5 start-1.5 sm:start-2.5 flex items-center gap-1 max-w-[72%] sm:max-w-[75%]">
+          {/* Top-start Treatment Category Badge & Featured Star */}
+          <div className="pointer-events-none absolute top-1.5 sm:top-2.5 start-1.5 sm:start-2.5 flex items-center gap-1 max-w-[78%] sm:max-w-[80%]">
+            {caseData.isFeatured && (
+              <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-xs font-bold bg-blue-300 text-white shadow-sm backdrop-blur-md shrink-0">
+                <Star size={10} className="fill-white text-white shrink-0 sm:w-3 sm:h-3" />
+                <span className="truncate">{t('cases.featured', 'Featured')}</span>
+              </span>
+            )}
             <span className="inline-flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-xs font-bold uppercase tracking-wide bg-base-200/90 text-base-content border border-neutral-light backdrop-blur-md shadow-sm truncate">
               <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
               <span className="truncate">{primaryTreatment}</span>

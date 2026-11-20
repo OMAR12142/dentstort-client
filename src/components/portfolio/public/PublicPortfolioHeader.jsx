@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Award, Briefcase, MapPin } from 'lucide-react';
+import { User, Award, Briefcase, MapPin, Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import SafeImage from '../SafeImage';
 import BrandedPortfolioCover from './BrandedPortfolioCover';
@@ -8,20 +8,30 @@ import { formatDoctorDisplayName } from '../../../utils/portfolioFormatters';
 /**
  * PublicPortfolioHeader — Branded DentStory marketing cover (custom coverPhoto or curated
  * coverTheme preset), overlapping circular avatar, doctor identity, clinic subtitle,
- * and unified trust stat pills.
+ * unified trust stat pills, and sleek frosted-glass "Download CV" action button.
  */
 export default function PublicPortfolioHeader({
   dentist,
+  slug,
   coverPhoto,
   coverTheme,
   clinicName,
   yearsOfExperience,
   totalCases = 0,
+  cvUrl,
+  cvFileName,
+  visibility,
   onPhotoClick,
 }) {
   const { t, i18n } = useTranslation('portfolio');
   const isArabic = i18n.language?.startsWith('ar');
   const displayName = formatDoctorDisplayName(dentist?.name, isArabic);
+
+  const envUrl = import.meta.env?.VITE_API_URL;
+  const baseUrl = (!envUrl || envUrl === 'undefined' || envUrl === '/') ? '' : envUrl.replace(/\/+$/, '');
+  const portfolioSlug = slug || dentist?.slug || '';
+  const cvStreamUrl = portfolioSlug ? `${baseUrl}/api/portfolio/public/${portfolioSlug}/cv` : cvUrl;
+  const cvDownloadUrl = portfolioSlug ? `${cvStreamUrl}?download=1` : cvUrl;
 
   return (
     <div className="bg-base-200 border-b border-neutral-light pb-4 shadow-sm relative overflow-hidden transition-colors duration-300">
@@ -37,10 +47,10 @@ export default function PublicPortfolioHeader({
         />
       </div>
 
-      {/* ── Overlapping Avatar, Identity & Unified Trust Stats ── */}
+      {/* ── Overlapping Avatar, Identity, Unified Trust Stats & Sleek CV Action ── */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-5 -mt-10 sm:-mt-12 px-2 sm:px-4 relative z-10">
-          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-3 sm:gap-4 text-center sm:text-start min-w-0 w-full sm:w-auto">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 -mt-10 sm:-mt-12 px-2 sm:px-4 relative z-10">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-3 sm:gap-4 text-center sm:text-start min-w-0 w-full md:w-auto">
             {/* Overlapping Circular Avatar */}
             <div
               onClick={onPhotoClick}
@@ -61,7 +71,7 @@ export default function PublicPortfolioHeader({
                 <h1 className="text-xl sm:text-2xl font-bold text-base-content tracking-tight break-words [overflow-wrap:anywhere] leading-tight">
                   {displayName}
                 </h1>
-                {clinicName && (
+                {clinicName && visibility?.clinicInfo !== false && (
                   <p className="inline-flex items-center justify-center sm:justify-start gap-1.5 text-xs sm:text-sm font-semibold text-base-content/70 max-w-full">
                     <MapPin size={13} className="text-primary shrink-0" />
                     <span className="break-words [overflow-wrap:anywhere]">{clinicName}</span>
@@ -69,15 +79,16 @@ export default function PublicPortfolioHeader({
                 )}
               </div>
 
-              {(yearsOfExperience > 0 || totalCases > 0) && (
+              {((yearsOfExperience > 0 && visibility?.yearsOfExperience !== false) ||
+                (totalCases > 0 && visibility?.casesCount !== false)) && (
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5">
-                  {yearsOfExperience > 0 && (
+                  {yearsOfExperience > 0 && visibility?.yearsOfExperience !== false && (
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-success/10 text-success border border-success/25 dark:bg-success/20">
                       <Award size={12} className="shrink-0" />
                       {t('public.yearsExpPlus', { count: yearsOfExperience })}
                     </span>
                   )}
-                  {totalCases > 0 && (
+                  {totalCases > 0 && visibility?.casesCount !== false && (
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/25 dark:bg-primary/20">
                       <Briefcase size={12} className="shrink-0" />
                       {totalCases === 1
@@ -89,6 +100,27 @@ export default function PublicPortfolioHeader({
               )}
             </div>
           </div>
+
+          {/* Sleek Frosted-Glass "Download CV" CTA Button */}
+          {cvUrl && visibility?.cv !== false && (
+            <div className="flex items-center justify-center md:justify-end pb-0.5 shrink-0 w-full md:w-auto">
+              <a
+                href={cvDownloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                download={cvFileName || `${displayName.replace(/\s+/g, '_')}_CV.pdf`}
+                className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-base-100/85 hover:bg-base-100 text-base-content border border-neutral-light/80 hover:border-primary/50 shadow-sm backdrop-blur-md transition-all cursor-pointer group"
+                title={t('public.downloadCv', 'Download CV')}
+                aria-label={t('public.downloadCv', 'Download CV')}
+              >
+                <Download size={15} className="text-primary shrink-0 transition-transform group-hover:scale-110 group-hover:translate-y-0.5" />
+                <span>{t('public.downloadCv', 'Download CV')}</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                  PDF
+                </span>
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>

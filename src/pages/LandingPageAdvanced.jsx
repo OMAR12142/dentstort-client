@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -49,12 +49,23 @@ function DentStoryToothIcon({ className = 'w-4 h-4' }) {
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const token = useAuthStore((s) => s.accessToken);
+  const user = useAuthStore((s) => s.user);
   const isArabic = useLanguageStore((s) => s.isArabic);
+  const dashboardRoute = user?.role === 'admin' ? '/admin' : '/dashboard';
+
   const [showStickyBadge, setShowStickyBadge] = useState(false);
   const { data: demoPortfolio } = usePublicPortfolio('dr-mohamed-farid');
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showIosGuide, setShowIosGuide] = useState(false);
+
+  // If already authenticated and not explicitly viewing the landing page via ?landing=1, redirect
+  useEffect(() => {
+    if (token && searchParams.get('landing') !== '1') {
+      navigate(dashboardRoute, { replace: true });
+    }
+  }, [token, searchParams, dashboardRoute, navigate]);
 
   // Live Portfolio Link Generator States
   const [customDoctorName, setCustomDoctorName] = useState(null);
@@ -326,7 +337,7 @@ export default function LandingPage() {
 
   const handleCTA = () => {
     if (token) {
-      navigate('/dashboard');
+      navigate(dashboardRoute);
     } else {
       navigate('/register');
     }
@@ -394,7 +405,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-base-100 transition-colors duration-300 font-sans text-base-content">
       <SEO
         title="Management Software for Dentists"
-        description="The all-in-one SaaS platform for modern dentists. Manage patient records, clinical sessions, and earnings with ease."
+        description="The all-in-one platform for modern dentists. Manage patient records, clinical sessions, and earnings with ease."
         jsonLd={jsonLd}
       />
 
@@ -441,7 +452,7 @@ export default function LandingPage() {
               >
                 {isArabic
                   ? 'المنصة السحابية المتكاملة لأطباء الأسنان. إدارة ملفات المرضى، الإيرادات، ومحفظة حالاتك السريرية برابط مخصص واحترافي.'
-                  : 'DentStory is the all-in-one clinical SaaS designed for Dentists. Manage patients, analyze revenue, and showcase your portfolio with a custom branded link.'}
+                  : 'DentStory is the all-in-one clinical  designed for Dentists. Manage patients, analyze revenue, and showcase your portfolio with a custom branded link.'}
               </motion.p>
 
               {/* ── Live Portfolio Link Generator Input Card ── */}
@@ -522,35 +533,46 @@ export default function LandingPage() {
                   ))}
                 </div>
 
-                {/* Prominent Primary CTA Button directly under the Input Card */}
-                <div className="pt-2.5 border-t border-neutral-light/60 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-                  <button
-                    type="button"
-                    onClick={handleClaimPortfolio}
-                    className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-primary hover:bg-primary/90 text-primary-content text-sm sm:text-base font-black rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-primary/25 flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>
-                      {token
-                        ? (isArabic ? 'استخدم هذا الرابط في محفظتك ←' : 'Use This Link in Portfolio →')
-                        : (isArabic ? 'احجز الرابط ده مجانًا ←' : 'Claim This Link Free →')}
-                    </span>
-                  </button>
-
-                  {token ? (
+                {/* Prominent CTA Layout: High-contrast button pair when logged in, or Claim Free CTA when unauthenticated */}
+                {token ? (
+                  <div className="pt-2.5 border-t border-neutral-light/60 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full">
+                    {/* Primary CTA (flex-1 prominent solid button h-11) */}
                     <button
                       type="button"
-                      onClick={() => navigate('/dashboard')}
-                      className="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                      onClick={() => navigate(dashboardRoute)}
+                      className="flex-1 h-11 px-5 bg-primary hover:bg-primary/90 text-primary-content font-bold text-sm sm:text-base rounded-xl hover:scale-[1.01] active:scale-95 transition-all shadow-md shadow-primary/25 flex items-center justify-center gap-2 cursor-pointer shrink-0 sm:shrink"
                     >
                       <span>{isArabic ? 'الذهاب للوحة التحكم' : 'Go to Dashboard'}</span>
-                      <ArrowRight size={13} className="rtl:rotate-180" />
+                      <ArrowRight size={16} className="rtl:rotate-180 shrink-0" />
                     </button>
-                  ) : (
+
+                    {/* Secondary CTA (clean bordered button h-11) */}
+                    <button
+                      type="button"
+                      onClick={handleClaimPortfolio}
+                      className="h-11 px-4 sm:px-5 bg-base-100 hover:bg-base-200 text-base-content border border-neutral-light font-semibold text-xs sm:text-sm rounded-xl hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
+                    >
+                      <span>{isArabic ? 'استخدم الرابط في البورتفوليو' : 'Use Link in Portfolio'}</span>
+                      <ArrowRight size={14} className="rtl:rotate-180 shrink-0 text-base-content/60" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="pt-2.5 border-t border-neutral-light/60 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                    <button
+                      type="button"
+                      onClick={handleClaimPortfolio}
+                      className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-primary hover:bg-primary/90 text-primary-content text-sm sm:text-base font-black rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-primary/25 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <span>
+                        {isArabic ? 'احجز الرابط ده مجانًا ←' : 'Claim This Link Free →'}
+                      </span>
+                    </button>
+
                     <span className="text-[11px] text-base-content/60 font-medium">
                       {isArabic ? '✓ مجانًا 100% بدون أي رسوم' : '✓ 100% Free • No card required'}
                     </span>
-                  )}
-                </div>
+                  </div>
+                )}
               </motion.div>
 
               {/* Secondary Download Button & Platform Availability */}

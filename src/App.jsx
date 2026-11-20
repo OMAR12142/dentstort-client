@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
 import { clearUserQueryCache } from './api/queryClient';
@@ -58,7 +58,6 @@ function ProtectedRoute() {
  */
 function AdminRoute() {
   const user = useAuthStore((s) => s.user);
-  window.DEBUG_USER = user;
 
   if (user === undefined) {
     return (
@@ -73,6 +72,31 @@ function AdminRoute() {
   }
 
   return <Outlet />;
+}
+
+/**
+ * RootRoute: Wrapper for root path /
+ * Automatically redirects authenticated users to their dashboard unless ?landing=1 bypass is present.
+ */
+function RootRoute() {
+  const token = useAuthStore((s) => s.accessToken);
+  const user = useAuthStore((s) => s.user);
+  const [searchParams] = useSearchParams();
+
+  if (token && searchParams.get('landing') !== '1') {
+    const target = user?.role === 'admin' ? '/admin' : '/dashboard';
+    return <Navigate to={target} replace />;
+  }
+
+  return (
+    <>
+      <SEO
+        title="Management Software for Dentists"
+        description="The all-in-one platform for modern dentists. Manage patient records, clinical sessions, and earnings with ease."
+      />
+      <LandingPage />
+    </>
+  );
 }
 
 /**
@@ -161,15 +185,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             {/* Public Landing Page */}
-            <Route path="/" element={
-              <>
-                <SEO
-                  title="Management Software for Dentists"
-                  description="The all-in-one SaaS platform for modern dentists. Manage patient records, clinical sessions, and earnings with ease."
-                />
-                <LandingPage />
-              </>
-            } />
+            <Route path="/" element={<RootRoute />} />
 
             {/* Public Portfolio Routes */}
             <Route element={<PortfolioLayout />}>

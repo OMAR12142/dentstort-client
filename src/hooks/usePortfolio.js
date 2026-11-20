@@ -67,17 +67,23 @@ export function usePublicCase(slug, caseId) {
 // ════════════════════════════════════════════════
 
 /**
- * Fetch the current dentist's own portfolio.
+ * Fetch the current dentist's own portfolio with optional category filtering.
  */
-export function useMyPortfolio(page = 1, limit = 12) {
+export function useMyPortfolio(page = 1, limit = 12, category = '') {
   const dentistId = useAuthStore((s) => getDentistId(s.user));
+  const normalizedCategory = category && category !== 'all' && category !== 'All' ? category.trim() : '';
+  const queryKey = normalizedCategory
+    ? ['myPortfolio', dentistId, page, limit, normalizedCategory]
+    : ['myPortfolio', dentistId, page, limit];
+
   return useQuery({
-    queryKey: ['myPortfolio', dentistId, page, limit],
+    queryKey,
     queryFn: async ({ signal }) => {
-      const { data } = await api.get(
-        `/api/portfolio/me/portfolio?page=${page}&limit=${limit}`,
-        { signal }
-      );
+      let url = `/api/portfolio/me/portfolio?page=${page}&limit=${limit}`;
+      if (normalizedCategory) {
+        url += `&category=${encodeURIComponent(normalizedCategory)}`;
+      }
+      const { data } = await api.get(url, { signal });
       return data;
     },
     enabled: !!dentistId,
@@ -118,6 +124,24 @@ export function useUpdatePortfolio() {
 }
 
 /**
+ * Update granular per-field public visibility controls.
+ */
+export function useUpdateVisibility() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (visibility) => {
+      const { data } = await api.patch('/api/portfolio/me/visibility', { visibility });
+      return data;
+    },
+    onMutate: () => ({ dentistId: getDentistId(useAuthStore.getState().user) }),
+    onSuccess: (_data, _vars, context) => {
+      invalidateOwnPortfolio(qc, context?.dentistId);
+      qc.invalidateQueries({ queryKey: ['publicPortfolio'] });
+    },
+  });
+}
+
+/**
  * Upload a custom profile cover photo for the dentist's portfolio.
  */
 export function useUploadPortfolioCover() {
@@ -135,6 +159,52 @@ export function useUploadPortfolioCover() {
     onSuccess: (_data, _vars, context) => {
       invalidateOwnPortfolio(qc, context?.dentistId);
       qc.invalidateQueries({ queryKey: ['publicPortfolio'] });
+    },
+  });
+}
+
+/**
+ * Upload doctor CV (PDF) for portfolio.
+ */
+export function useUploadPortfolioCv() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (file) => {
+      const formData = new FormData();
+      formData.append('cv', file);
+      const { data } = await api.post('/api/portfolio/me/cv', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return data;
+    },
+    onMutate: () => ({ dentistId: getDentistId(useAuthStore.getState().user) }),
+    onSuccess: (_data, _vars, context) => {
+      invalidateOwnPortfolio(qc, context?.dentistId);
+      qc.invalidateQueries({ queryKey: ['myPortfolio'] });
+      qc.invalidateQueries({ queryKey: ['my-portfolio'] });
+      qc.invalidateQueries({ queryKey: ['publicPortfolio'] });
+      qc.invalidateQueries({ queryKey: ['public-portfolio'] });
+    },
+  });
+}
+
+/**
+ * Delete doctor CV from portfolio.
+ */
+export function useDeletePortfolioCv() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data } = await api.delete('/api/portfolio/me/cv');
+      return data;
+    },
+    onMutate: () => ({ dentistId: getDentistId(useAuthStore.getState().user) }),
+    onSuccess: (_data, _vars, context) => {
+      invalidateOwnPortfolio(qc, context?.dentistId);
+      qc.invalidateQueries({ queryKey: ['myPortfolio'] });
+      qc.invalidateQueries({ queryKey: ['my-portfolio'] });
+      qc.invalidateQueries({ queryKey: ['publicPortfolio'] });
+      qc.invalidateQueries({ queryKey: ['public-portfolio'] });
     },
   });
 }
@@ -214,7 +284,47 @@ export function useReorderCase() {
       return data;
     },
     onMutate: () => ({ dentistId: getDentistId(useAuthStore.getState().user) }),
-    onSuccess: (_data, _vars, context) => invalidateOwnPortfolio(qc, context?.dentistId),
+    onSuccess: (_data, _vars, context) => {
+      invalidateOwnPortfolio(qc, context?.dentistId);
+      qc.invalidateQueries({ queryKey: ['publicPortfolio'] });
+    },
+  });
+}
+
+/**
+ * Pin / unpin (toggle featured) for a case.
+ */
+export function useToggleFeaturedCase() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ caseId, isFeatured }) => {
+      const payload = typeof isFeatured === 'boolean' ? { isFeatured } : {};
+      const { data } = await api.patch(`/api/portfolio/me/portfolio/cases/${caseId}/featured`, payload);
+      return data;
+    },
+    onMutate: () => ({ dentistId: getDentistId(useAuthStore.getState().user) }),
+    onSuccess: (_data, _vars, context) => {
+      invalidateOwnPortfolio(qc, context?.dentistId);
+      qc.invalidateQueries({ queryKey: ['publicPortfolio'] });
+    },
+  });
+}
+
+/**
+ * Move a case directly to a specific 1-based global position.
+ */
+export function useMoveCasePosition() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ caseId, position }) => {
+      const { data } = await api.patch(`/api/portfolio/me/portfolio/cases/${caseId}/position`, { position });
+      return data;
+    },
+    onMutate: () => ({ dentistId: getDentistId(useAuthStore.getState().user) }),
+    onSuccess: (_data, _vars, context) => {
+      invalidateOwnPortfolio(qc, context?.dentistId);
+      qc.invalidateQueries({ queryKey: ['publicPortfolio'] });
+    },
   });
 }
 

@@ -1,12 +1,14 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import {
-  Globe, GlobeLock, Eye, EyeOff, Share2, Plus, Pencil, Trash2, X, Upload, ArrowLeftRight, Images,
+  Globe, GlobeLock, Eye, EyeOff, Share2, Copy, Plus, Pencil, Trash2, X, Upload, ArrowLeftRight, Images,
   Briefcase, Mail, Phone, MapPin, Clock, CheckCircle2, User, ExternalLink, Link2,
-  AlertCircle, Loader2, Image as ImageIcon, Check, ChevronLeft, ChevronRight, FileText, Search
+  AlertCircle, Loader2, Image as ImageIcon, Check, ChevronLeft, ChevronRight, FileText, Search,
+  Star, ArrowUpToLine, ArrowUpDown
 } from 'lucide-react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
@@ -17,16 +19,22 @@ import BrandedPortfolioCover from '../../components/portfolio/public/BrandedPort
 import { PORTFOLIO_COVER_THEMES, getCoverThemePreset } from '../../utils/portfolioCoverThemes';
 import { formatDoctorDisplayName } from '../../utils/portfolioFormatters';
 import { useAuthStore } from '../../store/authStore';
+import api from '../../api/axios';
 import {
   useMyPortfolio,
   useCreatePortfolio,
   useUpdatePortfolio,
+  useUpdateVisibility,
   useUploadPortfolioCover,
+  useUploadPortfolioCv,
+  useDeletePortfolioCv,
   useTogglePortfolio,
   usePublishCase,
   useEditCase,
   useDeleteCase,
   useReorderCase,
+  useToggleFeaturedCase,
+  useMoveCasePosition,
   useUploadPortfolioImages,
   useMediaLibrary,
 } from '../../hooks/usePortfolio';
@@ -228,7 +236,56 @@ function BeforeAfterStatusBar({ selectedImages, beforeImage, afterImage, onClear
   );
 }
 
-function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
+const DEFAULT_VISIBILITY = Object.freeze({
+  clinicInfo: true,
+  yearsOfExperience: true,
+  casesCount: true,
+  bio: true,
+  specialties: true,
+  cv: true,
+  whatsapp: true,
+  phone: true,
+  email: true,
+  locationCard: true,
+  socialLinks: true,
+});
+
+function VisibilityToggle({ visible, onToggle, label }) {
+  const { t } = useTranslation('portfolio');
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={visible}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all border cursor-pointer select-none shrink-0 ${
+        visible
+          ? 'bg-primary/10 text-primary border-primary/25 hover:bg-primary/20'
+          : 'bg-base-300 text-base-content/60 border-neutral-light hover:bg-base-200'
+      }`}
+      title={
+        visible
+          ? t('visibility.clickToHide', 'Visible on public portfolio. Click to hide.')
+          : t('visibility.clickToShow', 'Hidden on public portfolio. Click to show.')
+      }
+    >
+      {visible ? (
+        <Eye size={13} className="shrink-0" />
+      ) : (
+        <EyeOff size={13} className="shrink-0 text-base-content/50" />
+      )}
+      <span>{label || (visible ? t('visibility.visible', 'Visible') : t('visibility.hidden', 'Hidden'))}</span>
+    </button>
+  );
+}
+
+function ProfileIdentityForm({
+  portfolio,
+  updatePortfolio,
+  isUpdating,
+  visibility,
+  onToggleVisibility,
+}) {
+  const { t } = useTranslation('portfolio');
   const [slugInput, setSlugInput] = useState(portfolio.slug || '');
   const [bio, setBio] = useState(portfolio.bio || '');
   const [yearsOfExperience, setYearsOfExperience] = useState(portfolio.yearsOfExperience || 0);
@@ -237,7 +294,6 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
   const [contactPhone, setContactPhone] = useState(portfolio.contactPhone || '');
   const [clinicName, setClinicName] = useState(portfolio.clinicName || '');
   const [clinicAddress, setClinicAddress] = useState(portfolio.clinicAddress || '');
-  const [showClinicInfo, setShowClinicInfo] = useState(portfolio.showClinicInfo !== false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [profileError, setProfileError] = useState('');
   const successTimerRef = useRef(null);
@@ -256,7 +312,8 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
       contactPhone,
       clinicName,
       clinicAddress,
-      showClinicInfo,
+      showClinicInfo: visibility?.clinicInfo !== false,
+      visibility,
     };
 
     const trimmedSlug = slugInput.trim().toLowerCase();
@@ -342,10 +399,22 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
         </div>
 
         {/* Bio */}
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-base-content flex items-center gap-2">
-            Professional Summary
-          </label>
+        <div
+          className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+            visibility?.bio === false
+              ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+              : 'bg-base-100 border-neutral-light'
+          }`}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <label className="text-sm font-bold text-base-content flex items-center gap-2">
+              {t('visibility.bio', 'Professional Summary')}
+            </label>
+            <VisibilityToggle
+              visible={visibility?.bio !== false}
+              onToggle={() => onToggleVisibility('bio')}
+            />
+          </div>
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
@@ -357,21 +426,50 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
 
         {/* Experience and Services */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-base-content">Years of Clinical Experience</label>
+          <div
+            className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+              visibility?.yearsOfExperience === false
+                ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+                : 'bg-base-100 border-neutral-light'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-sm font-bold text-base-content">
+                {t('visibility.yearsOfExperience', 'Years of Clinical Experience')}
+              </label>
+              <VisibilityToggle
+                visible={visibility?.yearsOfExperience !== false}
+                onToggle={() => onToggleVisibility('yearsOfExperience')}
+              />
+            </div>
             <div className="relative">
-              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/60" size={16} />
+              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/60 rtl:left-auto rtl:right-4" size={16} />
               <input
                 type="number"
                 value={yearsOfExperience}
                 onChange={(e) => setYearsOfExperience(e.target.value)}
                 min="0"
-                className="w-full bg-base-100 border border-neutral-light rounded-xl py-3 pl-10 pr-4 text-sm text-base-content focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full bg-base-100 border border-neutral-light rounded-xl py-3 pl-10 pr-4 rtl:pl-4 rtl:pr-10 text-sm text-base-content focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-base-content">Clinical Specialties</label>
+
+          <div
+            className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+              visibility?.specialties === false
+                ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+                : 'bg-base-100 border-neutral-light'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-sm font-bold text-base-content">
+                {t('visibility.specialties', 'Clinical Specialties')}
+              </label>
+              <VisibilityToggle
+                visible={visibility?.specialties !== false}
+                onToggle={() => onToggleVisibility('specialties')}
+              />
+            </div>
             <input
               type="text"
               value={servicesInput}
@@ -385,10 +483,24 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
 
         {/* Contact Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-neutral-light">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-base-content flex items-center gap-2">
-              <Mail size={16} className="text-primary" /> Public Inquiry Email
-            </label>
+          {/* Public Inquiry Email */}
+          <div
+            className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+              visibility?.email === false
+                ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+                : 'bg-base-100 border-neutral-light'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-sm font-bold text-base-content flex items-center gap-2">
+                <Mail size={16} className="text-primary shrink-0" />
+                <span className="truncate">{t('visibility.email', 'Public Inquiry Email')}</span>
+              </label>
+              <VisibilityToggle
+                visible={visibility?.email !== false}
+                onToggle={() => onToggleVisibility('email')}
+              />
+            </div>
             <input
               type="email"
               value={contactEmail}
@@ -397,10 +509,33 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
               className="w-full bg-base-100 border border-neutral-light rounded-xl py-3 px-4 text-sm text-base-content focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-base-content flex items-center gap-2">
-              <Phone size={16} className="text-[#25D366]" /> WhatsApp / Phone
-            </label>
+
+          {/* WhatsApp / Phone with dual toggles */}
+          <div
+            className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+              visibility?.whatsapp === false && visibility?.phone === false
+                ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+                : 'bg-base-100 border-neutral-light'
+            }`}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <label className="text-sm font-bold text-base-content flex items-center gap-2">
+                <Phone size={16} className="text-[#25D366] shrink-0" />
+                <span className="truncate">WhatsApp / Phone</span>
+              </label>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <VisibilityToggle
+                  visible={visibility?.whatsapp !== false}
+                  onToggle={() => onToggleVisibility('whatsapp')}
+                  label={`WA: ${visibility?.whatsapp !== false ? t('visibility.visible', 'Visible') : t('visibility.hidden', 'Hidden')}`}
+                />
+                <VisibilityToggle
+                  visible={visibility?.phone !== false}
+                  onToggle={() => onToggleVisibility('phone')}
+                  label={`Call: ${visibility?.phone !== false ? t('visibility.visible', 'Visible') : t('visibility.hidden', 'Hidden')}`}
+                />
+              </div>
+            </div>
             <input
               type="text"
               value={contactPhone}
@@ -411,44 +546,27 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
           </div>
         </div>
 
-        {/* Clinic Information + Visibility Toggle */}
+        {/* Clinic Information (Name & Location Card) */}
         <div className="space-y-4 pt-4 border-t border-neutral-light">
-          <div className="flex flex-wrap items-center justify-between gap-3 bg-base-100 border border-neutral-light rounded-xl px-4 py-3">
-            <div className="flex items-center gap-2.5">
-              {showClinicInfo ? (
-                <Eye size={16} className="text-primary shrink-0" />
-              ) : (
-                <EyeOff size={16} className="text-base-content/50 shrink-0" />
-              )}
-              <div>
-                <p className="text-xs font-bold text-base-content">
-                  Show clinic name &amp; location publicly
-                </p>
-                <p className="text-[11px] text-base-content/60">
-                  {showClinicInfo
-                    ? 'Visitors can see your clinic name and address on your public portfolio.'
-                    : 'Hidden — your workplace name and address will not be shown on your public portfolio.'}
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Clinic Name */}
+            <div
+              className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+                visibility?.clinicInfo === false
+                  ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+                  : 'bg-base-100 border-neutral-light'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <label className="text-sm font-bold text-base-content flex items-center gap-2">
+                  <MapPin size={16} className="text-error shrink-0" />
+                  <span className="truncate">{t('visibility.clinicInfo', 'Clinic Name & Location')}</span>
+                </label>
+                <VisibilityToggle
+                  visible={visibility?.clinicInfo !== false}
+                  onToggle={() => onToggleVisibility('clinicInfo')}
+                />
               </div>
-            </div>
-            <label className="inline-flex items-center gap-2 cursor-pointer shrink-0">
-              <input
-                type="checkbox"
-                checked={showClinicInfo}
-                onChange={(e) => setShowClinicInfo(e.target.checked)}
-                className="toggle toggle-primary toggle-sm"
-              />
-              <span className="text-xs font-bold text-base-content/80">
-                {showClinicInfo ? 'Visible' : 'Hidden'}
-              </span>
-            </label>
-          </div>
-
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-opacity ${showClinicInfo ? 'opacity-100' : 'opacity-60'}`}>
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-base-content flex items-center gap-2">
-                <MapPin size={16} className="text-error" /> Clinic Name
-              </label>
               <input
                 type="text"
                 value={clinicName}
@@ -457,8 +575,25 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
                 className="w-full bg-base-100 border border-neutral-light rounded-xl py-3 px-4 text-sm text-base-content focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-base-content">Clinic Address</label>
+
+            {/* Clinic Address (Location Card) */}
+            <div
+              className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+                visibility?.locationCard === false
+                  ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+                  : 'bg-base-100 border-neutral-light'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <label className="text-sm font-bold text-base-content flex items-center gap-2">
+                  <MapPin size={16} className="text-primary shrink-0" />
+                  <span className="truncate">{t('visibility.locationCard', 'Clinic Location Card')}</span>
+                </label>
+                <VisibilityToggle
+                  visible={visibility?.locationCard !== false}
+                  onToggle={() => onToggleVisibility('locationCard')}
+                />
+              </div>
               <input
                 type="text"
                 value={clinicAddress}
@@ -467,6 +602,59 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
                 className="w-full bg-base-100 border border-neutral-light rounded-xl py-3 px-4 text-sm text-base-content focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Header Badges & Social Links Visibility Controls */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-neutral-light">
+          {/* Documented Cases Count Badge */}
+          <div
+            className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+              visibility?.casesCount === false
+                ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+                : 'bg-base-100 border-neutral-light'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <Briefcase size={16} className="text-primary shrink-0" />
+                <span className="text-sm font-bold text-base-content truncate">
+                  {t('visibility.casesCount', 'Documented Cases Badge')}
+                </span>
+              </div>
+              <VisibilityToggle
+                visible={visibility?.casesCount !== false}
+                onToggle={() => onToggleVisibility('casesCount')}
+              />
+            </div>
+            <p className="text-[11px] text-base-content/60 leading-relaxed">
+              Display the documented cases trust badge in your public portfolio header banner.
+            </p>
+          </div>
+
+          {/* Social Media Links */}
+          <div
+            className={`space-y-2 p-3.5 sm:p-4 rounded-xl border transition-all ${
+              visibility?.socialLinks === false
+                ? 'opacity-75 bg-base-100/50 border-dashed border-base-content/20'
+                : 'bg-base-100 border-neutral-light'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <Link2 size={16} className="text-primary shrink-0" />
+                <span className="text-sm font-bold text-base-content truncate">
+                  {t('visibility.socialLinks', 'Social Media Links')}
+                </span>
+              </div>
+              <VisibilityToggle
+                visible={visibility?.socialLinks !== false}
+                onToggle={() => onToggleVisibility('socialLinks')}
+              />
+            </div>
+            <p className="text-[11px] text-base-content/60 leading-relaxed">
+              Display external profiles and social media icons on your public portfolio page.
+            </p>
           </div>
         </div>
 
@@ -488,15 +676,98 @@ function ProfileIdentityForm({ portfolio, updatePortfolio, isUpdating }) {
 //  MAIN EDITOR PAGE
 // ════════════════════════════════════════════════
 export default function PortfolioEditorPage() {
+  const { t } = useTranslation('portfolio');
   const user = useAuthStore((s) => s.user);
   const [page, setPage] = useState(1);
   const limit = 12;
-  const { data: portfolio, isLoading } = useMyPortfolio(page, limit);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const { data: portfolio, isLoading } = useMyPortfolio(page, limit, selectedCategory);
+
+  // Auto-clamp page during render if category filtering or deletion reduces totalPages
+  const totalPages = portfolio?.pagination?.totalPages || 1;
+  if (portfolio && page > totalPages) {
+    setPage(Math.max(1, totalPages));
+  }
+
   const { mutate: createPortfolio, isPending: isCreating } = useCreatePortfolio();
   const { mutate: updatePortfolio, isPending: isUpdating } = useUpdatePortfolio();
+  const { mutate: updateVisibilityMutation } = useUpdateVisibility();
   const { mutate: uploadCoverPhoto, isPending: isUploadingCover } = useUploadPortfolioCover();
+  const { mutate: uploadCv, isPending: isUploadingCv } = useUploadPortfolioCv();
+  const { mutate: deleteCv, isPending: isDeletingCv } = useDeletePortfolioCv();
   const { mutate: togglePortfolio, isPending: isToggling } = useTogglePortfolio();
   const { mutate: deleteCase } = useDeleteCase();
+
+  // Local visibility overrides for optimistic UI
+  const [localVisibility, setLocalVisibility] = useState({});
+
+  // Merge server visibility with local user overrides and defaults
+  const visibility = {
+    ...DEFAULT_VISIBILITY,
+    ...(portfolio?.visibility || {}),
+    ...(portfolio?.showClinicInfo === false && portfolio?.visibility?.clinicInfo === undefined ? { clinicInfo: false } : {}),
+    ...localVisibility,
+  };
+
+  const handleToggleVisibility = (key) => {
+    const nextVal = visibility[key] === false;
+    const updated = {
+      ...visibility,
+      [key]: nextVal,
+    };
+    setLocalVisibility((prev) => ({
+      ...prev,
+      [key]: nextVal,
+    }));
+    updateVisibilityMutation(updated, {
+      onSuccess: () => {
+        setLocalVisibility((prev) => {
+          const next = { ...prev };
+          delete next[key];
+          return next;
+        });
+      },
+      onError: () => {
+        setLocalVisibility((prev) => {
+          const next = { ...prev };
+          delete next[key];
+          return next;
+        });
+        toast.error(t('visibility.updateError', 'Failed to update visibility'));
+      },
+    });
+  };
+
+  const handleShowAllVisibility = () => {
+    const allVisible = {
+      clinicInfo: true,
+      yearsOfExperience: true,
+      casesCount: true,
+      bio: true,
+      specialties: true,
+      cv: true,
+      whatsapp: true,
+      phone: true,
+      email: true,
+      locationCard: true,
+      socialLinks: true,
+    };
+    setLocalVisibility(allVisible);
+    updateVisibilityMutation(allVisible, {
+      onSuccess: () => {
+        setLocalVisibility({});
+        toast.success(t('visibility.allShownToast', 'All public fields are now visible'));
+      },
+      onError: () => {
+        setLocalVisibility({});
+        toast.error(t('visibility.updateError', 'Failed to update visibility'));
+      },
+    });
+  };
+
+  const visibleCount = Object.keys(DEFAULT_VISIBILITY).filter((k) => visibility[k] !== false).length;
+  const totalAllCases = portfolio?.totalAllCases ?? (portfolio?.publishedCases?.length || 0);
+  const featuredCasesCount = (portfolio?.publishedCases || []).filter((c) => c.isFeatured).length;
 
   // Modal states
   const [addCaseModal, setAddCaseModal] = useState(false);
@@ -507,6 +778,11 @@ export default function PortfolioEditorPage() {
   // Cover feedback state
   const [coverError, setCoverError] = useState('');
   const [coverSaved, setCoverSaved] = useState(false);
+
+  // CV feedback state
+  const [cvError, setCvError] = useState('');
+  const [cvSaved, setCvSaved] = useState(false);
+  const [isPreviewingCv, setIsPreviewingCv] = useState(false);
 
   // Tab state
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'cases'
@@ -590,10 +866,143 @@ export default function PortfolioEditorPage() {
     });
   };
 
+  const flashCvSaved = () => {
+    setCvSaved(true);
+    setTimeout(() => setCvSaved(false), 2500);
+  };
+
+  const handleCvFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setCvError('');
+    if (file.type !== 'application/pdf') {
+      setCvError(t('editor.cvPdfOnly', 'Only PDF documents are allowed.'));
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setCvError(t('editor.cvSizeLimit', 'CV file must be 5 MB or smaller.'));
+      return;
+    }
+    uploadCv(file, {
+      onSuccess: () => {
+        flashCvSaved();
+        toast.success(t('editor.savedSuccess', 'CV updated successfully'));
+      },
+      onError: (err) => {
+        const msg = err?.response?.data?.message || t('editor.cvUploadFailed', 'Failed to upload CV.');
+        setCvError(msg);
+        toast.error(msg);
+      },
+    });
+  };
+
+  const handleRemoveCv = () => {
+    setCvError('');
+    deleteCv(undefined, {
+      onSuccess: () => {
+        flashCvSaved();
+        toast.success(t('editor.savedSuccess', 'CV removed successfully'));
+      },
+      onError: (err) => {
+        const msg = err?.response?.data?.message || 'Failed to remove CV.';
+        setCvError(msg);
+        toast.error(msg);
+      },
+    });
+  };
+
+  const handlePreviewCv = async () => {
+    if (!portfolio?.cvUrl) return;
+    const previewTab = window.open('about:blank', '_blank');
+    if (previewTab) {
+      try {
+        previewTab.document.title = t('editor.loadingPreview', 'Loading preview...');
+      } catch {
+        // ignore cross-origin error
+      }
+    }
+    try {
+      setIsPreviewingCv(true);
+      const res = await api.get('/api/portfolio/me/cv/preview', { responseType: 'blob' });
+      const blobUrl = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      if (previewTab && !previewTab.closed) {
+        previewTab.location.href = blobUrl;
+      } else {
+        window.open(blobUrl, '_blank', 'noopener,noreferrer');
+      }
+    } catch (err) {
+      if (previewTab && !previewTab.closed) {
+        previewTab.close();
+      }
+      console.error('CV Preview error:', err);
+      toast.error(t('editor.cvPreviewError', 'Failed to load CV preview.'));
+    } finally {
+      setIsPreviewingCv(false);
+    }
+  };
+
   const { mutate: reorderCase } = useReorderCase();
+  const { mutate: toggleFeaturedMutation, isPending: isTogglingFeatured } = useToggleFeaturedCase();
+  const { mutate: movePositionMutation, isPending: isMovingPosition } = useMoveCasePosition();
+
+  const [rankPopoverCaseId, setRankPopoverCaseId] = useState(null);
+  const [directRankInput, setDirectRankInput] = useState('');
 
   const handleReorder = (caseId, direction) => {
-    reorderCase({ caseId, direction });
+    reorderCase(
+      { caseId, direction },
+      {
+        onSuccess: () => {
+          toast.success(t('toast.caseReordered', 'Cases reordered successfully'));
+        },
+        onError: (err) => {
+          toast.error(err?.response?.data?.message || 'Failed to reorder cases');
+        },
+      }
+    );
+  };
+
+  const handleToggleFeatured = (caseId, isFeatured) => {
+    toggleFeaturedMutation(
+      { caseId, isFeatured },
+      {
+        onSuccess: (data) => {
+          toast.success(
+            data?.isFeatured
+              ? t('cases.casePinned', 'Case featured and pinned to top')
+              : t('cases.caseUnpinned', 'Case unpinned')
+          );
+        },
+        onError: (err) => {
+          toast.error(err?.response?.data?.message || 'Failed to update featured status');
+        },
+      }
+    );
+  };
+
+  const handleMovePosition = (caseId, targetPosition) => {
+    const pos = parseInt(targetPosition, 10);
+    if (isNaN(pos) || pos < 1) {
+      toast.error('Please enter a valid rank position.');
+      return;
+    }
+    movePositionMutation(
+      { caseId, position: pos },
+      {
+        onSuccess: () => {
+          setRankPopoverCaseId(null);
+          toast.success(t('cases.positionUpdated', 'Case position updated successfully'));
+        },
+        onError: (err) => {
+          toast.error(err?.response?.data?.message || 'Failed to move case position');
+        },
+      }
+    );
+  };
+
+  const handleDirectRankSubmit = (caseId) => {
+    handleMovePosition(caseId, directRankInput);
   };
 
   const handleDeleteCase = (caseId) => {
@@ -694,15 +1103,36 @@ export default function PortfolioEditorPage() {
                   {portfolio.isPublished ? 'Live' : 'Draft'}
                 </span>
               </div>
-              <a
-                href={publicUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-base-content/65 hover:text-primary transition-colors max-w-full truncate"
-              >
-                <Link2 size={12} className="text-primary shrink-0" />
-                <span className="truncate">{publicUrl}</span>
-              </a>
+              <div className="mt-1 flex items-center gap-2 max-w-full">
+                <a
+                  href={publicUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-base-content/65 hover:text-primary transition-colors min-w-0 max-w-full truncate"
+                >
+                  <Link2 size={12} className="text-primary shrink-0" />
+                  <span className="truncate">{publicUrl}</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  title={copied ? t('editor.copiedUrl', 'Copied!') : t('editor.copyPortfolioUrl', 'Copy URL')}
+                  aria-label={copied ? t('editor.copiedUrl', 'Copied!') : t('editor.copyPortfolioUrl', 'Copy URL')}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold bg-base-100 hover:bg-base-300 text-base-content/75 hover:text-primary border border-neutral-light transition-all cursor-pointer shrink-0"
+                >
+                  {copied ? (
+                    <>
+                      <Check size={12} className="text-success shrink-0" />
+                      <span className="text-success font-extrabold text-[10px]">{t('editor.copiedUrl', 'Copied!')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={12} className="shrink-0" />
+                      <span className="text-[10px] font-bold">{t('editor.copyPortfolioUrl', 'Copy URL')}</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -755,37 +1185,202 @@ export default function PortfolioEditorPage() {
         </div>
       </div>
 
-      {/* ── 2. Navigation Tabs ── */}
-      <div className="flex items-center gap-1 bg-base-200 p-1 rounded-2xl border border-neutral-light w-full sm:w-fit">
+      {/* ── 2. Full-Width 2-Step Interactive Journey Cards ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+        {/* Step 1: Profile & Visibility */}
         <button
-          onClick={() => setActiveTab('profile')}
-          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 text-sm font-bold rounded-xl transition-all ${activeTab === 'profile'
-            ? 'bg-primary text-primary-content shadow-md'
-            : 'text-base-content/60 hover:bg-base-100'
-            }`}
+          type="button"
+          onClick={() => {
+            setActiveTab('profile');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className={`group relative text-start p-4 sm:p-5 rounded-2xl transition-all duration-200 cursor-pointer ${
+            activeTab === 'profile'
+              ? 'border-2 border-primary bg-primary/5 ring-4 ring-primary/10 shadow-sm'
+              : 'bg-base-100 border border-neutral-light hover:border-primary/50 hover:bg-base-200/50 shadow-xs'
+          }`}
         >
-          <Briefcase size={16} />
-          Profile
-        </button>
-        <button
-          onClick={() => setActiveTab('cases')}
-          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 text-sm font-bold rounded-xl transition-all ${activeTab === 'cases'
-            ? 'bg-primary text-primary-content shadow-md'
-            : 'text-base-content/60 hover:bg-base-100'
-            }`}
-        >
-          <ImageIcon size={16} />
-          Cases
-          {(portfolio.pagination?.totalItems || portfolio.publishedCases?.length) > 0 && (
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ms-1 ${activeTab === 'cases' ? 'bg-white/20' : 'bg-base-content/10 text-base-content'}`}>
-              {portfolio.pagination?.totalItems || portfolio.publishedCases.length}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                  activeTab === 'profile'
+                    ? 'bg-primary text-primary-content shadow-sm shadow-primary/25'
+                    : 'bg-base-200 text-base-content/70 group-hover:text-primary group-hover:bg-primary/10'
+                }`}
+              >
+                <User size={20} />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span
+                    className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                      activeTab === 'profile'
+                        ? 'bg-primary/15 text-primary'
+                        : 'bg-base-200 text-base-content/60'
+                    }`}
+                  >
+                    {t('editor.step1Badge', 'Step 1')}
+                  </span>
+                  {activeTab === 'profile' && (
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-primary">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                      {t('editor.activeStatus', 'Active')}
+                    </span>
+                  )}
+                </div>
+                <h2 className="text-base sm:text-lg font-bold text-base-content mt-1 truncate">
+                  {t('editor.step1Title', 'Profile & Visibility')}
+                </h2>
+              </div>
+            </div>
+
+            <div className="shrink-0 flex items-center pt-1">
+              {activeTab !== 'profile' && (
+                <ChevronRight
+                  size={18}
+                  className="text-base-content/40 group-hover:text-primary group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5 transition-all"
+                />
+              )}
+            </div>
+          </div>
+
+          <p className="text-xs text-base-content/65 mt-2.5 line-clamp-1">
+            {t('editor.step1Subtitle', 'Bio, specialties, CV & field visibility')}
+          </p>
+
+          {/* Live Status Indicators */}
+          <div className="flex flex-wrap items-center gap-2 mt-3.5 pt-3 border-t border-neutral-light/60">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-base-200 text-base-content/80 border border-neutral-light/80">
+              <Eye size={12} className="text-primary shrink-0" />
+              <span>{visibleCount}/11 {t('editor.visibleFields', 'Fields Visible')}</span>
             </span>
-          )}
+            {portfolio?.cvUrl && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-primary/10 text-primary border border-primary/20">
+                <FileText size={12} className="shrink-0" />
+                <span>{t('editor.cvAttached', 'CV Attached')}</span>
+              </span>
+            )}
+          </div>
+        </button>
+
+        {/* Step 2: Clinical Cases */}
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab('cases');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className={`group relative text-start p-4 sm:p-5 rounded-2xl transition-all duration-200 cursor-pointer ${
+            activeTab === 'cases'
+              ? 'border-2 border-primary bg-primary/5 ring-4 ring-primary/10 shadow-sm'
+              : 'bg-base-100 border border-neutral-light hover:border-primary/50 hover:bg-base-200/50 shadow-xs'
+          }`}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                  activeTab === 'cases'
+                    ? 'bg-primary text-primary-content shadow-sm shadow-primary/25'
+                    : 'bg-base-200 text-base-content/70 group-hover:text-primary group-hover:bg-primary/10'
+                }`}
+              >
+                <ImageIcon size={20} />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span
+                    className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                      activeTab === 'cases'
+                        ? 'bg-primary/15 text-primary'
+                        : 'bg-base-200 text-base-content/60'
+                    }`}
+                  >
+                    {t('editor.step2Badge', 'Step 2')}
+                  </span>
+                  {activeTab === 'cases' && (
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-primary">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                      {t('editor.activeStatus', 'Active')}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
+                    {t('editor.step2Title', 'Clinical Cases')}
+                  </h2>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-primary/10 text-primary border border-primary/25">
+                    {totalAllCases}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="shrink-0 flex items-center pt-1">
+              {activeTab !== 'cases' && (
+                <ChevronRight
+                  size={18}
+                  className="text-base-content/40 group-hover:text-primary group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5 transition-all"
+                />
+              )}
+            </div>
+          </div>
+
+          <p className="text-xs text-base-content/65 mt-2.5 line-clamp-1">
+            {t('editor.step2Subtitle', 'Before & after cases, categories & priority')}
+          </p>
+
+          {/* Live Status Indicators */}
+          <div className="flex flex-wrap items-center gap-2 mt-3.5 pt-3 border-t border-neutral-light/60">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-base-200 text-base-content/80 border border-neutral-light/80">
+              <span>{totalAllCases} {t('editor.totalCases', 'Cases Documented')}</span>
+            </span>
+            {featuredCasesCount > 0 && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-warning/15 text-warning-content dark:text-warning border border-warning/30">
+                <Star size={12} className="text-warning fill-warning shrink-0" />
+                <span>{featuredCasesCount} {t('editor.pinnedCases', 'Pinned to Top')}</span>
+              </span>
+            )}
+          </div>
         </button>
       </div>
 
       {activeTab === 'profile' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="profile" className="space-y-6">
+          {/* ── Public Portfolio Visibility Master Bar ── */}
+          <div className="bg-base-200 border border-neutral-light rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <Eye size={20} />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-sm font-bold text-base-content">
+                    {t('visibility.summaryTitle', 'Public Portfolio Visibility Controls')}
+                  </h3>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/25">
+                    {visibleCount} / 11 {t('visibility.visible', 'Visible')}
+                  </span>
+                </div>
+                <p className="text-xs text-base-content/60 mt-0.5">
+                  {t('visibility.summarySubtitle', 'fields currently visible to visitors')}
+                </p>
+              </div>
+            </div>
+
+            {visibleCount < 11 && (
+              <button
+                type="button"
+                onClick={handleShowAllVisibility}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-primary text-primary-content hover:bg-primary/90 transition-all shadow-md shadow-primary/20 shrink-0 cursor-pointer"
+              >
+                <Eye size={14} />
+                <span>{t('visibility.showAll', 'Show All')}</span>
+              </button>
+            )}
+          </div>
+
           {/* ── Account Identity Shortcut (Avatar & Display Name) ── */}
           <div className="bg-base-200 border border-neutral-light rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
             <div className="flex items-center gap-3.5 min-w-0">
@@ -952,62 +1547,353 @@ export default function PortfolioEditorPage() {
             );
           })()}
 
+          {/* ── Doctor CV (PDF) Section ── */}
+          <div className="bg-base-200 border border-neutral-light rounded-2xl overflow-hidden shadow-sm">
+            <div className="px-4 sm:px-6 py-4 border-b border-neutral-light flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <FileText size={16} className="text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <h2 className="text-base font-bold text-base-content">{t('editor.cvTitle', 'Curriculum Vitae (CV / Resume)')}</h2>
+                  <p className="text-[11px] text-base-content/60">{t('editor.cvSubtitle', 'Upload your professional CV/resume in PDF format for prospective patients and clinics.')}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <VisibilityToggle
+                  visible={visibility?.cv !== false}
+                  onToggle={() => handleToggleVisibility('cv')}
+                />
+                {cvSaved && (
+                  <span className="text-success text-xs font-bold flex items-center gap-1 bg-success/10 px-3 py-1.5 rounded-full">
+                    <CheckCircle2 size={14} /> {t('editor.savedSuccess', 'Updated')}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div
+              className={`p-4 sm:p-6 space-y-4 transition-all ${
+                visibility?.cv === false ? 'opacity-75 bg-base-100/40 border-dashed border-base-content/20' : ''
+              }`}
+            >
+              {cvError && (
+                <div className="p-3.5 rounded-xl bg-error/10 border border-error/20 flex items-center gap-2.5 text-error text-xs font-bold">
+                  <AlertCircle size={16} className="shrink-0" />
+                  <span>{cvError}</span>
+                </div>
+              )}
+
+              {portfolio.cvUrl ? (
+                <div className="bg-base-100 border border-neutral-light rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-error/10 text-error flex items-center justify-center shrink-0 border border-error/20">
+                      <FileText size={20} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-base-content truncate">
+                        {portfolio.cvFileName || 'Doctor_CV.pdf'}
+                      </p>
+                      <p className="text-xs text-base-content/60">
+                        {t('editor.cvReadyDesc', 'PDF document linked and visible for download on your public portfolio.')}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      disabled={isPreviewingCv}
+                      onClick={handlePreviewCv}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-base-200 text-base-content border border-neutral-light hover:border-primary/40 hover:text-primary transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isPreviewingCv ? (
+                        <Loader2 size={13} className="animate-spin" />
+                      ) : (
+                        <ExternalLink size={13} />
+                      )}
+                      <span>{isPreviewingCv ? t('editor.loadingPreview', 'Loading...') : t('editor.cvPreview', 'Preview')}</span>
+                    </button>
+
+                    <label
+                      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border ${
+                        isUploadingCv
+                          ? 'opacity-60 cursor-not-allowed bg-base-100 text-base-content/60 border-neutral-light'
+                          : 'cursor-pointer bg-base-200 hover:bg-base-300 text-base-content border-neutral-light hover:border-primary/40'
+                      }`}
+                    >
+                      {isUploadingCv ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
+                      <span>{isUploadingCv ? t('editor.cvUploading', 'Uploading...') : t('editor.cvReplace', 'Replace')}</span>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        disabled={isUploadingCv}
+                        className="hidden"
+                        onChange={handleCvFileSelect}
+                      />
+                    </label>
+
+                    <button
+                      type="button"
+                      disabled={isDeletingCv || isUploadingCv}
+                      onClick={handleRemoveCv}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-base-100 text-error border border-error/30 hover:bg-error/10 disabled:opacity-50 transition-all cursor-pointer"
+                    >
+                      {isDeletingCv ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
+                      <span>{isDeletingCv ? t('editor.cvDeleting', 'Removing...') : t('editor.cvRemove', 'Remove')}</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-neutral-light rounded-2xl p-6 text-center bg-base-100/50 hover:border-primary/40 transition-colors flex flex-col items-center justify-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                    <FileText size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-base-content">
+                      {t('editor.cvUploadPrompt', 'Upload your Curriculum Vitae (CV)')}
+                    </p>
+                    <p className="text-xs text-base-content/60 mt-0.5">
+                      {t('editor.cvRequirements', 'PDF only · Maximum 5 MB · Displayed as a download button on your public portfolio')}
+                    </p>
+                  </div>
+                  <label
+                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
+                      isUploadingCv
+                        ? 'opacity-60 cursor-not-allowed bg-base-100 text-base-content/60 border-neutral-light'
+                        : 'cursor-pointer bg-primary text-primary-content border-primary hover:bg-primary/90 shadow-md shadow-primary/20'
+                    }`}
+                  >
+                    {isUploadingCv ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />}
+                    <span>{isUploadingCv ? t('editor.cvUploading', 'Uploading CV...') : t('editor.cvChoosePdf', 'Select PDF File')}</span>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      disabled={isUploadingCv}
+                      className="hidden"
+                      onChange={handleCvFileSelect}
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
+
           <ProfileIdentityForm
             key={portfolio._id}
             portfolio={portfolio}
             updatePortfolio={updatePortfolio}
             isUpdating={isUpdating}
+            visibility={visibility}
+            onToggleVisibility={handleToggleVisibility}
           />
+
+          {/* Guided Flow Navigation Banner to Step 2: Cases */}
+          <div className="bg-base-200/60 border border-neutral-light rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+            <div className="flex items-center gap-3.5 text-center sm:text-start min-w-0">
+              <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <ImageIcon size={22} />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold text-base-content">
+                  {t('editor.readyForStep2Title', 'Profile configured? Proceed to Clinical Cases')}
+                </h3>
+                <p className="text-xs text-base-content/65">
+                  {t('editor.readyForStep2Subtitle', 'Showcase before & after treatments, sort by specialty, and pin your best work.')}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('cases');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-primary text-primary-content hover:bg-primary/90 shadow-md shadow-primary/25 transition-all cursor-pointer shrink-0 w-full sm:w-auto"
+            >
+              <span>
+                {t('editor.nextStepCases', {
+                  count: totalAllCases,
+                  defaultValue: `Next Step: Manage Clinical Cases (${totalAllCases})`,
+                })}
+              </span>
+              <ChevronRight size={16} className="rtl:rotate-180 shrink-0" />
+            </button>
+          </div>
         </motion.div>
       )}
 
       {/* ── Tab Content: Cases Gallery ── */}
-      {activeTab === 'cases' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="cases">
-          <div className="bg-base-200 border border-base-content/10 rounded-2xl overflow-hidden">
-            <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 dark:border-base-content/10 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <ImageIcon size={16} className="text-primary" />
+      {activeTab === 'cases' && (() => {
+        const totalAllCases = portfolio?.totalAllCases ?? (portfolio?.publishedCases?.length || 0);
+        const categories = Array.isArray(portfolio?.categories) ? portfolio.categories : [];
+
+        return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="cases">
+            <div className="bg-base-200 border border-base-content/10 rounded-2xl overflow-hidden shadow-sm">
+              <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 dark:border-base-content/10 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <ImageIcon size={16} className="text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-base-content">{t('editor.portfolioGallery', 'Clinical Portfolio Gallery')}</h2>
+                    {totalAllCases > 0 && (
+                      <p className="text-[11px] text-base-content/60 font-medium">
+                        {t('editor.filterSubtitle', 'Filter your published clinical cases by treatment specialty')}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <h2 className="text-base font-bold text-base-content">Clinical Portfolio Gallery</h2>
+
+                <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab('profile');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-base-100 hover:bg-base-300 text-base-content/80 hover:text-primary border border-neutral-light/80 transition-all cursor-pointer"
+                  >
+                    <ChevronLeft size={14} className="rtl:rotate-180 shrink-0 text-primary" />
+                    <span>{t('editor.backToProfile', 'Back to Profile & Visibility')}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setAddCaseModal(true)}
+                    className="bg-primary text-white px-4 sm:px-5 py-2 rounded-xl text-xs font-bold hover:bg-primary/90 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm shadow-primary/20"
+                  >
+                    <Plus size={16} /> {t('editor.addCaseStudy', 'Add Case Study')}
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={() => setAddCaseModal(true)}
-                className="bg-primary text-white px-4 sm:px-5 py-2 rounded-xl text-xs font-bold hover:bg-primary/90 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
-              >
-                <Plus size={16} /> Add Case Study
-              </button>
-            </div>
 
-            {(!portfolio.publishedCases || portfolio.publishedCases.length === 0) ? (
-              <div className="text-center py-16 px-4 bg-base-100 rounded-2xl border-2 border-dashed border-base-content/5">
-                <div className="w-16 h-16 rounded-full bg-base-200 flex items-center justify-center mx-auto mb-4 shadow-sm">
-                  <ImageIcon size={28} className="text-base-content/30" />
+              {totalAllCases === 0 ? (
+                <div className="text-center py-16 px-4 bg-base-100 rounded-2xl border-2 border-dashed border-base-content/5 m-4 sm:m-6">
+                  <div className="w-16 h-16 rounded-full bg-base-200 flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <ImageIcon size={28} className="text-base-content/30" />
+                  </div>
+                  <h3 className="text-sm font-bold text-base-content mb-2">No Clinical Cases Yet</h3>
+
+                  <div className="bg-base-200 border border-neutral-light rounded-xl p-5 max-w-sm mx-auto mb-6 text-left">
+                    <h4 className="text-xs font-bold text-base-content mb-3 flex items-center gap-2">
+                      <AlertCircle size={14} className="text-primary" /> Ready to add your first case?
+                    </h4>
+                    <ol className="text-xs text-base-content/70 list-decimal list-inside space-y-2 ml-1 font-medium">
+                      <li>Upload up to <strong>8 photos</strong> directly from your phone or computer gallery</li>
+                      <li>Or pick existing clinical photos from your <strong>Session Media Library</strong></li>
+                      <li>Select a cover &amp; optional <strong>Before / After</strong> pair to publish!</li>
+                    </ol>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setAddCaseModal(true)}
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-primary text-primary-content text-xs font-bold hover:bg-primary/90 transition-colors cursor-pointer"
+                  >
+                    <Plus size={15} /> Add Your First Case Study
+                  </button>
                 </div>
-                <h3 className="text-sm font-bold text-base-content mb-2">No Clinical Cases Yet</h3>
+              ) : (
+                <>
+                  {/* ── Category Filter Bar ── */}
+                  <div className="px-4 sm:px-6 py-3.5 bg-base-100/60 border-b border-neutral-light flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                      {/* "All" Filter Pill */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (selectedCategory !== '') {
+                            setSelectedCategory('');
+                            setPage(1);
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                          !selectedCategory
+                            ? 'bg-primary text-primary-content border-primary shadow-sm shadow-primary/20'
+                            : 'bg-base-200 text-base-content/75 border-neutral-light hover:border-primary/50 hover:text-primary hover:bg-base-300'
+                        }`}
+                      >
+                        <span>{t('editor.allCategories', 'All')}</span>
+                        <span
+                          className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+                            !selectedCategory
+                              ? 'bg-primary-content/20 text-primary-content'
+                              : 'bg-base-100 text-base-content/70 border border-neutral-light'
+                          }`}
+                        >
+                          {totalAllCases}
+                        </span>
+                      </button>
 
-                <div className="bg-base-200 border border-neutral-light rounded-xl p-5 max-w-sm mx-auto mb-6 text-left">
-                  <h4 className="text-xs font-bold text-base-content mb-3 flex items-center gap-2">
-                    <AlertCircle size={14} className="text-primary" /> Ready to add your first case?
-                  </h4>
-                  <ol className="text-xs text-base-content/70 list-decimal list-inside space-y-2 ml-1 font-medium">
-                    <li>Upload up to <strong>8 photos</strong> directly from your phone or computer gallery</li>
-                    <li>Or pick existing clinical photos from your <strong>Session Media Library</strong></li>
-                    <li>Select a cover &amp; optional <strong>Before / After</strong> pair to publish!</li>
-                  </ol>
-                </div>
+                      {/* Per-Category Pills */}
+                      {categories.map((cat) => {
+                        const isSelected = selectedCategory.toLowerCase() === cat.name.toLowerCase();
+                        return (
+                          <button
+                            key={cat.name}
+                            type="button"
+                            onClick={() => {
+                              if (!isSelected) {
+                                setSelectedCategory(cat.name);
+                                setPage(1);
+                              }
+                            }}
+                            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                              isSelected
+                                ? 'bg-primary text-primary-content border-primary shadow-sm shadow-primary/20'
+                                : 'bg-base-200 text-base-content/75 border-neutral-light hover:border-primary/50 hover:text-primary hover:bg-base-300'
+                            }`}
+                          >
+                            <span>{cat.name}</span>
+                            <span
+                              className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+                                isSelected
+                                  ? 'bg-primary-content/20 text-primary-content'
+                                  : 'bg-base-100 text-base-content/70 border border-neutral-light'
+                              }`}
+                            >
+                              {cat.count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
 
-                <button
-                  type="button"
-                  onClick={() => setAddCaseModal(true)}
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-primary text-primary-content text-xs font-bold hover:bg-primary/90 transition-colors cursor-pointer"
-                >
-                  <Plus size={15} /> Add Your First Case Study
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-10 p-5 sm:p-6">
+                    {/* Reorder Disabled Hint */}
+                    {selectedCategory && (
+                      <div className="inline-flex items-center gap-1.5 text-[11px] text-base-content/65 bg-base-200/80 border border-neutral-light px-2.5 py-1 rounded-lg">
+                        <AlertCircle size={13} className="text-primary shrink-0" />
+                        <span>{t('editor.reorderDisabledHint', 'Switch to "All" to reorder cases')}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {(!portfolio.publishedCases || portfolio.publishedCases.length === 0) ? (
+                    <div className="text-center py-16 px-4 bg-base-100 rounded-2xl border-2 border-dashed border-base-content/5 m-4 sm:m-6">
+                      <div className="w-14 h-14 rounded-full bg-base-200 flex items-center justify-center mx-auto mb-3 shadow-sm text-base-content/40">
+                        <Search size={24} />
+                      </div>
+                      <h3 className="text-sm font-bold text-base-content mb-1">
+                        {t('editor.noCasesInCategory', 'No cases in this category')}
+                      </h3>
+                      <p className="text-xs text-base-content/60 mb-5 max-w-sm mx-auto">
+                        {t('editor.noCasesInCategoryDesc', 'There are no published case studies matching the selected filter.')}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedCategory('');
+                          setPage(1);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-content text-xs font-bold hover:bg-primary/90 transition-colors cursor-pointer shadow-sm shadow-primary/20"
+                      >
+                        {t('editor.showAllCases', 'Show all cases')}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-10 p-5 sm:p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {portfolio.publishedCases.map((c) => {
                     const hasBeforeAfter =
@@ -1083,30 +1969,138 @@ export default function PortfolioEditorPage() {
                             </>
                           )}
 
-                          {/* Top-left treatment pill (clear of top-right editor controls) */}
-                          <span className="pointer-events-none absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-base-200/90 text-base-content border border-neutral-light backdrop-blur-md shadow-sm max-w-[52%] truncate">
-                            <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                            <span className="truncate">{primaryTreatment}</span>
-                          </span>
+                          {/* Top-start controls: Rank Badge + Pin/Star Button + Category Pill */}
+                          <div className="absolute top-2.5 start-2.5 flex items-center gap-1.5 z-10 max-w-[65%]">
+                            {/* Interactive Rank Badge */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (rankPopoverCaseId === c._id) {
+                                  setRankPopoverCaseId(null);
+                                } else {
+                                  setRankPopoverCaseId(c._id);
+                                  setDirectRankInput(String(c.globalRank || c.order + 1));
+                                }
+                              }}
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-black/75 hover:bg-black text-white border border-white/20 backdrop-blur-md shadow-sm transition-all cursor-pointer shrink-0"
+                              title={t('cases.changeRank', 'Change case order / rank')}
+                            >
+                              <span>#{c.globalRank || c.order + 1}</span>
+                              <ArrowUpDown size={10} className="opacity-70" />
+                            </button>
 
-                          <div className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-start gap-1 p-1 z-10">
-                            {/* Reordering Controls */}
-                            <div className="flex flex-col gap-1 mr-1">
+                            {/* Pin / Featured Star Button */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleToggleFeatured(c._id, !c.isFeatured);
+                              }}
+                              disabled={isTogglingFeatured}
+                              className={`w-6 h-6 rounded-lg flex items-center justify-center backdrop-blur-md transition-all cursor-pointer shadow-sm shrink-0 disabled:opacity-60 ${
+                                c.isFeatured
+                                  ? 'bg-amber-500 text-white border border-amber-400'
+                                  : 'bg-black/60 hover:bg-black/85 text-white/70 hover:text-amber-400 border border-white/20'
+                              }`}
+                              title={c.isFeatured ? t('cases.unpinCase', 'Unpin case') : t('cases.pinCase', 'Pin case to top (Feature)')}
+                            >
+                              <Star size={12} className={c.isFeatured ? 'fill-white text-white' : ''} />
+                            </button>
+
+                            {/* Treatment Category Pill */}
+                            <span className="pointer-events-none inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-base-200/90 text-base-content border border-neutral-light backdrop-blur-md shadow-sm truncate">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                              <span className="truncate">{primaryTreatment}</span>
+                            </span>
+                          </div>
+
+                          {/* Rank Reordering Popover */}
+                          {rankPopoverCaseId === c._id && (
+                            <div
+                              className="absolute inset-x-2 top-10 sm:top-11 z-30 bg-base-100/95 dark:bg-base-200/95 backdrop-blur-lg border border-neutral-light shadow-2xl rounded-xl p-3 text-start animate-in fade-in zoom-in-95 duration-150"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-neutral-light">
+                                <span className="text-xs font-bold text-base-content flex items-center gap-1.5">
+                                  <ArrowUpDown size={13} className="text-primary shrink-0" />
+                                  <span>{t('cases.caseOrder', 'Case Priority Order')}</span>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setRankPopoverCaseId(null)}
+                                  className="w-5 h-5 rounded-md text-base-content/60 hover:text-base-content hover:bg-base-300 flex items-center justify-center transition-colors cursor-pointer"
+                                  title="Close"
+                                >
+                                  <X size={12} />
+                                </button>
+                              </div>
+
+                              {/* Quick "Move to #1" Button */}
                               <button
-                                onClick={() => handleReorder(c._id, 'up')}
-                                className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg bg-black/60 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/80 transition-colors"
-                                title="Move Up"
+                                type="button"
+                                disabled={(c.globalRank || c.order + 1) === 1 || isMovingPosition}
+                                onClick={() => handleMovePosition(c._id, 1)}
+                                className="w-full mb-2.5 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                               >
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+                                <ArrowUpToLine size={13} className="shrink-0" />
+                                <span>{t('cases.moveToTop', 'Move to #1 (Top)')}</span>
                               </button>
-                              <button
-                                onClick={() => handleReorder(c._id, 'down')}
-                                className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg bg-black/60 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/80 transition-colors"
-                                title="Move Down"
-                              >
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
-                              </button>
+
+                              {/* Direct Rank Input */}
+                              <div className="space-y-1">
+                                <label className="text-[10px] font-semibold text-base-content/70 block">
+                                  {t('cases.jumpToRank', 'Jump to Rank')} (1 - {totalAllCases})
+                                </label>
+                                <div className="flex items-center gap-1.5">
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    max={totalAllCases}
+                                    value={directRankInput}
+                                    onChange={(e) => setDirectRankInput(e.target.value)}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleDirectRankSubmit(c._id);
+                                      }
+                                    }}
+                                    className="w-full bg-base-200 border border-neutral-light rounded-lg px-2.5 py-1 text-xs text-base-content font-bold focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                                    placeholder="1"
+                                  />
+                                  <button
+                                    type="button"
+                                    disabled={isMovingPosition || !directRankInput}
+                                    onClick={() => handleDirectRankSubmit(c._id)}
+                                    className="px-3 py-1 rounded-lg text-xs font-bold bg-primary text-primary-content hover:bg-primary/90 transition-all shrink-0 disabled:opacity-50 cursor-pointer shadow-sm shadow-primary/20"
+                                  >
+                                    {isMovingPosition ? <Loader2 size={12} className="animate-spin" /> : t('cases.apply', 'Apply')}
+                                  </button>
+                                </div>
+                              </div>
                             </div>
+                          )}
+
+                          <div className="absolute top-2 end-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-start gap-1 p-1 z-10">
+                            {/* Reordering Controls — only available in 'All' view to preserve global order */}
+                            {!selectedCategory && (
+                              <div className="flex flex-col gap-1 me-1">
+                                <button
+                                  onClick={() => handleReorder(c._id, 'up')}
+                                  className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg bg-black/60 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+                                  title="Move Up"
+                                >
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+                                </button>
+                                <button
+                                  onClick={() => handleReorder(c._id, 'down')}
+                                  className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg bg-black/60 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+                                  title="Move Down"
+                                >
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                </button>
+                              </div>
+                            )}
 
                             {/* Action Buttons */}
                             <div className="flex gap-1">
@@ -1192,9 +2186,12 @@ export default function PortfolioEditorPage() {
                 )}
               </div>
             )}
-          </div>
-        </motion.div>
-      )}
+          </>
+        )}
+      </div>
+    </motion.div>
+  );
+})()}
 
       {/* ── Add Case Modal ── */}
       <AnimatePresence>
