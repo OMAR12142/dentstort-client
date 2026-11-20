@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 // eslint-disable-next-line no-unused-vars
@@ -672,6 +672,55 @@ function ProfileIdentityForm({
   );
 }
 
+/**
+ * Generate a compact windowed page list with ellipsis (at most 7 items).
+ */
+function getWindowedPageNumbers(currentPage, totalPages) {
+  if (totalPages <= 7) {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+    return pages;
+  }
+
+  const pages = [1];
+  if (currentPage > 3) {
+    pages.push('ellipsis-left');
+  }
+
+  const start = Math.max(2, currentPage - 1);
+  const end = Math.min(totalPages - 1, currentPage + 1);
+
+  if (currentPage <= 3) {
+    pages.push(2, 3, 4);
+  } else if (currentPage >= totalPages - 2) {
+    pages.push(totalPages - 3, totalPages - 2, totalPages - 1);
+  } else {
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+  }
+
+  if (currentPage < totalPages - 2) {
+    pages.push('ellipsis-right');
+  }
+
+  pages.push(totalPages);
+
+  const unique = [];
+  const seenNumbers = new Set();
+  for (const item of pages) {
+    if (typeof item === 'number') {
+      if (!seenNumbers.has(item)) {
+        seenNumbers.add(item);
+        unique.push(item);
+      }
+    } else {
+      unique.push(item);
+    }
+  }
+  return unique;
+}
+
 // ════════════════════════════════════════════════
 //  MAIN EDITOR PAGE
 // ════════════════════════════════════════════════
@@ -683,11 +732,24 @@ export default function PortfolioEditorPage() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const { data: portfolio, isLoading } = useMyPortfolio(page, limit, selectedCategory);
 
-  // Auto-clamp page during render if category filtering or deletion reduces totalPages
   const totalPages = portfolio?.pagination?.totalPages || 1;
-  if (portfolio && page > totalPages) {
-    setPage(Math.max(1, totalPages));
-  }
+  const casesSectionRef = useRef(null);
+
+  useEffect(() => {
+    if (portfolio && page > totalPages) {
+      setPage(Math.max(1, totalPages));
+    }
+  }, [portfolio, page, totalPages]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > totalPages || newPage === page) return;
+    setPage(newPage);
+    if (casesSectionRef.current) {
+      casesSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const { mutate: createPortfolio, isPending: isCreating } = useCreatePortfolio();
   const { mutate: updatePortfolio, isPending: isUpdating } = useUpdatePortfolio();
@@ -1731,7 +1793,7 @@ export default function PortfolioEditorPage() {
 
         return (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="cases">
-            <div className="bg-base-200 border border-base-content/10 rounded-2xl overflow-hidden shadow-sm">
+            <div ref={casesSectionRef} id="cases-section" className="bg-base-200 border border-base-content/10 rounded-2xl overflow-hidden shadow-sm">
               <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 dark:border-base-content/10 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -2154,36 +2216,81 @@ export default function PortfolioEditorPage() {
                 </div>
 
                 {/* ── Pagination Controls ── */}
-                {portfolio.pagination?.totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 pt-4">
-                    <button
-                      disabled={page === 1}
-                      onClick={() => setPage(page - 1)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold border border-neutral-light bg-base-100 text-base-content disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      Prev
-                    </button>
-                    <div className="flex gap-1">
-                      {[...Array(portfolio.pagination.totalPages)].map((_, i) => (
+                {portfolio.pagination?.totalPages > 1 && (() => {
+                  const totalPages = portfolio.pagination.totalPages;
+                  const pageItems = getWindowedPageNumbers(page, totalPages);
+
+                  return (
+                    <div className="border-t border-neutral-light/70 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+                      {/* Page Status Caption */}
+                      <div className="text-xs font-bold text-base-content/70 text-center sm:text-start">
+                        {t('public.pageOf', { page, total: totalPages, defaultValue: `Page ${page} of ${totalPages}` })}
+                      </div>
+
+                      {/* Pagination Action Bar */}
+                      <div className="flex items-center justify-center gap-1 sm:gap-1.5 flex-wrap">
+                        {/* Previous Button */}
                         <button
-                          key={i}
-                          onClick={() => setPage(i + 1)}
-                          className={`w-8 h-8 rounded-xl text-[10px] font-bold transition-all ${page === i + 1 ? 'bg-primary text-primary-content shadow-md' : 'text-base-content/60 hover:bg-base-100'
-                            }`}
+                          type="button"
+                          disabled={page <= 1}
+                          onClick={() => handlePageChange(page - 1)}
+                          className="inline-flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-base-100 text-base-content border border-neutral-light hover:border-primary/40 hover:bg-base-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                          title={t('public.prev', 'Prev')}
+                          aria-label={t('public.prev', 'Prev')}
                         >
-                          {i + 1}
+                          <ChevronLeft size={14} className="rtl:rotate-180 shrink-0" />
+                          <span className="hidden xs:inline">{t('public.prev', 'Prev')}</span>
                         </button>
-                      ))}
+
+                        {/* Windowed Page Number Pills */}
+                        <div className="flex items-center gap-1">
+                          {pageItems.map((item, idx) => {
+                            if (typeof item === 'string') {
+                              return (
+                                <span
+                                  key={`ellipsis-${idx}`}
+                                  className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-xs font-bold text-base-content/40 select-none"
+                                >
+                                  …
+                                </span>
+                              );
+                            }
+
+                            const isCurrent = item === page;
+                            return (
+                              <button
+                                key={item}
+                                type="button"
+                                onClick={() => handlePageChange(item)}
+                                aria-current={isCurrent ? 'page' : undefined}
+                                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer ${
+                                  isCurrent
+                                    ? 'bg-primary text-primary-content shadow-sm shadow-primary/25 ring-2 ring-primary/20'
+                                    : 'bg-base-100 hover:bg-base-200 text-base-content border border-neutral-light hover:border-primary/40'
+                                }`}
+                              >
+                                {item}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Next Button */}
+                        <button
+                          type="button"
+                          disabled={page >= totalPages}
+                          onClick={() => handlePageChange(page + 1)}
+                          className="inline-flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-base-100 text-base-content border border-neutral-light hover:border-primary/40 hover:bg-base-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                          title={t('public.next', 'Next')}
+                          aria-label={t('public.next', 'Next')}
+                        >
+                          <span className="hidden xs:inline">{t('public.next', 'Next')}</span>
+                          <ChevronRight size={14} className="rtl:rotate-180 shrink-0" />
+                        </button>
+                      </div>
                     </div>
-                    <button
-                      disabled={page === portfolio.pagination.totalPages}
-                      onClick={() => setPage(page + 1)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold border border-neutral-light bg-base-100 text-base-content disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      Next
-                    </button>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             )}
           </>

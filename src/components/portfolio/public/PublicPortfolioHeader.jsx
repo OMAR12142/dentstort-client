@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import SafeImage from '../SafeImage';
 import BrandedPortfolioCover from './BrandedPortfolioCover';
 import { formatDoctorDisplayName } from '../../../utils/portfolioFormatters';
+import api from '../../../api/axios';
 
 /**
  * PublicPortfolioHeader — Branded DentStory marketing cover (custom coverPhoto or curated
@@ -27,11 +28,42 @@ export default function PublicPortfolioHeader({
   const isArabic = i18n.language?.startsWith('ar');
   const displayName = formatDoctorDisplayName(dentist?.name, isArabic);
 
-  const envUrl = import.meta.env?.VITE_API_URL;
-  const baseUrl = (!envUrl || envUrl === 'undefined' || envUrl === '/') ? '' : envUrl.replace(/\/+$/, '');
+  const rawApiUrl =
+    import.meta.env?.VITE_API_URL ||
+    import.meta.env?.VITE_API_BASE_URL ||
+    api?.defaults?.baseURL ||
+    '';
+
+  const apiOrigin = (() => {
+    let origin = '';
+    if (rawApiUrl && rawApiUrl !== 'undefined' && rawApiUrl !== '/') {
+      origin = rawApiUrl.replace(/\/api\/?$/, '').replace(/\/+$/, '');
+    }
+    if (origin) {
+      return origin;
+    }
+    if (
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ) {
+      return 'http://localhost:5001';
+    }
+    return 'https://dentstory-api.vercel.app';
+  })();
+
   const portfolioSlug = slug || dentist?.slug || '';
-  const cvStreamUrl = portfolioSlug ? `${baseUrl}/api/portfolio/public/${portfolioSlug}/cv` : cvUrl;
-  const cvDownloadUrl = portfolioSlug ? `${cvStreamUrl}?download=1` : cvUrl;
+  const cvPdfUrl = portfolioSlug
+    ? `${apiOrigin}/api/portfolio/public/${encodeURIComponent(portfolioSlug)}/cv.pdf`
+    : cvUrl;
+
+  const isIOS =
+    typeof navigator !== 'undefined' &&
+    (/iPad|iPhone|iPod/.test(navigator.userAgent || '') ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
+  const safePdfFileName = cvFileName || `${displayName.replace(/\s+/g, '_')}_CV.pdf`;
+  const finalPdfFileName = /\.pdf$/i.test(safePdfFileName) ? safePdfFileName : `${safePdfFileName}.pdf`;
+  const finalHref = isIOS ? cvPdfUrl : `${cvPdfUrl}?download=1`;
 
   return (
     <div className="bg-base-200 border-b border-neutral-light pb-4 shadow-sm relative overflow-hidden transition-colors duration-300">
@@ -105,10 +137,10 @@ export default function PublicPortfolioHeader({
           {cvUrl && visibility?.cv !== false && (
             <div className="flex items-center justify-center md:justify-end pb-0.5 shrink-0 w-full md:w-auto">
               <a
-                href={cvDownloadUrl}
+                href={finalHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                download={cvFileName || `${displayName.replace(/\s+/g, '_')}_CV.pdf`}
+                {...(!isIOS ? { download: finalPdfFileName } : {})}
                 className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-base-100/85 hover:bg-base-100 text-base-content border border-neutral-light/80 hover:border-primary/50 shadow-sm backdrop-blur-md transition-all cursor-pointer group"
                 title={t('public.downloadCv', 'Download CV')}
                 aria-label={t('public.downloadCv', 'Download CV')}
